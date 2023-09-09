@@ -22,7 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'phone',
+        'mobile',
         'birthday',
         'password',
     ];
@@ -42,7 +42,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'phone_verified_at' => 'datetime',
+        'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 

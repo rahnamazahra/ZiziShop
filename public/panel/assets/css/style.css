@@ -1,0 +1,50 @@
+html,body {
+    direction: rtl
+}
+
+.rtl-justify {
+    text-align: justify;
+    text-justify: persian;
+    direction: rtl;
+}
+
+p, h1, h2, h3, h4, h5, h6, input, select, textarea, a, span, li,th, td, tr, button, label,div {
+    font-family: iranyekan !important;
+}
+
+jdp-container {
+    z-index: 9999 !important
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.bi::before {
+    display: inline-block;
+    content: "";
+    vertical-align: -.125em;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+}
+.card-paragraph {
+    line-clamp: 5;
+    overflow: hidden;
+    -webkit-line-clamp: 5;
+    display: -webkit-box;
+    text-align: justify;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+}
+jdp-container {
+    z-index: 9999 !important
+}

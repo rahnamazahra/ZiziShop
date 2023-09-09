@@ -5,11 +5,11 @@
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <!-- mobile -->
+        <div class="mt-4">
+            <x-input-label for="mobile" :value="__('mobile')" />
+            <x-text-input id="mobile" class="block mt-1 w-full" type="mobile" name="mobile" :value="old('mobile')" required/>
+            <x-input-error :messages="$errors->get('mobile')" class="mt-2" />
         </div>
 
         <!-- Password -->

@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('layouts.site.master')
 @section('content')
     <div class="container mx-auto p-8">
         <div class="flex flex-row flex-wrap -mx-2">

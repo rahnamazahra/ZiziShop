@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('نام');
+            $table->string('title')->comment('عنوان');
             $table->string('price')->comment('قیمت');
             $table->unsignedInteger('count')->comment('تعداد');
             $table->boolean('healthy')->default('1')->comment('وضعیت سالم بودن');
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('discount_id')->constrained();
             $table->foreignId('sub_category_id')->constrained();
             $table->text('description');
+            $table->string('slug');
             $table->timestamps();
             $table->comment('محصولات');
         });
