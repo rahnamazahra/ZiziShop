@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateRatingsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up()
     {
         Schema::create('ratings', function (Blueprint $table) {
@@ -18,17 +16,8 @@ class CreateRatingsTable extends Migration
             $table->text('comment')->nullable();
             $table->morphs('rateable');
             $table->foreignId('user_id')->constrained();
-            $table->index('rateable_id');
-            $table->index('rateable_type');
-           
+            $table->index(['rateable_id', 'rateable_type']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down()
-    {
-        Schema::drop('ratings');
-    }
 }

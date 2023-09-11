@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
-    public function __invoke()
+    public function index()
     {
-        return View('dashborad.admin');
+        return view('panel.dashborad.admin');
     }
+
 }

@@ -84,7 +84,7 @@
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="{{ route('logout') }}" class="menu-link px-5">خروج</a>
+                            <a href="{{ route('auth.logout') }}" class="menu-link px-5">خروج</a>
                         </div>
                         <!--end::Menu item-->
                     </div>

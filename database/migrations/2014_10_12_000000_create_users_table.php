@@ -11,19 +11,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('name');
             $table->string('mobile')->unique();
-            $table->timestamp('mobile_verified_at')->nullable();
+            $table->datetime('mobile_verified_at')->nullable();
             $table->string('password');
             $table->date('birthday')->nullable();
             $table->timestamps();
         });
     }
 
-
-    public function down(): void
-    {
-        Schema::dropIfExists('users');
-    }
 };

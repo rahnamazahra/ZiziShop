@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Carbon;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -15,10 +14,10 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         // Create roles
-        $programmerRole = Role::create(['name' => 'برنامه نویس', 'slug' => 'developer', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
-        $adminRole      = Role::create(['name' => 'ادمین', 'slug' => 'admin', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
-        $sellerRole     = Role::create(['name' => 'فروشنده', 'slug' => 'seller', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
-        $userRole       = Role::create(['name' => 'کاربر', 'slug' => 'user', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+        $programmerRole = Role::create(['name' => 'برنامه نویس', 'slug' => 'developer']);
+        $adminRole      = Role::create(['name' => 'ادمین', 'slug' => 'admin']);
+        $sellerRole     = Role::create(['name' => 'فروشنده', 'slug' => 'seller']);
+        $userRole       = Role::create(['name' => 'کاربر', 'slug' => 'user']);
 
         // Create permissions
         $permission_admin_index = Permission::create([
@@ -28,6 +27,6 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // Assign permissions to roles
-        $permission_admin_index->roles()->attach([$programmerRole, $adminRole]);
+        $permission_admin_index->roles()->sync([$programmerRole->id, $adminRole->id]);
     }
 }

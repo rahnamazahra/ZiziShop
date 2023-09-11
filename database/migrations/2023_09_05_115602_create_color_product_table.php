@@ -6,25 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('color_product', function (Blueprint $table) {
-            $table->id()->comment('شناسه');
-            $table->unsignedBigInteger('color_id')->comment('شناسه رنگ');
-            $table->unsignedBigInteger('product_id')->comment('شناسه محصول');
-            $table->unsignedInteger('count')->comment('تعداد');
-            $table->timestamps();
+            $table->id();
+            $table->foreignId('color_id')->constrained();
+            $table->foreignId('product_id')->constrained();
+            $table->unsignedInteger('count');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('color_product');
-    }
 };

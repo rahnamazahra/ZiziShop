@@ -10,20 +10,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->id()->comment('شناسه');
-            $table->string('file_name')->comment('نام');
-            $table->text('path')->comment('مسیر');
-            $table->string('size')->comment('حجم');
-            $table->string('mime_type')->comment('نوع');
+            $table->id();
+            $table->string('file_name');
+            $table->text('path');
+            $table->string('size');
+            $table->string('mime_type');
             $table->morphs('fileable');
-            $table->timestamps();
-            $table->comment('فایل ها');
         });
     }
 
-
-    public function down(): void
-    {
-        Schema::dropIfExists('files');
-    }
 };

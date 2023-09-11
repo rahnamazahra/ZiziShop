@@ -6,25 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('existing_ones', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->comment('شناسه کاربر');
-            $table->unsignedBigInteger('product_id')->comment('شناسه محصول');
-            $table->timestamps();
-            $table->comment('جدول موجود');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('product_id')->constrained();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('existing_ones');
-    }
 };
