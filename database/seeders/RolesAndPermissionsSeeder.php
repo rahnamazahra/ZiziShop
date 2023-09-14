@@ -14,10 +14,10 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         // Create roles
-        $programmerRole = Role::create(['name' => 'برنامه نویس', 'slug' => 'developer']);
-        $adminRole      = Role::create(['name' => 'ادمین', 'slug' => 'admin']);
-        $sellerRole     = Role::create(['name' => 'فروشنده', 'slug' => 'seller']);
-        $userRole       = Role::create(['name' => 'کاربر', 'slug' => 'user']);
+        $programmerRole = Role::create(['name' => 'developer']);
+        $adminRole      = Role::create(['name' => 'admin']);
+        $sellerRole     = Role::create(['name' => 'seller']);
+        $userRole       = Role::create(['name' => 'user']);
 
         // Create permissions
         $permission_admin_index = Permission::create([
@@ -30,3 +30,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $permission_admin_index->roles()->sync([$programmerRole->id, $adminRole->id]);
     }
 }
+
+
+

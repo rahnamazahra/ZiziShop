@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Casts\JalaliDate;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -27,6 +29,7 @@ class User extends Authenticatable
     protected $casts = [
         'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
+        'birthday' => JalaliDate::class,
     ];
 
     public function file(): MorphOne
@@ -43,4 +46,18 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class, 'favorites');
     }
+
+    public function city():BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function isAdmin($userId)
+    {
+        $user = $this->find($userId);
+        $roles = $user->roles->whereIn('name', ['developer', 'admin']);
+
+        return $roles->count() > 0;
+    }
+    
 }

@@ -2,30 +2,29 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Http\Requests\panel\UserCreateRequest;
+use App\Http\Requests\panel\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Province;
 
 class UserController extends Controller
 {
 
     public function index()
     {
-        $users = User::all();
+        $users = User::get();
         return view('panel.users.index', ['users' => $users]);
     }
 
     public function create()
     {
-        //
+        $provinces = Province::get();
+        return view('panel.users.create', ['provinces' => $provinces]);
     }
 
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function show(string $id)
+    public function store(UserCreateRequest $request)
     {
         //
     }
@@ -35,7 +34,7 @@ class UserController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
+    public function update(UserUpdateRequest $request, string $id)
     {
         //
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 
+use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,7 +30,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            if ($user->roles->contains(1) OR $user->roles->contains(2) OR $user->roles->contains(3))
+            if ($user->isAdmin($user->id))
             {
                 return redirect()->intended(RouteServiceProvider::MANAGMENT);
             }
