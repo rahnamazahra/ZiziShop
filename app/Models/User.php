@@ -2,24 +2,22 @@
 
 namespace App\Models;
 
-use App\Casts\JalaliDate;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\{cityName, JalaliDate, provinceName};
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany};
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
         'mobile',
         'birthday',
         'password',
+        'province_id',
+        'city_id',
     ];
 
     protected $hidden = [
@@ -30,6 +28,8 @@ class User extends Authenticatable
         'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
         'birthday' => JalaliDate::class,
+        'province_id' => provinceName::class,
+        'city_id' => cityName::class,
     ];
 
     public function file(): MorphOne
@@ -52,6 +52,11 @@ class User extends Authenticatable
         return $this->belongsTo(City::class);
     }
 
+    public function province():BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
     public function isAdmin($userId)
     {
         $user = $this->find($userId);
@@ -59,5 +64,15 @@ class User extends Authenticatable
 
         return $roles->count() > 0;
     }
-    
+
+    public static function search($query)
+    {
+        return self::whereNull('deleted_at')
+               ->where('name', 'like', "%$query%")
+               ->orWhere('mobile', 'like', "%$query%")
+               ->select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])
+               ->orderBy('id', 'DESC')
+               ->paginate(15)
+               ->withQueryString();
+    }
 }

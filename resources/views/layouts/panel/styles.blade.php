@@ -1,4 +1,4 @@
-<link rel="shortcut icon" href="{{ asset('panel/assets/media/logos/fav.png') }}" />
+<link rel="shortcut icon" href="{{ asset('/images/logo/logo.png') }}" />
 <link href="{{ asset('panel/assets/plugins/global/plugins.bundle.rtl.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="{{ asset('panel/assets/css/style.bundle.rtl.css') }}"/>
 <link rel="stylesheet" type="text/css" href="{{ asset('panel/assets/css/style.css') }}"/>

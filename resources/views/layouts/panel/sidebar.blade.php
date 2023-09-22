@@ -3,8 +3,8 @@
 
         <a href="#">
              <div class="flex justify-start">
-                <span class="font-extrabold text-color4">zizi</span>
-                <span class="font-extrabold">Shop</span>
+                <img src="/images/logo/logo.png" class="h-25px logo" />
+                <span style="color:white">مدیریت زی زی شـــاپ</span>
             </div>
         </a>
 

@@ -1,26 +1,35 @@
-@props(['headers', 'data'])
+@props(['headers', 'data', 'actions'])
 
-<div class="table-responsive">
-    <table class="table table-striped gy-7 gs-7">
-        <thead>
-            <tr>
-                @foreach ($headers as $header)
-                    <th class="text-center">{{ $header }}</th>
+<x-panel.div-section class="table-responsive">
+    <x-table.table>
+        <x-table.thead>
+            <x-table.tr>
+                @foreach ($headers as $header => $value)
+                    <x-table.th>{{ $header }}</x-table.th>
                 @endforeach
-            </tr>
-        </thead>
-        <tbody>
+            </x-table.tr>
+        </x-table.thead>
+        <x-table.tbody>
             @forelse ($data as $key => $item)
-                <tr>
-                    <td class="text-center">{{ $key + 1 }}</td>
-                    <td class="text-center">{{ $item }}</td>
-                </tr>
+                <x-table.tr>
+                    @foreach ($headers as $header => $value)
+                        <x-table.th>{{ $item->$value }}</x-table.th>
+                    @endforeach
+                    <x-table.td class="text-center">
+                        @if (isset($actions))
+                            @foreach ($actions as $action)
+                                <x-form.btn-a :route="route($action['route'], ['id' => $item['id']])" class="btn-light" title="{{ $action['title'] }}">
+                                    <x-svg.icon-svg icon='{{ $action['icon'] }}' />
+                                </x-form.btn-a>
+                            @endforeach
+                        @endif
+                    </x-table.td>
+                </x-table.tr>
             @empty
-                <tr>
-                    <td class="text-center" colspan="{{ count($headers) }}">آیتمی برای نمایش وجود ندارد.</td>
-
-                </tr>
+                <x-table.tr>
+                    <x-table.td colspan="{{ count($headers) }}">آیتمی برای نمایش وجود ندارد.</x-table.td>
+                </x-table.tr>
             @endforelse
-        </tbody>
-    </table>
-</div>
+        </x-table.tbody>
+    </x-table.table>
+</x-panel.div-section>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('sub_category_id');
             $table->text('description');
             $table->string('slug');
+            $table->softDeletes();
         });
     }
 

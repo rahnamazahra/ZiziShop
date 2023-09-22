@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['name', 'price', 'count', 'feature', 'discount_id', 'sub_category_id', 'description'];
+
     protected $attributes = [
         'healthy' => true,
         'published' => true,
     ];
-
 
     public function Colors(): BelongsToMany
     {

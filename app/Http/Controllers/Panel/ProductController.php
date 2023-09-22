@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return view('site.home');
+        return view('panel.products.index');
     }
 
     public function create()

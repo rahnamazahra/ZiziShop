@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Http\Requests\panel\UserCreateRequest;
-use App\Http\Requests\panel\UserUpdateRequest;
-use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use App\Exports\ExportUsers;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
-use App\Models\Province;
-
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\{City, Role, User, Province};
+use App\Http\Requests\panel\{UserCreateRequest, UserUpdateRequest};
 class UserController extends Controller
 {
-
     public function index()
     {
-        $users = User::get();
-        return view('panel.users.index', ['users' => $users]);
+        return $users = User::select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])->orderBy('id', 'DESC')->toSql(1);
+       // $provinces = Province::all();
+        $cities = City::all();
+        return view('panel.users.index', ['users' => $users, 'provinces' => $provinces, 'cities' => $cities]);
     }
 
     public function create()
@@ -26,21 +30,90 @@ class UserController extends Controller
 
     public function store(UserCreateRequest $request)
     {
-        //
+        User::create($request->all());
+        return to_route('admin.users.index');
     }
 
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        $provinces = Province::get();
+        return view('panel.users.edit', ['user' => $user, 'provinces' => $provinces]);
     }
 
-    public function update(UserUpdateRequest $request, string $id)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        //
+        $user->update($request->all());
+        return to_route('admin.users.index');
     }
 
-    public function destroy(string $id)
+    public function trash()
     {
-        //
+        $users = User::onlyTrashed()->latest()->paginate(1);
+        return view('panel.users.trash', ['users' => $users]);
+
+    }
+
+    public function delete($id)
+    {
+        $user = User::find($id);
+        if($user)
+        {
+            $user->delete();
+        }
+
+        return to_route('admin.users.index');
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()->find($id);
+        $user->restore();
+        return to_route('admin.users.trash');
+    }
+
+    public function deleteForce($id)
+    {
+        $user = User::withTrashed()->find($id);
+        $user->forceDelete();
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->query('search');
+        $users = User::search($query);
+        $provinces = Province::all();
+        $cities = City::all();
+        return view('panel.users.index',  ['users' => $users, 'provinces' => $provinces, 'cities' => $cities]);
+    }
+
+    public function exportUsers()
+    {
+       $previousUrl = URL::previous();
+
+       $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+
+       parse_str($queryString, $queryParams);
+
+       $users = User::select('name', 'mobile', 'city_id', 'province_id', 'national_code', 'birthday_date')->with(['roles', 'city.province']);
+
+        if (array_key_exists('search', $queryParams))
+        {
+            $search_item = $queryParams['search'];
+            $users->when($search_item, function (Builder $builder) use ($search_item) {
+                $builder->where('name', 'LIKE', "%{$search_item}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search_item}%")
+                        ->orWhereRelation('city', 'title', 'LIKE', "%{$search_item}%")
+                        ->orWhereRelation('province', 'title', 'LIKE', "%{$search_item}%");
+            });
+        }
+
+
+        $users = $users->get();
+
+        $response = Excel::download(new ExportUsers($users), 'users.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        ob_end_clean();
+
+        return $response;
     }
 }
