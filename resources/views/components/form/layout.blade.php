@@ -1,4 +1,4 @@
-<form method="{{ $method === 'GET' ? 'GET' : 'POST'  }}" action="{{ $route }}">
+<form method="{{ $method === 'GET' ? 'GET' : 'POST'  }}" action="{{ $action }}" {{ $attributes }}>
     @if($method != "GET")
         @csrf
         @method($method)

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Color extends Model
 {
-    protected $fillable = ['title'];
+    protected $fillable = ['name', 'code'];
 
     public function Products(): BelongsToMany
     {

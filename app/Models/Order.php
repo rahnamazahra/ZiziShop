@@ -4,8 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Order extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'order-status' =>OrderStatusEnum::class
+    ];
+
+    public function Products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class);
+    }
 }

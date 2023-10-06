@@ -8,9 +8,7 @@ use Illuminate\Database\Seeder;
 
 class ProvinceCitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run(): void
     {
         $province1 = Province::create(['name' => 'آذربایجان شرقی']);

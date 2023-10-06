@@ -1,3 +1,3 @@
-<x-panel.div-section {{ $attributes->merge(['class' => 'card-title flex justify-between gap-2']) }}>
+<x-panel.div-section {{ $attributes->merge(['class' => 'card-title']) }}>
         {{ $slot }}
 </x-panel.div-section>

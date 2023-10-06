@@ -11,11 +11,13 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'price', 'count', 'feature', 'discount_id', 'sub_category_id', 'description'];
+    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'category_id', 'weight', 'width', 'Height', ' length', 'feature'];
+
+    public $timestamps = false;
 
     protected $attributes = [
-        'healthy' => true,
-        'published' => true,
+        'is_healthy' => true,
+        'is_published' => true,
     ];
 
     public function Colors(): BelongsToMany
@@ -27,18 +29,28 @@ class Product extends Model
     {
         return $this->belongsToMany(Size::class);
     }
-    public function SubCategory(): BelongsTo
+
+    public function Category(): BelongsTo
     {
         return $this->belongsTo(SubCategory::class);
-    }
-
-    public function Discount(): BelongsTo
-    {
-        return $this->belongsTo(Discount::class);
     }
 
     public function favorites(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'favorites');
+    }
+
+    public function uploadImage($images):void
+    {
+        if ($images)
+        {
+            $storage_dir = '/products';
+
+        }
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

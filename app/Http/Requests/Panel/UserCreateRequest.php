@@ -10,7 +10,7 @@ class UserCreateRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
 
@@ -18,7 +18,7 @@ class UserCreateRequest extends FormRequest
     {
         return [
             'name'     => ['required', 'string', 'max:255'],
-            'mobile'   => ['required', 'string', 'unique:users', Rule::unique('users')->whereNull('mobile_verified_at')],
+            'mobile'   => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string', 'confirmed', 'min:6'],
         ];
     }

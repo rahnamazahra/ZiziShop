@@ -15,7 +15,7 @@
         @else
 
             <x-panel.li class="breadcrumb-item text-muted">
-                <x-panel.link route="{{ $route }}" class="text-muted text-hover-primary">
+                <x-panel.link href="{{ $route }}" class="text-muted text-hover-primary">
                     {{ $label }}
                 </x-panel.link>
             </x-panel.li>

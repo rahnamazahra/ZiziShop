@@ -10,9 +10,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('favorites', function (Blueprint $table) {
-            $table->id()->comment('شناسه');
-            $table->foreignId('user_id')->constrained();
+            $table->id();
             $table->foreignId('product_id')->constrained();
+            $table->foreignId('user_id')->constrained();
         });
     }
 };

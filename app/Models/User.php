@@ -60,7 +60,7 @@ class User extends Authenticatable
     public function isAdmin($userId)
     {
         $user = $this->find($userId);
-        $roles = $user->roles->whereIn('name', ['developer', 'admin']);
+        $roles = $user->roles;
 
         return $roles->count() > 0;
     }

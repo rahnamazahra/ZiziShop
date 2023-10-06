@@ -38,9 +38,9 @@ class ExportUsers implements FromCollection, WithHeadings, WithMapping
         return [
             $user->name,
             $user->mobile,
-            $user->province_id,
-            $user->city_id,
-            $user->birthday,
+            $user->province_id ?? '-',
+            $user->city_id ?? '-',
+            $user->birthday ?? '-',
         ];
     }
 }

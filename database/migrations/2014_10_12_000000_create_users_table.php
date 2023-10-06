@@ -10,7 +10,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->softDeletes();
             $table->id();
             $table->string('name');
             $table->string('mobile')->unique();
@@ -19,6 +18,7 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->foreignId('province_id')->nullable();
             $table->foreignId('city_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

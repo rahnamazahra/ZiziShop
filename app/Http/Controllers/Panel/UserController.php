@@ -16,9 +16,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        return $users = User::select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])->orderBy('id', 'DESC')->toSql(1);
-       // $provinces = Province::all();
-        $cities = City::all();
+        //TODO DRY
+
+        $users = User::select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])->latest()->paginate(1);
+        $provinces = getProvinces();
+        $cities = getCities();
         return view('panel.users.index', ['users' => $users, 'provinces' => $provinces, 'cities' => $cities]);
     }
 
@@ -34,15 +36,19 @@ class UserController extends Controller
         return to_route('admin.users.index');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
-        $provinces = Province::get();
-        return view('panel.users.edit', ['user' => $user, 'provinces' => $provinces]);
+        $user = USer::find($id);
+
+        return view('panel.users.edit', ['user' => $user]);
     }
 
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, $id)
     {
+        $user = USer::find($id);
+
         $user->update($request->all());
+
         return to_route('admin.users.index');
     }
 
@@ -94,16 +100,14 @@ class UserController extends Controller
 
        parse_str($queryString, $queryParams);
 
-       $users = User::select('name', 'mobile', 'city_id', 'province_id', 'national_code', 'birthday_date')->with(['roles', 'city.province']);
+       $users = User::select('name', 'mobile', 'city_id', 'province_id', 'birthday')->with(['city.province']);
 
         if (array_key_exists('search', $queryParams))
         {
             $search_item = $queryParams['search'];
-            $users->when($search_item, function (Builder $builder) use ($search_item) {
-                $builder->where('name', 'LIKE', "%{$search_item}%")
-                        ->orWhere('mobile', 'LIKE', "%{$search_item}%")
-                        ->orWhereRelation('city', 'title', 'LIKE', "%{$search_item}%")
-                        ->orWhereRelation('province', 'title', 'LIKE', "%{$search_item}%");
+            $users->when($search_item, function ($query) use ($search_item) {
+                $query->where('name', 'LIKE', "%{$search_item}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search_item}%");
             });
         }
 
