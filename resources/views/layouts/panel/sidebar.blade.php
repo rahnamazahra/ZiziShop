@@ -26,8 +26,6 @@
 
                 <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت کاربران سیستم"/>
 
-                <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت مشتریان"/>
-
                 <x-panel.menu-item href="{{ route('admin.categories.index') }}" route="admin.categories.index" icon="category" title="مدیریت دسته‌بندی"/>
 
                 <x-panel.menu-item href="{{ route('admin.products.index') }}" route="admin.products.index" icon="product" title="مدیریت محصولات"/>

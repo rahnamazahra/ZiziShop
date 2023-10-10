@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <x-form.layout method="PATCH" :action="route('admin.users.update',['id' => $user->id])">
+    <x-form method="PATCH" :action="route('admin.users.update', $user)">
         <x-panel.card>
 
             <x-panel.card-header>

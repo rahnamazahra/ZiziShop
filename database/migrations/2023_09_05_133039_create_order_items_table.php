@@ -13,7 +13,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_id')->constrained();
-            $table->unsignedInteger('quantity');
             $table->unsignedBigInteger('price');
             $table->timestamps();
         });

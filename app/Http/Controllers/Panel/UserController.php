@@ -2,117 +2,139 @@
 
 namespace App\Http\Controllers\Panel;
 
-use Exception;
-use Illuminate\Http\Request;
-use App\Exports\ExportUsers;
-use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\URL;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\Exports\ExportUsers;
+
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Database\Eloquent\Builder;
+
 use App\Models\{City, Role, User, Province};
-use App\Http\Requests\panel\{UserCreateRequest, UserUpdateRequest};
+
+use App\Http\Requests\panel\{UserStoreRequest, UserUpdateRequest};
+use App\Http\Controllers\Controller;
+
+
 class UserController extends Controller
 {
-    public function index()
-    {
-        //TODO DRY
 
-        $users = User::select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])->latest()->paginate(1);
-        $provinces = getProvinces();
-        $cities = getCities();
-        return view('panel.users.index', ['users' => $users, 'provinces' => $provinces, 'cities' => $cities]);
+    public function index(Request $request)
+    {
+        $users = User::query();
+
+        if ($request->has('trashed')) {
+            $users->onlyTrashed();
+        }
+
+        if ($request->has('search')) {
+            $users->search($request->query('search'));
+        }
+
+        if ($request->has('city') && $request->input('city') != 'all') {
+
+            $users->where('city_id', $request->input('city'));
+        }
+
+        $users = $users->paginate(15);
+
+        return view('panel.users.index', [
+            'users' => $users,
+            'provinces' => Province::all(),
+            'cities' => City::all(),
+        ]);
     }
 
     public function create()
     {
-        $provinces = Province::get();
-        return view('panel.users.create', ['provinces' => $provinces]);
+        return view('panel.users.create', [
+            'provinces' => Province::get(),
+        ]);
     }
 
-    public function store(UserCreateRequest $request)
+    public function store(UserStoreRequest $request)
     {
         User::create($request->all());
-        return to_route('admin.users.index');
+
+        return to_route('admin.users.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'کاربر '.$request->input('name').' باموفقیت ایجاد شد.',
+            'icon' => 'success',
+        ]);
     }
 
     public function edit($id)
     {
-        $user = USer::find($id);
+        $user = User::find($id);
 
-        return view('panel.users.edit', ['user' => $user]);
+        return view('panel.users.edit', [
+            'user' => $user,
+        ]);
     }
 
-    public function update(UserUpdateRequest $request, $id)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $user = USer::find($id);
-
         $user->update($request->all());
 
-        return to_route('admin.users.index');
+        return to_route('admin.users.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'کاربر '.$request->input('name').' باموفقیت ویرایش شد.',
+            'icon' => 'success',
+        ]);
     }
 
-    public function trash()
+    public function destroy(User $user)
     {
-        $users = User::onlyTrashed()->latest()->paginate(1);
-        return view('panel.users.trash', ['users' => $users]);
-
-    }
-
-    public function delete($id)
-    {
-        $user = User::find($id);
-        if($user)
-        {
-            $user->delete();
-        }
+        $user->delete();
 
         return to_route('admin.users.index');
     }
 
-    public function restore($id)
+    public function restore(User $user)
     {
-        $user = User::withTrashed()->find($id);
         $user->restore();
-        return to_route('admin.users.trash');
+
+        return to_route('admin.users.index');
     }
 
-    public function deleteForce($id)
+    public function forceDelete(User $user)
     {
-        $user = User::withTrashed()->find($id);
+        $name = $user->name;
+
         $user->forceDelete();
+
+        return to_route('admin.users.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'کاربر '.$name.' باموفقیت حذف شد.',
+            'icon' => 'success',
+        ]);
     }
 
-    public function search(Request $request)
+    public function export()
     {
-        $query = $request->query('search');
-        $users = User::search($query);
-        $provinces = Province::all();
-        $cities = City::all();
-        return view('panel.users.index',  ['users' => $users, 'provinces' => $provinces, 'cities' => $cities]);
-    }
+        $previousUrl = URL::previous();
 
-    public function exportUsers()
-    {
-       $previousUrl = URL::previous();
+        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
 
-       $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+        parse_str($queryString, $queryParams); //output array query
 
-       parse_str($queryString, $queryParams);
 
-       $users = User::select('name', 'mobile', 'city_id', 'province_id', 'birthday')->with(['city.province']);
+        $users = User::query();
 
-        if (array_key_exists('search', $queryParams))
-        {
-            $search_item = $queryParams['search'];
-            $users->when($search_item, function ($query) use ($search_item) {
-                $query->where('name', 'LIKE', "%{$search_item}%")
-                        ->orWhere('mobile', 'LIKE', "%{$search_item}%");
-            });
+        if(array_key_exists('trashed', $queryParams)) {
+            $users->onlyTrashed();
         }
 
+        if(array_key_exists('search', $queryParams)) {
+            $users->search($queryParams['search']);
+        }
+
+        if(array_key_exists('city', $queryParams) && $queryParams['city'] != 'all') {
+
+            $users->where('city_id', $queryParams['city']);
+        }
 
         $users = $users->get();
+
 
         $response = Excel::download(new ExportUsers($users), 'users.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 

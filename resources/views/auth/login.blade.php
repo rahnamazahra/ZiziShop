@@ -7,7 +7,7 @@
 	<x-panel.div-section class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-image: url(assets/media/illustrations/sketchy-1/14.png">
 		<x-panel.div-section class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
 			<x-panel.div-section class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
-				<x-form.layout method="POST" action="{{ route('auth.login.verify') }}" class="form w-100" novalidate="novalidate" id="kt_sign_in_form" >
+				<x-form method="POST" :action="route('auth.login.verify')" class="form w-100" novalidate="novalidate" id="kt_sign_in_form" >
 
 					<x-panel.div-section class="text-center mb-10">
 				        <img alt="Logo" src="{{ asset('/images/logo/logo.png') }}" class="h-80px mb-5" />
@@ -16,7 +16,7 @@
                         </x-panel.heading>
 					</x-panel.div-section>
 
-                    <x-panel.div-section class="mb-10 fv-row fv-plugins-icon-container">
+                    <x-panel.div-section class="fv-row fv-plugins-icon-container">
                         <x-form.label id="mobile">تلفن‌همراه</x-form.label>
                         <x-form.input type="mobile" id="name" name="mobile" class="form-control mb-2 input-just-number" value="{{ old('mobile') }}" autocomplete="off"/>
                         <x-form.input-error :messages="$errors->get('mobile')" class="mt-2" />
@@ -42,7 +42,7 @@
 						</x-panel.div-section>
 					</x-panel.div-section>
 
-				</x-form.layout>
+				</x-form>
 			</x-panel.div-section>
 		</x-panel.div-section>
 	</x-panel.div-section>

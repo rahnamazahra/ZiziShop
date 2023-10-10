@@ -30,7 +30,7 @@
                         <x-table.td>{{ $item->$key ?? '-' }}</x-table.td>
                     @endforeach
 
-                     @foreach($data  as $item)
+                    @foreach($data  as $item)
                         @if($item->files)
                         <x-table.td>
                             @foreach($item->files as $file)
@@ -46,7 +46,7 @@
                         @foreach ($actions as $action)
                             @if ($action['method'] == 'DELETE')
 
-                                <x-form.layout method="DELETE" :action="route($action['route'], ['id' => $item['id']])">
+                                <x-form.layout method="DELETE" :action="route($action['route'], $item)">
                                     <x-form.btn type="submit" class="btn-light btn-icon btn-bg-light btn-sm me-1" title="{{ $action['title'] }}">
                                         <x-svg.icon-svg icon='{{ $action["icon"] }}' />
                                     </x-form.btn>
@@ -54,7 +54,7 @@
 
                             @else
 
-                                <x-form.btn-a :href="route($action['route'], ['id' => $item['id']])" class="btn-light btn-icon btn-bg-light btn-sm me-1" title="{{ $action['title'] }}">
+                                <x-form.btn-a :href="route($action['route'], $item)" class="btn-light btn-icon btn-bg-light btn-sm me-1" title="{{ $action['title'] }}">
                                         <x-svg.icon-svg icon='{{ $action["icon"] }}' />
                                 </x-form.btn-a>
 

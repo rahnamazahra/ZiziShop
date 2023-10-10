@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 
-use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Controllers\Controller;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+
 use App\Providers\RouteServiceProvider;
-use App\Http\Requests\Auth\LoginRequest;
 
 
 class LoginController extends Controller
@@ -24,21 +26,30 @@ class LoginController extends Controller
 
         $credentials = $request->only('mobile', 'password');
 
-        if (Auth::attempt($credentials))
-        {
+        if (Auth::attempt($credentials)) {
+
             $user = Auth::user();
 
             $request->session()->regenerate();
 
-            if ($user->isAdmin($user->id))
-            {
-                return redirect()->intended(RouteServiceProvider::MANAGMENT);
+            if ($user->isAdmin($user->id)) {
+
+                return redirect()->intended(RouteServiceProvider::MANAGMENT)->with('swal', [
+                    'title' => 'موفقیت‌آمیز!',
+                    'message' => 'به پنل مدیریتی فروشگاه خوش‌آمدید',
+                    'icon' => 'success',
+                ]);
+
             }
 
             return redirect()->intended(RouteServiceProvider::HOME);
 
         } else {
-            return redirect()->back()->with('error', 'موبایل یا رمزعبور اشتباه می باشد.');
+            return redirect()->back()->with('swal', [
+                    'title' => 'خطا!',
+                    'message' => 'موبایل یا رمزعبور اشتباه می باشد.',
+                    'icon' => 'error',
+            ]);
         }
 
     }

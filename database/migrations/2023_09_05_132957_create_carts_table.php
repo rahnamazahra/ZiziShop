@@ -12,9 +12,9 @@ return new class extends Migration
         Schema::create('cart', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('product_id')->constrained();
-            $table->unsignedInteger('quantity');
-            $table->unsignedBigInteger('price');
+            $table->foreignId('address_id')->nullable();
+            // referece
+            // voucher
             $table->timestamps();
         });
     }

@@ -13,14 +13,15 @@ return new class extends Migration
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->unsignedInteger('discount');
-            $table->unsignedInteger('post_discount');
-            $table->unsignedInteger('mininum_purchase_total');
-            $table->unsignedInteger('maximum_discount');
-            $table->unsignedInteger('maximum_post_discount');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->unsignedInteger('shipping_discount');
+            $table->unsignedInteger('mininum_purchase_total')->nullable();
+            $table->unsignedInteger('maximum_discount')->nullable();
+            $table->unsignedInteger('maximum_shipping_discount')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->unsignedInteger('remaining')->default(1);
             $table->softDeletes();
             $table->timestamps();
 

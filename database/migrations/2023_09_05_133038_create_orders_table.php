@@ -12,10 +12,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->date('order_date');
-            $table->foreignId('address_id')->constrained();
-            $table->string('order_status')->default('preparing');
-            $table->string('payment_status');
+            // payment_id
+            // voucher_id
+            // shipping_fee
+            // total
+            // address text
+            // confirmed_at
+            // prepared_at
+            // shipped_at
             $table->timestamps();
         });
     }

@@ -10,8 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('existing', function (Blueprint $table) {
-            $table->id();
-            $table->string('mobile');
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('product_id')->constrained();
         });
     }

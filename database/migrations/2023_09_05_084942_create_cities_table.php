@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('province_id')->constrained();
+            $table->unsignedInteger('shipping_fee');
         });
     }
 

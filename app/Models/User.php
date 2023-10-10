@@ -28,8 +28,6 @@ class User extends Authenticatable
         'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
         'birthday' => JalaliDate::class,
-        'province_id' => provinceName::class,
-        'city_id' => cityName::class,
     ];
 
     public function file(): MorphOne
@@ -52,9 +50,17 @@ class User extends Authenticatable
         return $this->belongsTo(City::class);
     }
 
-    public function province():BelongsTo
+    public function province()
     {
-        return $this->belongsTo(Province::class);
+        // little bit hacky
+        return $this->hasOneThrough(
+            Province::class,
+            City::class,
+            'id',
+            'id',
+            'city_id',
+            'province_id',
+        );
     }
 
     public function isAdmin($userId)
@@ -67,12 +73,7 @@ class User extends Authenticatable
 
     public static function search($query)
     {
-        return self::whereNull('deleted_at')
-               ->where('name', 'like', "%$query%")
-               ->orWhere('mobile', 'like', "%$query%")
-               ->select(['id', 'name', 'mobile', 'birthday', 'province_id', 'city_id'])
-               ->orderBy('id', 'DESC')
-               ->paginate(15)
-               ->withQueryString();
+        return $query->where('name', 'like', "%$query%")
+               ->orWhere('mobile', 'like', "%$query%");
     }
 }

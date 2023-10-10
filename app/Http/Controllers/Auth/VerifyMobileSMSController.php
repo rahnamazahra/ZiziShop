@@ -24,19 +24,30 @@ class VerifyMobileSMSController extends Controller
         ]);
 
         $verificationCode = $request->input('verification_code');
+
         $storedCode = Session::get('verification_code');
 
         if ($verificationCode === $storedCode) {
+
             Session::forget('verification_code');
 
             $user = User::where('mobile', $request->input('mobile'))->first();
 
             if ($user) {
                 Auth::login($user);
-                return redirect(RouteServiceProvider::MANAGMENT);
+
+                return redirect(RouteServiceProvider::MANAGMENT)->with('swal', [
+                    'title' => 'موفقیت‌آمیز!',
+                    'message' => 'به پنل مدیریتی فروشگاه خوش‌آمدید',
+                    'icon' => 'success',
+                ]);
 
             } else {
-                return redirect()->back()->with('error', 'شماره موبایل شما ثبت نشده است.');
+                return redirect()->back()->with('swal', [
+                    'title' => 'خطا!',
+                    'message' => 'شماره موبایل شما ثبت نشده است.',
+                    'icon' => 'error',
+                ]);
             }
 
         } else {

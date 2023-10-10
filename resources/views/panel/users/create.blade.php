@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <x-form.layout method="POST" :action="route('admin.users.store')">
+    <x-form method="POST" :action="route('admin.users.store')">
         <x-panel.card>
 
             <x-panel.card-header>
@@ -47,13 +47,18 @@
 
             <x-panel.card-footer>
                 <x-panel.div-section class="d-flex justify-content-end">
-                    <x-form.btn-a :href="route('admin.users.index')" class="btn-light me-3" title="لغو" />
+
+                    <x-form.btn-a :href="route('admin.users.index')" class="btn-light me-3" title="لغو">
+                        لغو
+                    </x-form.btn-a>
+
                     <x-form.btn type="submit" class="btn-primary" title="ثبت">
                         ثبت
                     </x-form.btn>
+
                 </x-panel.div-section>
             </x-panel.card-footer>
 
         </x-panel.card>
-    </x-form.layout>
+    </x-form>
 @endsection
