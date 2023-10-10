@@ -17,6 +17,12 @@
                     <x-svg.icon-svg icon='filter' />
                 </x-form.btn>
 
+                @if (count(request()->query()) > 0)
+                    <x-form.btn-a :href="route('admin.users.index')" class="btn-light-primary" title="حذف فیلتر">
+                        حذف فیلتر
+                    </x-form.btn-a>
+                @endif
+
             </x-panel.card-title>
 
             <x-panel.card-toolbar>
@@ -30,7 +36,7 @@
                     <x-svg.icon-svg icon="export" />
                 </x-form.btn-a>
 
-                @if(request()->has('trashed'))
+                @if (request()->has('trashed'))
                     <x-form.btn-a :href="route('admin.users.index')" class="btn-light" title="برگشت">
                         <x-svg.icon-svg icon="back" />
                     </x-form.btn-a>
@@ -80,12 +86,6 @@
 
                         <x-panel.div-section class="col-md-1">
                             <x-form.btn type="submit" class="btn btn-sm btn-primary" title="جست‌وجو">جست‌و‌جو</x-form.btn>
-                        </x-panel.div-section>
-
-                        <x-panel.div-section class="col-md-1">
-                            <x-panel.link :href="route('admin.users.index')" title="حذف فیلتر">
-                                حذف فیلتر
-                            </x-panel.link>
                         </x-panel.div-section>
 
                     </x-panel.div-section>

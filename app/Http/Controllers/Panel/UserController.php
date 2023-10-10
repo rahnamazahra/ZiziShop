@@ -35,6 +35,13 @@ class UserController extends Controller
             $users->where('city_id', $request->input('city'));
         }
 
+        if ($request->has('province') && $request->input('province') != 'all') {
+
+            $users->whereHas('city', function ($query) use ($request) {
+                $query->where('province_id', $request->input('province'));
+            });
+        }
+
         $users = $users->paginate(15);
 
         return view('panel.users.index', [

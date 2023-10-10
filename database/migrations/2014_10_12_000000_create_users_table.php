@@ -16,7 +16,6 @@ return new class extends Migration
             $table->datetime('mobile_verified_at')->nullable();
             $table->string('password');
             $table->date('birthday')->nullable();
-            $table->foreignId('province_id')->nullable();
             $table->foreignId('city_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

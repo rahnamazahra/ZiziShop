@@ -71,9 +71,9 @@ class User extends Authenticatable
         return $roles->count() > 0;
     }
 
-    public static function search($query)
+    public static function scopeSearch($query, $search)
     {
-        return $query->where('name', 'like', "%$query%")
-               ->orWhere('mobile', 'like', "%$query%");
+        return $query->where('name', 'like', "%$search%")
+               ->orWhere('mobile', 'like', "%$search%");
     }
 }

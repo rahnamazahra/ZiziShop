@@ -24,7 +24,7 @@
 
                 <x-panel.menu-item href="{{ route('admin.dashboard') }}" route="admin.dashboard" icon="dashbord" title="داشبورد‌"/>
 
-                <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت کاربران سیستم"/>
+                <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت کاربران"/>
 
                 <x-panel.menu-item href="{{ route('admin.categories.index') }}" route="admin.categories.index" icon="category" title="مدیریت دسته‌بندی"/>
 
