@@ -30,9 +30,9 @@ class User extends Authenticatable
         'birthday' => JalaliDate::class,
     ];
 
-    public function file(): MorphOne
+    public function image(): MorphOne
     {
-        return $this->morphOne(File::class, 'fileable');
+        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function roles(): BelongsToMany

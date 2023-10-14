@@ -36,6 +36,7 @@
             <x-table>
                 <x-tr>
                     <x-th>ردیف</x-th>
+                    <x-th>عکس</x-th>
                     <x-th>نام</x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
@@ -45,13 +46,14 @@
 
                     <x-tr>
                         <x-td>{{ $category->id ?? '-' }}</x-td>
+                        <x-td><image src="{{ $category->image_url }}" class="img-thumbnail rounded w-150px h-150px" /></x-td>
                         <x-td>{{ $category->name ?? '-' }}</x-td>
 
                         <x-td>
 
                             <div class="btn-group me-2" role="group" aria-label="First group">
 
-                            @if($user->trashed())
+                            @if($category->trashed())
                                 <x-form method="POST" :action="route('admin.categories.force-delete', $category)">
                                     <x-delete-button />
                                 </x-form>

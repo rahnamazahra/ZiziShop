@@ -3,13 +3,15 @@
 @section('title', 'دسته‌بندی')
 
 @section('breadcrumb')
-    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'دسته‌بندی' => route('admin.categories.index'), 'ویرایش دسته‌بندی' => route('admin.categories.edit', ['id' => $category->id])]" title='دسته‌بندی' />
+    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'دسته‌بندی' => route('admin.categories.index'), 'ویرایش دسته‌بندی' => route('admin.categories.edit', ['category' => $category])]" title='دسته‌بندی' />
 @endsection
 
 @section('content')
-    <x-form.layout method="PATCH" :action="route('admin.categories.update', ['id' => $category->id])" enctype='multipart/form-data' id="add_category_form" class="form d-flex flex-column flex-lg-row fv-plugins-bootstrap5 fv-plugins-framework">
+    <form method="POST" action="{{ route('admin.categories.update', ['category' => $category]) }}" enctype='multipart/form-data' class="form d-flex flex-column flex-lg-row fv-plugins-bootstrap5 fv-plugins-framework">
+        @csrf
+        @method('PATCH')
 
-        <x-panel.div-section class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+        <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
 
             <x-panel.card class="card-flush py-4">
                 <x-panel.card-header>
@@ -19,52 +21,39 @@
                 </x-panel.card-header>
 
                 <x-panel.card-body>
-                    <x-panel.div-section class="image-input image-input-empty image-input-outline mb-3" data-kt-image-input="true" style="background-image: url('')">
+                    <div class="image-input image-input-empty image-input-outline mb-3" data-kt-image-input="true" style="background-image: url('')">
 
                         @if($image)
-                            <x-panel.div-section class="image-input-wrapper w-250px h-250px" style="background-image: url('{{ asset('/upload/'. $image) }}')"></x-panel.div-section>
+                            <div class="image-input-wrapper w-250px h-250px" style="background-image: url('{{ $category->image_url }}')"></div>
 
                         @else
-                            <x-panel.div-section class="image-input-wrapper w-250px h-250px" style="background-image: url('{{ asset('') }}')"></x-panel.div-section>
+                            <div class="image-input-wrapper w-250px h-250px" style="background-image: url('{{ asset('') }}'); background-position: fixed;"></div>
                         @endif
 
-                        <x-form.label id="image" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="" data-bs-original-title="افزودن عکس">
-                            <i class="bi bi-pencil-fill fs-7"></i>
-                            <x-form.input type="file" name="image" accept=".png, .jpg, .jpeg"  value="{{ old('image') }}"/>
+                        <x-form.label id="image" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="" data-bs-original-title="ویرایش عکس">
+
+                            <span class="svg-icon svg-icon-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3"d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"></path>
+                                    <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z"fill="currentColor"></path>
+                                </svg>
+                            </span>
+
+                            <input type="file" name="image" accept=".jpg, .jpeg" />
+
                         </x-form.label>
 
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="text-muted fs-7" dir="ltr"> *.png, *.jpg , *.jpeg </x-panel.div-section>
-
-                </x-panel.card-body>
-            </x-panel.card>
-
-            <x-panel.card class="card-flush py-4">
-
-                <x-panel.card-header>
-                    <x-panel.card-title class="card-title">
-                        <x-panel.heading level="2">وضعیت</x-panel.heading>
-                    </x-panel.card-title>
-
-                    <div class="card-toolbar">
-                        <div class="rounded-circle @if($category->status) bg-success @else bg-danger @endif w-15px h-15px" id="kt_ecommerce_add_category_status"></div>
                     </div>
-                </x-panel.card-header>
 
-                <x-panel.card-body>
-                    <select name="status" class="form-select mb-2 select2-hidden-accessible" data-control="select2" data-hide-search="true" data-placeholder="Select an option" id="kt_ecommerce_add_category_status_select" data-select2-id="select2-data-kt_ecommerce_add_category_status_select" tabindex="-1" aria-hidden="true">
-                        <option></option>
-                        <option value="1" @if($category->status) selected="selected" @endif data-select2-id="select2-data-11-c0ii">انتشار</option>
-                        <option value="0" @unless($category->status) selected="selected" @endunless>عدم انتشار</option>
-                    </select>
+                    <div class="text-muted fs-7" dir="ltr"> *.png, *.jpg , *.jpeg </div>
+
                 </x-panel.card-body>
-
             </x-panel.card>
-        </x-panel.div-section>
+
+        </div>
 
 
-        <x-panel.div-section class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+        <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
 
             <x-panel.card class="card-flush py-4">
                 <x-panel.card-header>
@@ -74,31 +63,37 @@
                 </x-panel.card-header>
 
                 <x-panel.card-body>
-                    <x-panel.div-section class="mb-10 fv-row fv-plugins-icon-container">
+                    <div class="mb-10 fv-row fv-plugins-icon-container">
                         <x-form.label id="name" class="required">نام دسته بندی</x-form.label>
                         <x-form.input type="text" id="name" name="name" class="form-control mb-2" value="{{ old('name', $category->name) }}" />
                         <x-form.input-error :messages="$errors->get('name')" class="mt-2" />
-                    </x-panel.div-section>
+                    </div>
 
-                    <x-panel.div-section>
-                        <x-form.label id="description">توضیحات</x-form.label>
-                        <x-form.textarea rows="3" id="description" name="description">
+                    <div class="mb-10 fv-row fv-plugins-icon-container">
+                        <x-form.label id="slug">slug</x-form.label>
+                        <x-form.input type="text" id="slug" name="slug" class="form-control mb-2" value="{{ old('slug', $category->slug) }}" />
+                        <x-form.input-error :messages="$errors->get('slug')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <label for="description">توضیحات</label>
+                        <textarea id="description" name="description">
                             {{ old('description', $category->description) }}
-                        </x-form.textarea>
-                    </x-panel.div-section>
+                        </textarea>
+                    </div>
                 </x-panel.card-body>
             </x-panel.card>
 
-            <x-panel.div-section class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end">
                 <a href="../../demo1/dist/apps/ecommerce/catalog/products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">لفو</a>
                 <x-form.btn type="submit" id="kt_ecommerce_add_category_submit" class="btn btn-primary" title="ثبت">
                     <x-panel.span>ثبت</x-panel.span>
                 </x-form.btn>
-            </x-panel.div-section>
+            </div>
 
-        </x-panel.div-section>
+        </div>
 
-    </x-form.layout>
+    </form>
 @endsection
 
 @section('custom-scripts')

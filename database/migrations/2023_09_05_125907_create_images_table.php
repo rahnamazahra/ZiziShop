@@ -8,12 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->text('path');
-            $table->unsignedInteger('size');
-            $table->string('mime_type');
-            $table->morphs('model');
+            $table->morphs('imageable');
         });
     }
 };

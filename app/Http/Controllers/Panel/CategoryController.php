@@ -9,6 +9,7 @@ use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
 use App\Models\Category;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -18,13 +19,12 @@ class CategoryController extends Controller
         $categories = Category::query();
 
         if ($request->has('search')){
-            $categories->search($request->quesry('search'));
+            $categories->search($request->query('search'));
         }
 
-         $categories = $categories->paginate(1);
 
         return view('panel.categories.index', [
-            'categories' => $categories
+            'categories' => $categories->paginate(1)
         ]);
     }
 
@@ -39,14 +39,27 @@ class CategoryController extends Controller
         $category = Category::make($request->except(['slug', 'image']));
 
         if (!$request->input('slug')){
-            $slug = Str::slug($category->name);
+
+            $slug = Str::slug($category->name, language: null);
+
             $category->slug = $category->generateUniqueSlug($slug);
 
+        }
+        else{
+            $category->slug = $request->input('slug');
         }
 
         $category->save();
 
-        $category->uploadImage($request->file('image'));
+        if($request->file('image'))
+        {
+            $image_url = $request->file('image')->store('images/category', 'public');
+
+            $category->image()->create([
+                'path' => $image_url,
+            ]);
+
+        }
 
         return to_route('admin.categories.index');
     }
@@ -56,21 +69,42 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        $image = $category->files->pluck('path')->first();
+        $image = $category->image->pluck('path')->first();
 
         return view('panel.categories.edit', ['category' => $category, 'image' => $image]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
 
-        $category = Category::find($id);
+        $category->fill($request->except(['slug', 'image']));
 
-        $category->update($request->except(['image']));
+        if (!$request->input('slug')){
 
-        $category->deleteImage($request->file('image'));
+            $slug = Str::slug($category->name, language: null);
 
-        $category->uploadImage($request->file('image'));
+            $category->slug = $category->generateUniqueSlug($slug);
+
+        }
+        else{
+            $category->slug = $request->input('slug');
+        }
+
+        $category->update();
+
+        if($request->hasFile('image'))
+        {
+            if($category->image_url){
+                Storage::disc('public')->delete($category->image_url);
+            }
+
+            $image_url = $request->file('image')->store('images/category', 'public');
+
+            $category->image()->create([
+                'path' => $image_url,
+            ]);
+
+        }
 
         return to_route('admin.categories.index');
     }
@@ -80,30 +114,31 @@ class CategoryController extends Controller
 
     }
 
-      public function delete($id)
+     public function destroy(Category $category)
     {
-        $category = Category::find($id);
-        if($category)
-        {
-            $category->delete();
-        }
+        $category->delete();
 
         return to_route('admin.categories.index');
     }
 
-    public function restore($id)
+    public function restore(Category $category)
     {
+        $category->restore();
 
+        return to_route('admin.categories.index');
     }
 
-    public function deleteForce($id)
+    public function forceDelete(Category $category)
     {
+        $name = $category->name;
 
-    }
+        $category->forceDelete();
 
-    public function search(Request $request)
-    {
-
+        return to_route('admin.categories.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'دسته‌بندی '.$name.' باموفقیت حذف شد.',
+            'icon' => 'success',
+        ]);
     }
 
     public function export()
