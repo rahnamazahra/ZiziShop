@@ -11,11 +11,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            // user
-            // amount
-            // gateway
-            // tracking code
-            // card number
+            $table->foreignId('user_id');
+            $table->unsignedBigInteger('amount');
+            $table->string('gateway');
+            $table->string('tracking code');
+            $table->string('card number');
             $table->timestamps();
         });
     }

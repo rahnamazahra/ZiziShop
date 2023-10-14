@@ -22,5 +22,15 @@ class Category extends Model
         return $this->morphMany(File::class, 'model');
     }
 
-    
+    public static function scopeSearch($query, $search)
+    {
+        return $query->where('name', 'like', "%$search%");
+    }
+
+    protected static function generateUniqueSlug($id, $slug)
+    {
+        return "{$slug}-" . $id;
+    }
+
+
 }

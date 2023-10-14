@@ -3,16 +3,29 @@
 namespace App\Http\Controllers\panel;
 
 use App\Http\Controllers\Controller;
+
+use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
+
 use App\Models\Category;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::select(['id', 'name'])->paginate(1);
-        return view('panel.categories.index', ['categories' => $categories]);
+        $categories = Category::query();
+
+        if ($request->has('search')){
+            $categories->search($request->quesry('search'));
+        }
+
+         $categories = $categories->paginate(1);
+
+        return view('panel.categories.index', [
+            'categories' => $categories
+        ]);
     }
 
     public function create()
@@ -20,11 +33,17 @@ class CategoryController extends Controller
         return view('panel.categories.create');
     }
 
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        $category = Category::create($request->except(['image']));
-        $slug = Str::slug($request->input('name'));
-        $category->slug = $slug;
+
+        $category = Category::make($request->except(['slug', 'image']));
+
+        if (!$request->input('slug')){
+            $slug = Str::slug($category->name);
+            $category->slug = $category->generateUniqueSlug($slug);
+
+        }
+
         $category->save();
 
         $category->uploadImage($request->file('image'));
@@ -32,10 +51,6 @@ class CategoryController extends Controller
         return to_route('admin.categories.index');
     }
 
-    public function show(string $id)
-    {
-        //
-    }
 
     public function edit($id)
     {

@@ -12,14 +12,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            // payment_id
-            // voucher_id
-            // shipping_fee
-            // total
-            // address text
-            // confirmed_at
-            // prepared_at
-            // shipped_at
+            $table->foreignId('payment_id')->constrained();
+            $table->foreignId('voucher_id')->constrained();
+            $table->unsignedBigInteger('shipping_fee');
+            $table->unsignedBigInteger('total')->default(0);
+            $table->text('address text');
+            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('prepared_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
             $table->timestamps();
         });
     }

@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <x-form.layout method="POST" :action="route('admin.products.store')" enctype='multipart/form-data' id="add_product_form" class="form d-flex flex-column flex-lg-row fv-plugins-bootstrap5 fv-plugins-framework">
+    <x-form method="POST" :action="route('admin.products.store')" enctype='multipart/form-data' id="add_product_form" class="form d-flex flex-column flex-lg-row fv-plugins-bootstrap5 fv-plugins-framework">
 
         <x-panel.div-section class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
 
@@ -444,7 +444,7 @@
 
         <x-panel.div-section></x-panel.div-section>
 
-    </x-form.layout>
+    </x-form>
 @endsection
 
 @section('custom-scripts')

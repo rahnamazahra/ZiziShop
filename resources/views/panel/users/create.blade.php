@@ -32,7 +32,7 @@
 
                     <x-panel.div-section class="col-md-6">
                         <x-form.label id="password" class="required">رمزعبور</x-form.label>
-                        <x-form.input type="text" name="password" value="{{ old('password') }}"/>
+                        <x-form.input type="password" name="password" value="{{ old('password') }}"/>
                         <x-form.input-error :messages="$errors->get('password')" class="mt-2" />
                     </x-panel.div-section>
 

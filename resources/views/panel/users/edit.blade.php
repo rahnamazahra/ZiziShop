@@ -19,13 +19,13 @@
             <x-panel.card-body>
                 <x-panel.row>
                     <x-panel.div-section class="col-md-6">
-                        <x-form.label id="name" class="required" label="نام"/>
+                        <x-form.label id="name" class="required">نام</x-form.label>
                         <x-form.input type="text" name="name" value="{{ old('name' , $user->name) }}"/>
                         <x-form.input-error :messages="$errors->get('name')" class="mt-2" />
                     </x-panel.div-section>
 
                     <x-panel.div-section class="col-md-6">
-                        <x-form.label id="mobile" class="required" label="شماره موبایل"/>
+                        <x-form.label id="mobile" class="required">شماره موبایل</x-form.label>
                         <x-form.input type="text" name="mobile" value="{{ old('mobile', $user->mobile) }}"/>
                         <x-form.input-error :messages="$errors->get('mobile')" class="mt-2" />
                     </x-panel.div-section>
