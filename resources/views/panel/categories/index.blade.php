@@ -12,13 +12,6 @@
 
             <x-panel.card-title>
                 <x-panel.search :action="route('admin.categories.index', ['search'])" />
-
-                @if (count(request()->query()) > 0)
-                    <x-form.btn-a :href="route('admin.categories.index')" class="btn-light-primary" title="حذف فیلتر">
-                        حذف فیلتر
-                    </x-form.btn-a>
-                @endif
-
             </x-panel.card-title>
 
             <x-panel.card-toolbar>
@@ -49,8 +42,7 @@
             <x-table>
                 <x-tr>
                     <x-th>ردیف</x-th>
-                    <x-th>عکس</x-th>
-                    <x-th>نام</x-th>
+                    <x-th></x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
 
@@ -59,8 +51,18 @@
 
                     <x-tr>
                         <x-td>{{ $category->id ?? '-' }}</x-td>
-                        <x-td><image src="{{ $category->image_url }}" class="img-thumbnail rounded w-150px h-150px" /></x-td>
-                        <x-td>{{ $category->name ?? '-' }}</x-td>
+                        <x-td>
+                            <div class="d-flex align-items-center">
+
+                                <span class="symbol symbol-50px">
+                                    <span class="symbol-label" style="background-image:url('{{ $category->image_url }}');"></span>
+                                </span>
+
+                                <div class="ms-5">
+                                    <span class="text-gray-800 fs-5 fw-bolder" data-kt-ecommerce-product-filter="product_name">{{ $category->name ?? '-' }}</span>
+                                </div>
+                            </div>
+                        </x-td>
 
                         <x-td>
 
