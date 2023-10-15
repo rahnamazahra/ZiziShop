@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Panel;
 
-use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
-
-use App\Exports\ExportUsers;
+use Illuminate\Support\Facades\URL;
 
 use Maatwebsite\Excel\Facades\Excel;
 
+use App\Exports\ExportUsers;
+
 use App\Models\{City, Role, User, Province};
 
-use App\Http\Requests\panel\{UserStoreRequest, UserUpdateRequest};
 use App\Http\Controllers\Controller;
+use App\Http\Requests\panel\{UserStoreRequest, UserUpdateRequest};
 
 
 class UserController extends Controller

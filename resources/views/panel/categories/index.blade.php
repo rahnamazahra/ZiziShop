@@ -12,6 +12,13 @@
 
             <x-panel.card-title>
                 <x-panel.search :action="route('admin.categories.index', ['search'])" />
+
+                @if (count(request()->query()) > 0)
+                    <x-form.btn-a :href="route('admin.categories.index')" class="btn-light-primary" title="حذف فیلتر">
+                        حذف فیلتر
+                    </x-form.btn-a>
+                @endif
+
             </x-panel.card-title>
 
             <x-panel.card-toolbar>
@@ -25,9 +32,15 @@
                     <x-svg.icon-svg icon="export" />
                 </x-form.btn-a>
 
-                <x-form.btn-a :href="route('admin.categories.index', ['trashed'])" class="btn-light" title="سطل‌زباله">
-                    <x-svg.icon-svg icon="delete" />
-                </x-form.btn-a>
+                @if (request()->has('trashed'))
+                    <x-form.btn-a :href="route('admin.categories.index')" class="btn-light" title="برگشت">
+                        <x-svg.icon-svg icon="back" />
+                    </x-form.btn-a>
+                @else
+                    <x-form.btn-a :href="route('admin.categories.index', ['trashed'])" class="btn-light" title="سطل‌زباله">
+                        <x-svg.icon-svg icon="delete" />
+                    </x-form.btn-a>
+                @endif
 
             </x-panel.card-toolbar>
         </x-panel.card-header>
@@ -53,7 +66,7 @@
 
                             <div class="btn-group me-2" role="group" aria-label="First group">
 
-                            @if($category->trashed())
+                             @if($category->trashed())
                                 <x-form method="POST" :action="route('admin.categories.force-delete', $category)">
                                     <x-delete-button />
                                 </x-form>

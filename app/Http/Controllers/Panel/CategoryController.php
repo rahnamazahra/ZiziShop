@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\panel;
 
+use App\Exports\ExportCategories;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\URL;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
 
@@ -18,13 +22,18 @@ class CategoryController extends Controller
     {
         $categories = Category::query();
 
+        if ($request->has('trashed')) {
+            $categories->onlyTrashed();
+        }
+
         if ($request->has('search')){
             $categories->search($request->query('search'));
         }
 
+        $categories = $categories->paginate(1);
 
         return view('panel.categories.index', [
-            'categories' => $categories->paginate(1)
+            'categories' => $categories
         ]);
     }
 
@@ -109,12 +118,8 @@ class CategoryController extends Controller
         return to_route('admin.categories.index');
     }
 
-    public function trash()
-    {
 
-    }
-
-     public function destroy(Category $category)
+    public function destroy(Category $category)
     {
         $category->delete();
 
@@ -130,6 +135,7 @@ class CategoryController extends Controller
 
     public function forceDelete(Category $category)
     {
+
         $name = $category->name;
 
         $category->forceDelete();
@@ -143,6 +149,32 @@ class CategoryController extends Controller
 
     public function export()
     {
+        $previousUrl = URL::previous();
+
+        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+
+        parse_str($queryString, $queryParams); //output array query
+
+
+        $categories= Category::query();
+
+        if(array_key_exists('trashed', $queryParams)) {
+            $categories->onlyTrashed();
+        }
+
+        if(array_key_exists('search', $queryParams)) {
+            $categories->search($queryParams['search']);
+        }
+
+
+        $categories = $categories->get();
+
+
+        $response = Excel::download(new ExportCategories($categories), 'categories.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        ob_end_clean();
+
+        return $response;
 
     }
 }
