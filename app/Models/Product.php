@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -40,17 +42,26 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'favorites');
     }
 
-    public function uploadImage($images):void
-    {
-        if ($images)
-        {
-            $storage_dir = '/products';
-
-        }
-    }
-
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function generateUniqueSlug($slug)
+    {
+        $count = 2;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$slug}-" . $count++;
+        }
+
+        return $slug;
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Storage::disk('public')->url($this->image->path),
+        );
     }
 }

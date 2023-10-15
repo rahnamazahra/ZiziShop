@@ -23,7 +23,7 @@
                 <x-panel.card-body>
                     <div class="image-input image-input-empty image-input-outline mb-3" data-kt-image-input="true" style="background-image: url('')">
 
-                        @if($image)
+                        @if($category->image_url)
                             <div class="image-input-wrapper w-250px h-250px" style="background-image: url('{{ $category->image_url }}')"></div>
 
                         @else

@@ -31,8 +31,8 @@ Route::controller(ProductController::class)->name('admin.')->group(function () {
 
 Route::name('admin.')->group(function () {
     Route::resource('users', UserController::class);
-    Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
+    Route::resource('categories', CategoryController::class)->scoped(['category' => 'slug']);
+    Route::resource('products', ProductController::class)->scoped(['product' => 'slug']);
 });
 
 

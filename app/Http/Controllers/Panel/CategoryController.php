@@ -74,13 +74,10 @@ class CategoryController extends Controller
     }
 
 
-    public function edit($id)
+    public function edit(Category $category)
     {
-        $category = Category::find($id);
 
-        $image = $category->image->pluck('path')->first();
-
-        return view('panel.categories.edit', ['category' => $category, 'image' => $image]);
+        return view('panel.categories.edit', ['category' => $category]);
     }
 
     public function update(Request $request, Category $category)
