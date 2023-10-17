@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Support\Facades\URL;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportProducts;
 
 class ProductController extends Controller
 {
@@ -15,26 +18,28 @@ class ProductController extends Controller
         $products = Product::query();
 
         if ($request->has('trashed')) {
+
            $products->onlyTrashed();
         }
 
-        if($request->has('search')){
+        if($request->has('search')) {
 
             $products->search($request->query('search'));
         }
 
-        if($request->has('is_published') && $request->input('is_published') != 'all'){
+        if($request->has('is_published') && $request->input('is_published') != 'all') {
 
            $products->publishStatusProducts($request->input('is_published'));
 
         }
 
-        if($request->has('is_healthy') && $request->input('is_healthy') != 'all'){
+        if($request->has('is_healthy') && $request->input('is_healthy') != 'all' ) {
 
             $products->healtystatusProducts($request->input('is_healthy'));
         }
 
-        if($request->has('category') && $request->input('category') != 'all'){
+        if($request->has('category') && $request->input('category') != 'all') {
+
             $products->where('category_id', $request->input('category'));
         }
 
@@ -60,7 +65,7 @@ class ProductController extends Controller
     {
         $product = Product::make($request->except(['features', 'tags', 'repeater_variety']));
 
-        if (!$request->input('slug')){
+        if (!$request->input('slug')) {
 
             $slug = Str::slug($product->name, language: null);
 
@@ -68,6 +73,7 @@ class ProductController extends Controller
 
         }
         else{
+
             $product->slug = $request->input('slug');
         }
 
@@ -75,15 +81,16 @@ class ProductController extends Controller
 
         $product->save();
 
-        if($request->tags){
+        if($request->tags) {
+
             $product->tags()->attach(Tag::findOrCreateFromRequest($request->tags));
         }
 
 
-        if ($request->input('repeater_variety'))
-        {
+        if ($request->input('repeater_variety')) {
 
             foreach ($request->input('repeater_variety') as $variety) {
+
                 $product->stocks()->create([
                     'product_id' => $product->id,
                     'color_id'   => $variety['color'],
@@ -127,7 +134,7 @@ class ProductController extends Controller
     {
         $product->fill($request->except(['features', 'tags', 'repeater_variety']));
 
-        if (!$request->input('slug')){
+        if (!$request->input('slug')) {
 
             $slug = Str::slug($product->name, language: null);
 
@@ -135,6 +142,7 @@ class ProductController extends Controller
 
         }
         else{
+
             $product->slug = $request->input('slug');
         }
 
@@ -142,7 +150,8 @@ class ProductController extends Controller
 
         $product->save();
 
-        if($request->tags){
+        if($request->tags) {
+
             $product->tags()->sync(Tag::findOrCreateFromRequest($request->tags));
         }
 
@@ -170,11 +179,66 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
+        return to_route('admin.products.index');
     }
 
-    public function uploads(Request $request)
+    public function restore(Product $product)
     {
-        //  $product->uploadImage($request->file('images'));
-        return response()->json(['response' => 'success']);
+        $product->restore();
+
+        return to_route('admin.products.index');
     }
+
+    public function forceDelete(Product $product)
+    {
+
+        //delete images
+
+        $product->tags()->delete();
+
+        $product->stocks()->delete();
+
+        $name = $product->name;
+
+        $product->forceDelete();
+
+        return to_route('admin.products.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'محصول '.$name.' باموفقیت حذف شد.',
+            'icon' => 'success',
+        ]);
+    }
+
+    public function export()
+    {
+        $previousUrl = URL::previous();
+
+        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+
+        parse_str($queryString, $queryParams); //output array query
+
+
+        $products= Product::query();
+
+        if(array_key_exists('trashed', $queryParams)) {
+            $products->onlyTrashed();
+        }
+
+        if(array_key_exists('search', $queryParams)) {
+            $products->search($queryParams['search']);
+        }
+
+
+        $products = $products->get();
+
+
+        $response = Excel::download(new ExportProducts($products), 'products.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        ob_end_clean();
+
+        return $response;
+
+    }
+
 }
