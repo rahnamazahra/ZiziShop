@@ -4,14 +4,10 @@ namespace App\Http\Controllers\panel;
 
 use App\Exports\ExportCategories;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\URL;
 use Maatwebsite\Excel\Facades\Excel;
-
 use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
-
 use App\Models\Category;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,14 +19,16 @@ class CategoryController extends Controller
         $categories = Category::query();
 
         if ($request->has('trashed')) {
+
             $categories->onlyTrashed();
         }
 
-        if ($request->has('search')){
+        if ($request->has('search')) {
+
             $categories->search($request->query('search'));
         }
 
-        $categories = $categories->paginate(1);
+        $categories = $categories->paginate(15);
 
         return view('panel.categories.index', [
             'categories' => $categories
@@ -78,6 +76,7 @@ class CategoryController extends Controller
     {
 
         return view('panel.categories.edit', ['category' => $category]);
+
     }
 
     public function update(Request $request, Category $category)

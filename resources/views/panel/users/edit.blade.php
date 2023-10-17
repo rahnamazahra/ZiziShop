@@ -3,7 +3,7 @@
 @section('title', 'کاربران')
 
 @section('breadcrumb')
-    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'کاربران' => route('admin.users.index'), 'ویرایش کاربر' => route('admin.users.create')]" title='کاربران' />
+    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'کاربران' => route('admin.users.index'), 'ویرایش کاربر' => '' ]" title='کاربران' />
 @endsection
 
 @section('content')

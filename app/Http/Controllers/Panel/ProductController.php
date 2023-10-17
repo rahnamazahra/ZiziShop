@@ -10,55 +10,94 @@ use App\Models\Category;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::paginate(10);
+        $products = Product::query();
 
-        return view('panel.products.index', ['products' => $products]);
+        if ($request->has('trashed')) {
+           $products->onlyTrashed();
+        }
+
+        if($request->has('search')){
+
+            $products->search($request->query('search'));
+        }
+
+        if($request->has('is_published') && $request->input('is_published') != 'all'){
+
+           $products->publishStatusProducts($request->input('is_published'));
+
+        }
+
+        if($request->has('is_healthy') && $request->input('is_healthy') != 'all'){
+
+            $products->healtystatusProducts($request->input('is_healthy'));
+        }
+
+        if($request->has('category') && $request->input('category') != 'all'){
+            $products->where('category_id', $request->input('category'));
+        }
+
+        $products = $products->paginate(15);
+
+        return view('panel.products.index', [
+            'categories' => Category::get(),
+            'products' => $products,
+        ]);
     }
 
     public function create()
     {
-       $categories = Category::get();
-       $colors     = Color::get();
-       $sizes      = Size::get();
-
-        return view('panel.products.create', ['categories' => $categories, 'colors' => $colors, 'sizes' => $sizes]);
+        return view('panel.products.create', [
+            'categories' => Category::get(),
+            'colors' => Color::get(),
+            'sizes' => Size::get(),
+        ]);
     }
 
 
     public function store(Request $request)
     {
+        $product = Product::make($request->except(['features', 'tags', 'repeater_variety']));
 
-        $product = Product::create($request->except(['tags', 'repeater_variety']));
+        if (!$request->input('slug')){
 
-        $slug = Str::slug($request->input('name'));
-        $product->slug = $slug;
-        $product->save();
+            $slug = Str::slug($product->name, language: null);
 
+            $product->slug = $product->generateUniqueSlug($slug);
 
-        $tags = explode('،', $request->input('tags'));
-
-        foreach ($tags as $tag) {
-           Tag::firstOrCreate(['title' => trim($tag)]);
+        }
+        else{
+            $product->slug = $request->input('slug');
         }
 
-        // $product->tags()->attach($tags);
+        $product->features = json_encode($request->input('features'));
+
+        $product->save();
+
+        if($request->tags){
+            $product->tags()->attach(Tag::findOrCreateFromRequest($request->tags));
+        }
 
 
         if ($request->input('repeater_variety'))
         {
-            // foreach ($request->input('repeater_variety') as $variety) {
-            //     $product->inventory->create([
-            //         'product_id' => $product->id,
-            //         'color_id'   => $variety['product_color'],
-            //         'size_id'    => $variety['product_size'],
-            //         'count'      => $variety['product_inventory']
-            //     ]);
-            // }
+
+            foreach ($request->input('repeater_variety') as $variety) {
+                $product->stocks()->create([
+                    'product_id' => $product->id,
+                    'color_id'   => $variety['color'],
+                    'size_id'    => $variety['size'],
+                    'count'      => $variety['product_inventory']
+                ]);
+            }
         }
 
-        return to_route('admin.products.index');
+        return to_route('admin.products.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'محصول '.$request->input('name').' باموفقیت ایجاد شد.',
+            'icon' => 'success',
+        ]);
     }
 
 
@@ -72,13 +111,60 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('panel.products.edit');
+        return view('panel.products.edit',[
+            'categories' => Category::get(),
+            'sizes' => Size::get(),
+            'colors' => Color::get(),
+            'product' => $product,
+            'varieties' => $product->stocks,
+            'tags' => $product->tags,
+            'features' => json_decode($product->features),
+        ]);
     }
 
 
     public function update(Request $request, Product $product)
     {
-        //
+        $product->fill($request->except(['features', 'tags', 'repeater_variety']));
+
+        if (!$request->input('slug')){
+
+            $slug = Str::slug($product->name, language: null);
+
+            $product->slug = $product->generateUniqueSlug($slug);
+
+        }
+        else{
+            $product->slug = $request->input('slug');
+        }
+
+        $product->features = json_encode($request->input('features'));
+
+        $product->save();
+
+        if($request->tags){
+            $product->tags()->sync(Tag::findOrCreateFromRequest($request->tags));
+        }
+
+
+        if ($request->input('repeater_variety'))
+        {
+            $product->stocks()->delete();
+
+            foreach ($request->input('repeater_variety') as $variety) {
+                $product->stocks()->create([
+                    'color_id'   => $variety['color'],
+                    'size_id'    => $variety['size'],
+                    'count'      => $variety['product_inventory']
+                ]);
+            }
+        }
+
+        return to_route('admin.products.index')->with('swal', [
+            'title' => 'موفقیت‌آمیز!',
+            'message' => 'محصول '.$request->input('name').' باموفقیت ویرایش شد.',
+            'icon' => 'success',
+        ]);
     }
 
     public function destroy(Product $product)

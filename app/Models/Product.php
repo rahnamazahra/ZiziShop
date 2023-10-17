@@ -8,33 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use PhpOffice\PhpSpreadsheet\Calculation\Engine\FormattedNumber;
 
 class Product extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'category_id', 'weight', 'width', 'Height', ' length', 'feature'];
+    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', ' length', 'feature'];
 
     public $timestamps = false;
 
-    protected $attributes = [
-        'is_healthy' => true,
-        'is_published' => true,
-    ];
-
-    public function Colors(): BelongsToMany
-    {
-        return $this->belongsToMany(Color::class);
-    }
-
-    public function Sizes(): BelongsToMany
-    {
-        return $this->belongsToMany(Size::class);
-    }
 
     public function Category(): BelongsTo
     {
-        return $this->belongsTo(SubCategory::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function favorites(): BelongsToMany
@@ -45,6 +32,16 @@ class Product extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
     }
 
     public function generateUniqueSlug($slug)
@@ -58,10 +55,69 @@ class Product extends Model
         return $slug;
     }
 
-    protected function imageUrl(): Attribute
+    public function tagsString(): Attribute
     {
         return Attribute::make(
-            get: fn() => Storage::disk('public')->url($this->image->path),
+            get: fn() => implode(', ', $this->tags()->pluck('name')->toArray()),
         );
+    }
+
+    public function statusHealtyLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->is_healthy ? 'سالم' : 'ایرادجزئی',
+        );
+    }
+
+    public function statusPublishedLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->is_published ? 'انتشار' : 'عدم انتشار',
+        );
+    }
+
+    public function priceLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => number_format($this->price) . ' تومان',
+        );
+    }
+
+    public function getRating(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->avg('rating'),
+        );
+    }
+
+    public function getCategory(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->category->name,
+        );
+    }
+
+
+    public static function scopeSearch($query, $search)
+    {
+        return $query->where('name', 'like', "%$search%")
+               ->orWhere('sku', 'like', "%$search%")
+               ->orWhere('barcode', 'like', "%$search%");
+    }
+
+    public static function scopePublishstatusProducts($query, $is_published)
+    {
+
+        return $query->where('is_published', $is_published);
+    }
+
+    public static function scopeHealtystatusProducts($query, $is_healthy)
+    {
+        return $query->where('is_healthy', $is_healthy);
+    }
+
+    public static function scopeFindProductCategory($query, $category)
+    {
+        return $query->where('category_id', $category);
     }
 }

@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Inventory extends Model
+class Stock extends Model
 {
-    protected $fillable = ['color_id', 'size_id', 'count'];
+    public $timestamps = false;
+
+    protected $fillable = ['product_id', 'color_id', 'size_id', 'count'];
+
 
 }

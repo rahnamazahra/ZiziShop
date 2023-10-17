@@ -41,7 +41,6 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
-                    <x-th>ردیف</x-th>
                     <x-th></x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
@@ -50,7 +49,6 @@
                 @forelse ($categories as $category)
 
                     <x-tr>
-                        <x-td>{{ $category->id ?? '-' }}</x-td>
                         <x-td>
                             <div class="d-flex align-items-center">
 
@@ -59,7 +57,7 @@
                                 </span>
 
                                 <div class="ms-5">
-                                    <span class="text-gray-800 fs-5 fw-bolder" data-kt-ecommerce-product-filter="product_name">{{ $category->name ?? '-' }}</span>
+                                    <span class="text-gray-800 fs-4 fw-bolder" data-kt-ecommerce-product-filter="product_name">{{ $category->name ?? '-' }}</span>
                                 </div>
                             </div>
                         </x-td>
