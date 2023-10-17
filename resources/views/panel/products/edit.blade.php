@@ -503,8 +503,8 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                <a href="../../demo1/dist/apps/ecommerce/catalog/products.html" id="dd_product_cancel" class="btn btn-light me-5">لفو</a>
-                <x-form.btn type="submit" id="_add_product_submit" class="btn btn-primary" title="ثبت">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-light me-5">لفو</a>
+                <x-form.btn type="submit" class="btn btn-primary" title="ثبت">
                     <x-panel.span>ثبت</x-panel.span>
                 </x-form.btn>
             </div>
