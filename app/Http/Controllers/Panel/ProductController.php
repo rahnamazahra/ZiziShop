@@ -14,17 +14,9 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::query();
+        // todo get laracasts video from ostaaaad
+        $products = $this->getProductsFromRequest($request);
 
-        if ($request->has('trashed')) {
-
-           $products->onlyTrashed();
-        }
-
-        if($request->has('search')) {
-
-            $products->search($request->query('search'));
-        }
 
         if($request->has('is_published') && $request->input('is_published') != 'all') {
 
@@ -37,16 +29,9 @@ class ProductController extends Controller
             $products->healtystatusProducts($request->input('is_healthy'));
         }
 
-        if($request->has('category') && $request->input('category') != 'all') {
-
-            $products->where('category_id', $request->input('category'));
-        }
-
-        $products = $products->paginate(15);
-
         return view('panel.products.index', [
             'categories' => Category::get(),
-            'products' => $products,
+            'products' => $products->paginate(15),
         ]);
     }
 
@@ -185,7 +170,7 @@ class ProductController extends Controller
 
     public function export(Request $request)
     {
-        $products= Product::query();
+        $products = Product::query();
 
         if($request->has('search')) {
 
@@ -215,6 +200,14 @@ class ProductController extends Controller
 
         return $response;
 
+    }
+
+    protected function getProductsFromRequest($request)
+    {
+        return Product::query()
+            ->when($request->trashed, fn ($q) => $q->onlyTrashed())
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->category));
     }
 
 }

@@ -71,7 +71,7 @@
                             <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
                                 <div class="text-gray-400 fs-7 me-2">دسته‌بندی</div>
                                 <select name="category" id="category" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="لطفا انتخاب کنید" tabindex="-1" aria-hidden="true">
-                                    <option @selected(request()->query('category') == 'all') value="all">همه</option>
+                                    <option @selected(! request()->filled('category')) value=" ">همه</option>
                                     @foreach($categories as $category)
                                         <option @selected(request()->query('category') == $category->id) value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach

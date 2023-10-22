@@ -6,6 +6,7 @@ use App\Exports\ExportCategories;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\URL;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as Types;
 use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -106,18 +107,11 @@ class CategoryController extends Controller
 
     public function export(Request $request)
     {
-        $categories = Category::query();
+        $categories = Category::query()
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->get();
 
-        if($request->input('search')) {
-
-            $categories->search($request->input('search'));
-        }
-
-        $categories = $categories->get();
-
-        $response = Excel::download(new ExportCategories($categories), 'categories.xlsx', \Maatwebsite\Excel\Excel::XLSX);
-
-        return $response;
+        return Excel::download(new ExportCategories($categories), 'categories.xlsx', Types::XLSX);
 
     }
 }
