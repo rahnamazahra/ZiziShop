@@ -3,7 +3,7 @@
 @section('title', 'محصول')
 
 @section('breadcrumb')
-    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'محصول' => route('admin.products.index'), 'ایجاد محصول' => route('admin.products.create')]" title='محصول' />
+    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'محصولات' => route('admin.products.index'), 'ایجاد محصول' => route('admin.products.create')]" title='محصول' />
 @endsection
 
 @section('content')
@@ -63,6 +63,8 @@
                         </a>
                     </div>
 
+                    <x-form.input-error :messages="$errors->get('category_id')" class="mt-2" />
+
                 </x-panel.card-body>
             </x-panel.card>
 
@@ -115,7 +117,7 @@
                                 </x-panel.card-body>
                             </x-panel.card>
 
-                            {{--  <x-panel.card class="card-flush py-4">
+                            <x-panel.card class="card-flush py-4">
                                 <x-panel.card-header>
                                     <x-panel.card-title>
                                         <x-panel.heading level="2">تصاویر</x-panel.heading>
@@ -125,24 +127,13 @@
                                 <x-panel.card-body>
                                     <div class="fv-row mb-2">
 
-                                        <div id="imagesDropzone" class="dropzone">
-                                            <div class="dz-message needsclick">
-
-                                                <x-svg.icon-svg icon="upload" class="svg-icon-3x svg-icon-primary"/>
-
-                                                <div class="ms-4">
-                                                    <x-panel.heading level="3" class="fs-5 fw-bolder text-gray-900 mb-1">فایل‌ها را اینجا رها کنید یا برای آپلود کلیک کنید.</div>
-                                                    <x-panel.span class="fs-7 fw-bold text-gray-400">انتخاب تا 10 عکس</x-panel.span>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                        <input type="file" name="images"  class="form-control" multiple>
                                     </div>
 
                                     <div class="text-muted fs-7">عکس‌های بیشتری برای محصول انتخاب نمایید.</div>
 
                                 </x-panel.card-body>
-                            </x-panel.card>  --}}
+                            </x-panel.card>
 
                             <div class="card card-flush py-4">
 
@@ -158,38 +149,14 @@
                                         <label for="price" class="required form-label">قیمت</label>
                                         <input type="text" name="price" id="price" class="form-control mb-2" placeholder="قیمت (ریال)" value="" />
                                         <div class="text-muted fs-7">قیمت محصول را وارد نمایید</div>
+                                        <x-form.input-error :messages="$errors->get('price')" class="mt-2" />
                                     </div>
 
                                     <div class="fv-row mb-10">
-                                        <label class="fs-6 fw-bold mb-2">نوع تخفیف
-                                        <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Select a discount type that will be applied to this product"></i></label>
-                                        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-1 row-cols-xl-3 g-9" data-kt-buttons="true" data-kt-buttons-target="[data-kt-button='true']">
+                                        <label for="discount" class="fs-6 fw-bold mb-2">  تخفیف %</label>
+                                        <input type="text" name="discount" id="discount" class="form-control mb-2" value="{{ old('discount') }}" />
+                                        <x-form.input-error :messages="$errors->get('discount')" class="mt-2" />
 
-                                            <div class="col">
-                                                <label class="btn btn-outline btn-outline-dashed btn-outline-default active d-flex text-start p-6" data-kt-button="true">
-                                                    <span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1">
-                                                        <input class="form-check-input" type="radio" name="discount" value="0" checked="checked" />
-                                                    </span>
-
-                                                    <span class="ms-5">
-                                                        <span class="fs-4 fw-bolder text-gray-800 d-block">بدون تخفیف</span>
-                                                    </span>
-                                                </label>
-                                            </div>
-
-                                            <div class="col">
-                                                <label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-6" data-kt-button="true">
-                                                    <span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1">
-                                                        <input class="form-check-input" type="radio" name="discount" value="1" />
-                                                    </span>
-
-                                                    <span class="ms-5">
-                                                        <span class="fs-4 fw-bolder text-gray-800 d-block">درصد %</span>
-                                                    </span>
-                                                </label>
-                                            </div>
-
-                                        </div>
                                     </div>
 
                                     <div class="d-none mb-10 fv-row" id="kt_ecommerce_add_product_discount_percentage">

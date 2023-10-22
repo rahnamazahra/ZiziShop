@@ -7,8 +7,10 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
+        "innovareti/password-policy": "^1.4",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "^4.16",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "*",
         "morilog/jalali": "3.*",
@@ -65,6 +67,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

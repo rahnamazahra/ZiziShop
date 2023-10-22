@@ -10,8 +10,17 @@ class Color extends Model
 {
     protected $fillable = ['name', 'code'];
 
+    public $timestamps = false;
+
     public function Products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public static function scopeSearch($query, $search)
+    {
+        return $query->where('name', 'like', "%$search%")
+        ->orWhere('code', "%$search%");
+    }
+
 }

@@ -20,10 +20,17 @@
                     ایجاد دسته‌بندی جدید
                 </x-form.btn-a>
 
-                <x-form.btn-a :href="route('admin.categories.export')" class="btn-light-primary" title="Export Excel">
-                    Export Excel
-                    <x-svg.icon-svg icon="export" />
-                </x-form.btn-a>
+
+                <form method="POST" action="{{ route('admin.categories.export') }}">
+                    @csrf
+
+                    <input type="hidden" name="search" value="{{ request()->has('search') ? request()->query('search') : '' }}">
+
+                    <x-form.btn class="btn-light-primary" title="expoert Excel">
+                        Export Excel
+                        <x-svg.icon-svg icon="export" />
+                    </x-form.btn>
+                </form>
 
                 @if (request()->has('trashed'))
                     <x-form.btn-a :href="route('admin.categories.index')" class="btn-light" title="برگشت">

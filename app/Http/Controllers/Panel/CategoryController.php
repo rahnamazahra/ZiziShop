@@ -9,8 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\{CategoryStoreRequest, CategoryUpdateRequest};
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+
 
 class CategoryController extends Controller
 {
@@ -43,30 +42,13 @@ class CategoryController extends Controller
     public function store(CategoryStoreRequest $request)
     {
 
-        $category = Category::make($request->except(['slug', 'image']));
+        $category = Category::make($request->except(['image']));
 
-        if (!$request->input('slug')){
-
-            $slug = Str::slug($category->name, language: null);
-
-            $category->slug = $category->generateUniqueSlug($slug);
-
-        }
-        else{
-            $category->slug = $request->input('slug');
-        }
+        $category->ensureUniqueSlug($request);
 
         $category->save();
 
-        if($request->file('image'))
-        {
-            $image_url = $request->file('image')->store('images/category', 'public');
-
-            $category->image()->create([
-                'path' => $image_url,
-            ]);
-
-        }
+        $category->uploadImage($request);
 
         return to_route('admin.categories.index');
     }
@@ -82,34 +64,13 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
 
-        $category->fill($request->except(['slug', 'image']));
+        $category->fill($request->except(['image']));
 
-        if (!$request->input('slug')){
+        $category->ensureUniqueSlug($request);
 
-            $slug = Str::slug($category->name, language: null);
+        $category->save();
 
-            $category->slug = $category->generateUniqueSlug($slug);
-
-        }
-        else{
-            $category->slug = $request->input('slug');
-        }
-
-        $category->update();
-
-        if($request->hasFile('image'))
-        {
-            if($category->image_url){
-                Storage::disc('public')->delete($category->image_url);
-            }
-
-            $image_url = $request->file('image')->store('images/category', 'public');
-
-            $category->image()->create([
-                'path' => $image_url,
-            ]);
-
-        }
+        $category->uploadImage($request);
 
         return to_route('admin.categories.index');
     }
@@ -143,32 +104,18 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $previousUrl = URL::previous();
+        $categories = Category::query();
 
-        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+        if($request->input('search')) {
 
-        parse_str($queryString, $queryParams); //output array query
-
-
-        $categories= Category::query();
-
-        if(array_key_exists('trashed', $queryParams)) {
-            $categories->onlyTrashed();
+            $categories->search($request->input('search'));
         }
-
-        if(array_key_exists('search', $queryParams)) {
-            $categories->search($queryParams['search']);
-        }
-
 
         $categories = $categories->get();
 
-
         $response = Excel::download(new ExportCategories($categories), 'categories.xlsx', \Maatwebsite\Excel\Excel::XLSX);
-
-        ob_end_clean();
 
         return $response;
 

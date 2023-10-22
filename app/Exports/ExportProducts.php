@@ -32,6 +32,18 @@ class ExportProducts implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $product->name,
+            $product->sku,
+            $product->slug,
+            $product->barcode,
+            $product->category->name,
+            $product->price,
+            $product->description,
+            $product->inventory,
+            $product->is_healthy ? 'سالم' : 'ایرادجزئی',
+            $product->is_published ? 'انتشار' : 'عدم‌انتشار',
+            $product->weight,
+            $product->width,
+            $product->length,
         ];
     }
 }

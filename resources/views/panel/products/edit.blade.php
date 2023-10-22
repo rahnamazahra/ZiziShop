@@ -116,7 +116,7 @@
                                 </x-panel.card-body>
                             </x-panel.card>
 
-                            {{--  <x-panel.card class="card-flush py-4">
+                            <x-panel.card class="card-flush py-4">
                                 <x-panel.card-header>
                                     <x-panel.card-title>
                                         <x-panel.heading level="2">تصاویر</x-panel.heading>
@@ -127,12 +127,8 @@
                                     <div class="fv-row mb-2">
 
                                         <div id="imagesDropzone" class="dropzone">
-                                            <div class="dz-message needsclick">
-
-                                                <x-svg.icon-svg icon="upload" class="svg-icon-3x svg-icon-primary"/>
-
+                                            
                                                 <div class="ms-4">
-                                                    <x-panel.heading level="3" class="fs-5 fw-bolder text-gray-900 mb-1">فایل‌ها را اینجا رها کنید یا برای آپلود کلیک کنید.</div>
                                                     <x-panel.span class="fs-7 fw-bold text-gray-400">انتخاب تا 10 عکس</x-panel.span>
                                                 </div>
 
@@ -143,7 +139,7 @@
                                     <div class="text-muted fs-7">عکس‌های بیشتری برای محصول انتخاب نمایید.</div>
 
                                 </x-panel.card-body>
-                            </x-panel.card>  --}}
+                            </x-panel.card>
 
                             <div class="card card-flush py-4">
 
@@ -162,51 +158,9 @@
                                     </div>
 
                                     <div class="fv-row mb-10">
-                                        <label class="fs-6 fw-bold mb-2">نوع تخفیف
-                                        <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Select a discount type that will be applied to this product"></i></label>
-                                        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-1 row-cols-xl-3 g-9" data-kt-buttons="true" data-kt-buttons-target="[data-kt-button='true']">
-
-                                            <div class="col">
-                                                <label class="btn btn-outline btn-outline-dashed btn-outline-default active d-flex text-start p-6" data-kt-button="true">
-                                                    <span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1">
-                                                        <input class="form-check-input" type="radio" name="discount" value="0" checked="checked" />
-                                                    </span>
-
-                                                    <span class="ms-5">
-                                                        <span class="fs-4 fw-bolder text-gray-800 d-block">بدون تخفیف</span>
-                                                    </span>
-                                                </label>
-                                            </div>
-
-                                            <div class="col">
-                                                <label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-6" data-kt-button="true">
-                                                    <span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1">
-                                                        <input class="form-check-input" type="radio" name="discount" value="1" />
-                                                    </span>
-
-                                                    <span class="ms-5">
-                                                        <span class="fs-4 fw-bolder text-gray-800 d-block">درصد %</span>
-                                                    </span>
-                                                </label>
-                                            </div>
-
-                                        </div>
+                                        <label for="discount" class="fs-6 fw-bold mb-2">  تخفیف %</label>
+                                        <input type="text" name="discount" id="discount" class="form-control mb-2" value="{{ old('discount', $product->discount) }}" />
                                     </div>
-
-                                    <div class="d-none mb-10 fv-row" id="kt_ecommerce_add_product_discount_percentage">
-                                        <label class="form-label">Set Discount Percentage</label>
-
-                                        <div class="d-flex flex-column text-center mb-5">
-                                            <div class="d-flex align-items-start justify-content-center mb-7">
-                                                <span class="fw-bolder fs-3x" id="kt_ecommerce_add_product_discount_label">0</span>
-                                                <span class="fw-bolder fs-4 mt-1 ms-2">%</span>
-                                            </div>
-                                            <div id="kt_ecommerce_add_product_discount_slider" class="noUi-sm"></div>
-                                        </div>
-
-                                        <div class="text-muted fs-7">Set a percentage discount to be applied on this product.</div>
-                                    </div>
-
 
                                 </div>
                             </div>
@@ -332,33 +286,34 @@
                             </x-panel.card-header>
 
 							<x-panel.card-body>
-                                <!--begin::Repeater-->
                                 <div id="features">
-                                    <!--begin::Form group-->
+
                                     <div class="form-group">
                                         <div data-repeater-list="features">
 
-                                            @foreach($features as $feature)
-                                                <div data-repeater-item>
-                                                    <div class="form-group row">
-                                                        <div class="fv-row fv-plugins-icon-container col-md-3">
-                                                            <label for="feature_key" class="form-label">عنوان</label>
-                                                            <x-form.input type="text" name="feature_key" class="form-control mb-2" placeholder="عنوان ویژگی" value="{{ old('feature_key', $feature->feature_key) }}" />
-                                                        </div>
+                                            @if($product->features)
+                                                @foreach($product->features as $feature)
+                                                    <div data-repeater-item>
+                                                        <div class="form-group row">
+                                                            <div class="fv-row fv-plugins-icon-container col-md-3">
+                                                                <label for="feature_key" class="form-label">عنوان</label>
+                                                                <x-form.input type="text" name="feature_key" class="form-control mb-2" placeholder="عنوان ویژگی" value="{{ old('feature_key', $feature['feature_key']) }}" />
+                                                            </div>
 
-                                                        <div class="mb-10 fv-row fv-plugins-icon-container col-md-8">
-                                                            <label for="feature_value" class="form-label">توضیحات وِیژگی</label>
-                                                            <x-form.input type="text" name="feature_value" class="form-control mb-2" placeholder="توضیحات" value="{{ old('feature_value', $feature->feature_value) }}" />
-                                                        </div>
+                                                            <div class="mb-10 fv-row fv-plugins-icon-container col-md-8">
+                                                                <label for="feature_value" class="form-label">توضیحات وِیژگی</label>
+                                                                <x-form.input type="text" name="feature_value" class="form-control mb-2" placeholder="توضیحات" value="{{ old('feature_value', $feature['feature_value']) }}" />
+                                                            </div>
 
-                                                        <div class="col-md-1">
-                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                <i class="la la-trash-o"></i>
-                                                            </a>
+                                                            <div class="col-md-1">
+                                                                <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                    <i class="la la-trash-o"></i>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            @endif
 
                                             <div data-repeater-item>
                                                 <div class="form-group row">
@@ -382,17 +337,15 @@
 
                                         </div>
                                     </div>
-                                    <!--end::Form group-->
 
-                                    <!--begin::Form group-->
                                     <div class="d-flex justify-content-end form-group mt-5">
                                         <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
                                             <i class="la la-plus"></i>افزودن ویژگی
                                         </a>
                                     </div>
-                                    <!--end::Form group-->
+
                                 </div>
-                                <!--end::Repeater-->
+
                             </x-panel.card-body>
                         </x-panel.card>
 
@@ -410,42 +363,45 @@
                                     <!--begin::Form group-->
                                     <div class="form-group">
                                         <div data-repeater-list="repeater_variety">
-                                            @foreach($varieties as $key => $variety)
-                                            <div data-repeater-item>
-                                                <div class="form-group row">
 
-                                                    <div class="fv-row fv-plugins-icon-container col-md-4">
-                                                        <label for="size" class="form-label">سایز</label>
-                                                        <select class="form-select form-select-solid" name="size" data-control="select2" data-placeholder="لطفا انتخاب کنید">
-                                                            <option></option>
-                                                            @foreach($sizes as $size)
-                                                                <option value="{{ $size->id }}" @selected($size->id == $variety->size_id)>{{ $size->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
+                                            @if($varieties)
+                                                @foreach($varieties as $key => $variety)
+                                                <div data-repeater-item>
+                                                    <div class="form-group row">
 
-                                                    <div class="mb-10 fv-row fv-plugins-icon-container col-md-4">
-                                                        <label for="color" class="form-label">رنگ</label>
-                                                        <select class="form-select form-select-solid" name="color" data-control="select2" data-placeholder="لطفا انتخاب کنید">
-                                                            <option></option>
-                                                            @foreach($colors as $color)
-                                                                <option value="{{ $color->id }}" @selected($color->id == $variety->color_id)>{{ $color->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
+                                                        <div class="fv-row fv-plugins-icon-container col-md-4">
+                                                            <label for="size" class="form-label">سایز</label>
+                                                            <select class="form-select form-select-solid" name="size" data-control="select2" data-placeholder="لطفا انتخاب کنید">
+                                                                <option></option>
+                                                                @foreach($sizes as $size)
+                                                                    <option value="{{ $size->id }}" @selected($size->id == $variety->size_id)>{{ $size->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
 
-                                                    <div class="mb-10 fv-row fv-plugins-icon-container col-md-3">
-                                                        <label for="inventory"  class="form-label">تعداد</label>
-                                                        <x-form.input type="number"  name="product_inventory" class="form-control mb-2" placeholder="تعداد" value="{{ old('product_inventory', $variety->count) }}" />
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                            <i class="la la-trash-o"></i>
-                                                        </a>
+                                                        <div class="mb-10 fv-row fv-plugins-icon-container col-md-4">
+                                                            <label for="color" class="form-label">رنگ</label>
+                                                            <select class="form-select form-select-solid" name="color" data-control="select2" data-placeholder="لطفا انتخاب کنید">
+                                                                <option></option>
+                                                                @foreach($colors as $color)
+                                                                    <option value="{{ $color->id }}" @selected($color->id == $variety->color_id)>{{ $color->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-10 fv-row fv-plugins-icon-container col-md-3">
+                                                            <label for="inventory"  class="form-label">تعداد</label>
+                                                            <x-form.input type="number"  name="product_inventory" class="form-control mb-2" placeholder="تعداد" value="{{ old('product_inventory', $variety->count) }}" />
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                <i class="la la-trash-o"></i>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            @endforeach
+                                                @endforeach
+                                            @endif
 
                                              <div data-repeater-item>
                                                 <div class="form-group row">
@@ -481,6 +437,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                     <!--end::Form group-->
@@ -580,5 +537,6 @@
             }
         });
     </script>
+
 @endsection
 

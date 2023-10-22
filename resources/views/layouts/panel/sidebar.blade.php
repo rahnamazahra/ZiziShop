@@ -26,6 +26,10 @@
 
                 <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت کاربران"/>
 
+                <x-panel.menu-item href="{{ route('admin.colors.index') }}" route="admin.colors.index" icon="color" title="مدیریت رنگ"/>
+
+                <x-panel.menu-item href="{{ route('admin.sizes.index') }}" route="admin.sizes.index" icon="size" title="مدیریت سایز"/>
+
                 <x-panel.menu-item href="{{ route('admin.categories.index') }}" route="admin.categories.index" icon="category" title="مدیریت دسته‌بندی"/>
 
                 <x-panel.menu-item href="{{ route('admin.products.index') }}" route="admin.products.index" icon="product" title="مدیریت محصولات"/>

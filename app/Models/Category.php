@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,15 +30,27 @@ class Category extends Model
         return $query->where('name', 'like', "%$search%");
     }
 
-    public function generateUniqueSlug($slug)
+    public function ensureUniqueSlug($request)
     {
-        $count = 2;
+        if (!$request->slug) {
 
-        while (static::where('slug', $slug)->exists()) {
-            $slug = "{$slug}-" . $count++;
+            $counter = 1;
+
+            $slug = Str::slug($this->name, language: null);
+
+            $collection  = static::where('slug', 'like', "$slug%")->get();
+
+            while ($collection->contains('slug', $slug. '-' . $counter)) {
+
+                $counter++;
+            }
+
+            $this->slug = $slug . '-' . $counter;
         }
+        else{
 
-        return $slug;
+            $this->slug = $request->slug;
+        }
     }
 
     protected function imageUrl(): Attribute
@@ -45,6 +58,28 @@ class Category extends Model
         return Attribute::make(
             get: fn() => Storage::disk('public')->url($this->image->path),
         );
+    }
+
+    public function uploadImage($request)
+    {
+
+        if($request->hasFile('image'))
+        {
+
+            if($this->image) {
+
+                Storage::disc('public')->delete($this->image_url);
+            }
+
+
+            $image_url = $request->file('image')->store('images/category', 'public');
+
+            $this->image()->create([
+                'path' => $image_url,
+            ]);
+
+        }
+
     }
 
 

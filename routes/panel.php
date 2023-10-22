@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Panel\{UserController, CategoryController, ProductController, DashboardController};
+use App\Http\Controllers\Panel\{UserController, ColorController, SizeController, CategoryController, ProductController, DashboardController};
 
 // Admin Panel
 Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -19,7 +19,7 @@ Route::controller(UserController::class)->name('admin.')->group(function () {
 Route::controller(CategoryController::class)->name('admin.')->group(function () {
     Route::put('/categories/{category}/restore', 'restore')->withTrashed()->name('categories.restore');
     Route::post('/categories/{category}/force-delete', 'forceDelete')->withTrashed()->name('categories.force-delete');
-    Route::get('/categories/export', 'export')->name('categories.export');
+    Route::post('/categories/export', 'export')->name('categories.export');
 });
 
 //Products
@@ -31,6 +31,8 @@ Route::controller(ProductController::class)->name('admin.')->group(function () {
 
 Route::name('admin.')->group(function () {
     Route::resource('users', UserController::class);
+    Route::resource('colors', ColorController::class)->except(['show']);
+    Route::resource('sizes', SizeController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->scoped(['category' => 'slug']);
     Route::resource('products', ProductController::class)->scoped(['product' => 'slug']);
 });

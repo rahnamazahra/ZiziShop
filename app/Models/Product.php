@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use PhpOffice\PhpSpreadsheet\Calculation\Engine\FormattedNumber;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 
 class Product extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', ' length', 'feature'];
+    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', 'length', 'features'];
 
     public $timestamps = false;
 
+    protected $casts = [
+        'features' => 'array',
+    ];
 
     public function Category(): BelongsTo
     {
@@ -97,7 +98,6 @@ class Product extends Model
         );
     }
 
-
     public static function scopeSearch($query, $search)
     {
         return $query->where('name', 'like', "%$search%")
@@ -120,4 +120,28 @@ class Product extends Model
     {
         return $query->where('category_id', $category);
     }
+
+    public function ensureUniqueSlug($request)
+    {
+        if (!$request->slug) {
+
+            $counter = 1;
+
+            $slug = Str::slug($this->name, language: null);
+
+            $collection  = static::where('slug', 'like', "$slug%")->get();
+
+            while ($collection->contains('slug', $slug. '-' . $counter)) {
+
+                $counter++;
+            }
+
+            $this->slug = $slug . '-' . $counter;
+        }
+        else{
+
+            $this->slug = $request->slug;
+        }
+    }
+
 }

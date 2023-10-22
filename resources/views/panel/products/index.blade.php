@@ -17,7 +17,7 @@
                     <x-svg.icon-svg icon='filter' />
                 </x-form.btn>
 
-                @if (count(request()->query()) > 0)
+                @if (request()->has('search') or request()->has('category'))
                     <x-form.btn-a :href="route('admin.products.index')" class="btn-light-primary" title="حذف فیلتر">
                         حذف فیلتر
                     </x-form.btn-a>
@@ -31,10 +31,22 @@
                     ایجاد محصول جدید
                 </x-form.btn-a>
 
-                <x-form.btn-a :href="route('admin.products.export')" class="btn-light-primary" title="Export Excel">
-                    Export Excel
-                    <x-svg.icon-svg icon="export" />
-                </x-form.btn-a>
+                <form method="POST" action="{{ route('admin.products.export') }}">
+                    @csrf
+
+                    <input type="hidden" name="search" value="{{ request()->has('search') ? request()->query('search') : '' }}">
+
+                    <input type="hidden" name="is_published" value="{{ request()->has('is_published') ? request()->query('is_published') : '' }}">
+
+                    <input type="hidden" name="is_healthy" value="{{ request()->has('is_healthy') ? request()->query('is_healthy') : '' }}">
+
+                    <input type="hidden" name="category" value="{{ request()->has('category') ? request()->query('category') : '' }}">
+
+                    <x-form.btn class="btn-light-primary" title="expoert Excel">
+                        Export Excel
+                        <x-svg.icon-svg icon="export" />
+                    </x-form.btn>
+                </form>
 
                 @if (request()->has('trashed'))
                     <x-form.btn-a :href="route('admin.products.index')" class="btn-light" title="برگشت">
