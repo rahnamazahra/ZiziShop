@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Exports\ExportProducts;
+use Maatwebsite\Excel\Excel as Type;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Models\{Inventory, Product, Color, Size, Tag};
@@ -16,18 +17,6 @@ class ProductController extends Controller
     {
         // todo get laracasts video from ostaaaad
         $products = $this->getProductsFromRequest($request);
-
-
-        if($request->has('is_published') && $request->input('is_published') != 'all') {
-
-           $products->publishStatusProducts($request->input('is_published'));
-
-        }
-
-        if($request->has('is_healthy') && $request->input('is_healthy') != 'all' ) {
-
-            $products->healtystatusProducts($request->input('is_healthy'));
-        }
 
         return view('panel.products.index', [
             'categories' => Category::get(),
@@ -44,10 +33,8 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function store(ProductStoreRequest $request)
     {
-        dd($request->all());
         $product = Product::make($request->except(['tags', 'repeater_variety']));
 
         $product->ensureUniqueSlug($request);
@@ -80,7 +67,6 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
@@ -103,23 +89,17 @@ class ProductController extends Controller
     public function update(ProductUpdateRequest $request, Product $product)
     {
         $product->fill($request->except(['tags', 'repeater_variety']));
-
         $product->ensureUniqueSlug($request);
-
         $product->save();
 
-
         if($request->tags) {
-
             $product->tags()->sync(Tag::findOrCreateFromRequest($request->tags));
         }
 
-        if ($request->input('repeater_variety'))
-        {
+        if ($request->input('repeater_variety')) {
             $product->stocks()->delete();
 
             foreach ($request->input('repeater_variety') as $variety) {
-
                 $product->stocks()->create([
                     'color_id'   => $variety['color'],
                     'size_id'    => $variety['size'],
@@ -150,15 +130,10 @@ class ProductController extends Controller
 
     public function forceDelete(Product $product)
     {
-
-        //delete images
-
+        //todo delete images
         $product->tags()->delete();
-
         $product->stocks()->delete();
-
         $name = $product->name;
-
         $product->forceDelete();
 
         return to_route('admin.products.index')->with('swal', [
@@ -170,35 +145,10 @@ class ProductController extends Controller
 
     public function export(Request $request)
     {
-        $products = Product::query();
-
-        if($request->has('search')) {
-
-            $products->search($request['search']);
-        }
-
-        if($request->has('is_published') && $request->input('is_published') != 'all') {
-
-           $products->publishStatusProducts($request->input('is_published'));
-
-        }
-
-        if($request->has('is_healthy') && $request->input('is_healthy') != 'all' ) {
-
-            $products->healtystatusProducts($request->input('is_healthy'));
-        }
-
-        if($request->has('category') && $request->input('category') != 'all') {
-
-            $products->where('category_id', $request->input('category'));
-        }
-
+        $products = $this->getProductsFromRequest($request);
         $products = $products->get();
 
-
-        $response = Excel::download(new ExportProducts($products), 'products.xlsx', \Maatwebsite\Excel\Excel::XLSX);
-
-        return $response;
+        return Excel::download(new ExportProducts($products), 'products.xlsx', Type::XLSX);
 
     }
 
@@ -207,7 +157,9 @@ class ProductController extends Controller
         return Product::query()
             ->when($request->trashed, fn ($q) => $q->onlyTrashed())
             ->when($request->search, fn ($q) => $q->search($request->search))
-            ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->category));
+            ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->category))
+            ->when($request->filled('is_published'), fn ($q) => $q->publishStatusProducts($request->input('is_published')))
+            ->when($request->filled('is_healthy'), fn ($q) => $q->healtystatusProducts($request->input('is_healthy')));
     }
 
 }

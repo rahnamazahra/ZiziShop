@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 class Product extends Model
 {
     use SoftDeletes;
-
+    use HasSlug;
     protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', 'length', 'features'];
 
     public $timestamps = false;
@@ -119,29 +120,6 @@ class Product extends Model
     public static function scopeFindProductCategory($query, $category)
     {
         return $query->where('category_id', $category);
-    }
-
-    public function ensureUniqueSlug($request)
-    {
-        if (!$request->slug) {
-
-            $counter = 1;
-
-            $slug = Str::slug($this->name, language: null);
-
-            $collection  = static::where('slug', 'like', "$slug%")->get();
-
-            while ($collection->contains('slug', $slug. '-' . $counter)) {
-
-                $counter++;
-            }
-
-            $this->slug = $slug . '-' . $counter;
-        }
-        else{
-
-            $this->slug = $request->slug;
-        }
     }
 
 }

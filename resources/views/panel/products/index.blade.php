@@ -83,7 +83,7 @@
                             <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
                                 <div class="text-gray-400 fs-7 me-2">وضعیت</div>
                                 <select name="is_published" id="is_published" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option @selected(request()->query('is_published') == 'all') value="all">همه</option>
+                                    <option @selected(! request()->filled('is_published')) value=" ">همه</option>
                                     <option @selected(request()->query('is_published') == '1') value="1">انتشار</option>
                                     <option @selected(request()->query('is_published') == '0') value="0">عدم انتشار</option>
                                 </select>
@@ -94,7 +94,7 @@
                             <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
                                 <div class="text-gray-400 fs-7 me-2">سلامت</div>
                                 <select name="is_healthy" id="is_healthy" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option @selected(request()->query('is_healthy') == 'all') value="all">همه</option>
+                                    <option @selected(! request()->filled('is_published')) value=" ">همه</option>
                                     <option @selected(request()->query('is_healthy') == '1') value="1">سالم</option>
                                     <option @selected(request()->query('is_healthy') == '0') value="0">ایرادجزئی</option>
                                 </select>

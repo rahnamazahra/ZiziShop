@@ -4,14 +4,11 @@ namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
-
+use Maatwebsite\Excel\Excel as Type;
 use Maatwebsite\Excel\Facades\Excel;
-
 use App\Exports\ExportUsers;
-
-use App\Models\{City, Role, User, Province};
-
 use App\Http\Controllers\Controller;
+use App\Models\{City, Role, User, Province};
 use App\Http\Requests\panel\{UserStoreRequest, UserUpdateRequest};
 
 
@@ -20,32 +17,10 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $users = User::query();
-
-        if ($request->has('trashed')) {
-            $users->onlyTrashed();
-        }
-
-        if ($request->has('search')) {
-            $users->search($request->query('search'));
-        }
-
-        if ($request->has('city') && $request->input('city') != 'all') {
-
-            $users->where('city_id', $request->input('city'));
-        }
-
-        if ($request->has('province') && $request->input('province') != 'all') {
-
-            $users->whereHas('city', function ($query) use ($request) {
-                $query->where('province_id', $request->input('province'));
-            });
-        }
-
-        $users = $users->paginate(15);
+        $users = $this->getUsersFromRequest($request);
 
         return view('panel.users.index', [
-            'users' => $users,
+            'users' => $users->paginate(15),
             'provinces' => Province::all(),
             'cities' => City::all(),
         ]);
@@ -116,37 +91,22 @@ class UserController extends Controller
         ]);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $previousUrl = URL::previous();
+        $users = $this->getUsersFromRequest($request);
 
-        $queryString = parse_url($previousUrl, PHP_URL_QUERY);
+        return Excel::download(new ExportUsers($users->get()), 'users.xlsx', Type::XLSX);
 
-        parse_str($queryString, $queryParams); //output array query
+    }
 
-
-        $users = User::query();
-
-        if(array_key_exists('trashed', $queryParams)) {
-            $users->onlyTrashed();
-        }
-
-        if(array_key_exists('search', $queryParams)) {
-            $users->search($queryParams['search']);
-        }
-
-        if(array_key_exists('city', $queryParams) && $queryParams['city'] != 'all') {
-
-            $users->where('city_id', $queryParams['city']);
-        }
-
-        $users = $users->get();
-
-
-        $response = Excel::download(new ExportUsers($users), 'users.xlsx', \Maatwebsite\Excel\Excel::XLSX);
-
-        ob_end_clean();
-
-        return $response;
+    protected function getUsersFromRequest($request)
+    {
+        return User::query()
+        ->when($request->has('trashed'), fn($q) =>  $q->onlyTrashed())
+        ->when($request->has('search'), fn($q) => $q->search($request->search))
+        ->when($request->filled('city'), fn($q) => $q->where('city_id', $request->city))
+        ->when($request->filled('province'), fn($q) => $q->whereHas('province', function ($query) use ($request) {
+            $query->where('province_id', $request->input('province'));
+        }));
     }
 }

@@ -61,7 +61,7 @@
                                 <x-panel.div-section class="text-gray-400 fs-7 me-2">شهر</x-panel.div-section>
 
                                 <select name="city" id="city" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="لطفا انتخاب کنید" tabindex="-1" aria-hidden="true">
-                                    <option value="all" @selected(request()->query('city') == 'all')>همه</option>
+                                    <option value="all" @selected(! request()->filled('city')) value=" ">همه</option>
                                     @foreach ($cities as $city)
                                         <option value="{{ $city->id }}" @selected (request()->query('city') == $city->id)> {{ $city->name }} </option>
                                     @endforeach
@@ -75,7 +75,7 @@
                                 <x-panel.div-section class="text-gray-400 fs-7 me-2">استان</x-panel.div-section>
 
                                 <select name="province" id="province" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option value="all" @selected (request()->query('province') == 'all')>همه</option>
+                                    <option value="all" @selected (! request()->filled('province')) value=" ">همه</option>
                                     @foreach ($provinces as $province)
                                         <option value="{{ $province->id }}" @selected (request()->query('province') == $province->id)> {{ $province->name }} </option>
                                     @endforeach

@@ -16,22 +16,10 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::query();
-
-        if ($request->has('trashed')) {
-
-            $categories->onlyTrashed();
-        }
-
-        if ($request->has('search')) {
-
-            $categories->search($request->query('search'));
-        }
-
-        $categories = $categories->paginate(15);
+        $categories = $this->getCategoriesFromRequest($request);
 
         return view('panel.categories.index', [
-            'categories' => $categories
+            'categories' => $categories->paginate(15)
         ]);
     }
 
@@ -42,13 +30,9 @@ class CategoryController extends Controller
 
     public function store(CategoryStoreRequest $request)
     {
-
         $category = Category::make($request->except(['image']));
-
         $category->ensureUniqueSlug($request);
-
         $category->save();
-
         $category->uploadImage($request);
 
         return to_route('admin.categories.index');
@@ -57,20 +41,14 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-
         return view('panel.categories.edit', ['category' => $category]);
-
     }
 
     public function update(Request $request, Category $category)
     {
-
         $category->fill($request->except(['image']));
-
         $category->ensureUniqueSlug($request);
-
         $category->save();
-
         $category->uploadImage($request);
 
         return to_route('admin.categories.index');
@@ -93,9 +71,7 @@ class CategoryController extends Controller
 
     public function forceDelete(Category $category)
     {
-
         $name = $category->name;
-
         $category->forceDelete();
 
         return to_route('admin.categories.index')->with('swal', [
@@ -107,11 +83,15 @@ class CategoryController extends Controller
 
     public function export(Request $request)
     {
-        $categories = Category::query()
-            ->when($request->search, fn ($q) => $q->search($request->search))
-            ->get();
+        $categories = $this->getCategoriesFromRequest($request);
 
-        return Excel::download(new ExportCategories($categories), 'categories.xlsx', Types::XLSX);
+        return Excel::download(new ExportCategories($categories->get()), 'categories.xlsx', Types::XLSX);
 
+    }
+
+    protected function getCategoriesFromRequest($request)
+    {
+        return Category::query()
+        ->when($request->search, fn ($q) => $q->search($request->search));
     }
 }
