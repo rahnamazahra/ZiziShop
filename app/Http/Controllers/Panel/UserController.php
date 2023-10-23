@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 use Maatwebsite\Excel\Excel as Type;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportUsers;

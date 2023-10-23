@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Panel\{UserController, ColorController, SizeController, CategoryController, ProductController, DashboardController};
+use App\Http\Controllers\Panel\{UserController, ColorController, SizeController, CategoryController, ProductController, VoucherController, DashboardController};
 
 // Admin Panel
 Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -35,6 +35,7 @@ Route::name('admin.')->group(function () {
     Route::resource('sizes', SizeController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->scoped(['category' => 'slug']);
     Route::resource('products', ProductController::class)->scoped(['product' => 'slug']);
+    Route::resource('vouchers', VoucherController::class);
 });
 
 

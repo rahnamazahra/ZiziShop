@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Casts\{cityName, JalaliDate, provinceName};
+use App\Casts\JalaliDate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany};
 use Illuminate\Foundation\Auth\User as Authenticatable;
