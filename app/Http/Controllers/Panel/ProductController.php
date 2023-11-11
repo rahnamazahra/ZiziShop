@@ -33,7 +33,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(ProductStoreRequest $request)
+    public function store(Request $request)
     {
         $product = Product::make($request->except(['tags', 'repeater_variety']));
 

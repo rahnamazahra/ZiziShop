@@ -124,15 +124,14 @@
                                     </x-panel.card-title>
                                 </x-panel.card-header>
 
-                                <x-panel.card-body>
+                                {{--  <x-panel.card-body>
                                     <div class="fv-row mb-2">
-
                                         <input type="file" name="images"  class="form-control" multiple>
                                     </div>
 
                                     <div class="text-muted fs-7">عکس‌های بیشتری برای محصول انتخاب نمایید.</div>
 
-                                </x-panel.card-body>
+                                </x-panel.card-body>  --}}
                             </x-panel.card>
 
                             <div class="card card-flush py-4">
@@ -147,32 +146,17 @@
 
                                     <div class="mb-10 fv-row">
                                         <label for="price" class="required form-label">قیمت</label>
-                                        <input type="text" name="price" id="price" class="form-control mb-2" placeholder="قیمت (ریال)" value="" />
+                                        <input type="text" name="price" id="price" class="form-control mb-2" placeholder="قیمت (ریال)" value="{{ old('price') }}" />
                                         <div class="text-muted fs-7">قیمت محصول را وارد نمایید</div>
                                         <x-form.input-error :messages="$errors->get('price')" class="mt-2" />
                                     </div>
 
                                     <div class="fv-row mb-10">
                                         <label for="discount" class="fs-6 fw-bold mb-2">  تخفیف %</label>
-                                        <input type="text" name="discount" id="discount" class="form-control mb-2" value="{{ old('discount') }}" />
+                                        <input type="text" name="discount" id="discount" class="form-control mb-2" value="{{ old('discount', 0) }}" />
                                         <x-form.input-error :messages="$errors->get('discount')" class="mt-2" />
 
                                     </div>
-
-                                    <div class="d-none mb-10 fv-row" id="kt_ecommerce_add_product_discount_percentage">
-                                        <label class="form-label">Set Discount Percentage</label>
-
-                                        <div class="d-flex flex-column text-center mb-5">
-                                            <div class="d-flex align-items-start justify-content-center mb-7">
-                                                <span class="fw-bolder fs-3x" id="kt_ecommerce_add_product_discount_label">0</span>
-                                                <span class="fw-bolder fs-4 mt-1 ms-2">%</span>
-                                            </div>
-                                            <div id="kt_ecommerce_add_product_discount_slider" class="noUi-sm"></div>
-                                        </div>
-
-                                        <div class="text-muted fs-7">Set a percentage discount to be applied on this product.</div>
-                                    </div>
-
 
                                 </div>
                             </div>
@@ -225,7 +209,7 @@
 
                                         <x-form.label id="weight" class="form-label">وزن</x-form.label>
 
-                                        <x-form.input type="text" name="weight" class="form-control mb-2" placeholder="وزن محصول" value="" />
+                                        <x-form.input type="text" name="weight" class="form-control mb-2" placeholder="وزن محصول" value="{{ old('weight') }}" />
 
                                         <div class="text-muted fs-7">وزن محصول را بر حسب کیلوگرم (Kg) تنظیم کنید.</div>
 
@@ -237,9 +221,9 @@
                                         <x-form.label id="dimention" class="form-label">ابعاد</x-form.label>
 
                                         <div class="d-flex flex-wrap flex-sm-nowrap gap-3">
-                                            <x-form.input type="number" name="width" class="form-control mb-2" placeholder="(w)عرض" value="" />
-                                            <x-form.input type="number" name="height" class="form-control mb-2" placeholder="(h)ارتفاع" value="" />
-                                            <x-form.input type="number" name="length" class="form-control mb-2" placeholder="(l)طول" value="" />
+                                            <x-form.input type="number" name="width" class="form-control mb-2" placeholder="(w)عرض" value="{{ old('width') }}" />
+                                            <x-form.input type="number" name="height" class="form-control mb-2" placeholder="(h)ارتفاع" value="{{ old('height') }}" />
+                                            <x-form.input type="number" name="length" class="form-control mb-2" placeholder="(l)طول" value="{{ old('length') }}" />
                                         </div>
 
                                         <div class="text-muted fs-7">ابعاد محصول را به سانتی متر (cm) وارد کنید.</div>
@@ -264,13 +248,13 @@
 
 								<div class="mb-10 fv-row fv-plugins-icon-container">
 									<x-form.label id="sku" class="form-label">SKU</x-form.label>
-                                    <x-form.input type="text" name="sku" class="form-control mb-2" placeholder="SKU Number" value="" />
+                                    <x-form.input type="text" name="sku" class="form-control mb-2" placeholder="SKU Number" value="{{ old('sku') }}" />
                                     <div class="text-muted fs-7">شناسه منحصربفرد (SKU) مربوط به محصول را وارد کنید</div>
                                 </div>
 
 								<div class="mb-10 fv-row fv-plugins-icon-container">
                                     <x-form.label id="barcode" class="orm-label">بارکد</x-form.label>
-                                    <x-form.input type="text" name="barcode" class="form-control mb-2" placeholder="بارکد" value="" />
+                                    <x-form.input type="text" name="barcode" class="form-control mb-2" placeholder="بارکد" value="{{ old('barcode') }}" />
                                     <div class="text-muted fs-7">بارکد مربوط به محصول را وارد نمایید.</div>
                                 </div>
 
@@ -278,7 +262,7 @@
                                     <x-form.label id="inventory" class="form-label">موجودی</x-form.label>
 
                                     <div class="d-flex gap-3">
-                                        <x-form.input type="number" name="inventory" class="form-control mb-2" value="" />
+                                        <x-form.input type="number" name="inventory" class="form-control mb-2" value="{{ old('inventory', 0) }}" />
                                     </div>
 
                                     <div class="text-muted fs-7">تعداد کل محصول را وارد نمایید</div>

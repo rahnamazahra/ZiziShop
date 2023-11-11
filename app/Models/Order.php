@@ -14,8 +14,10 @@ class Order extends Model
         'order-status' =>OrderStatusEnum::class
     ];
 
-    public function Products(): BelongsToMany
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
     }
+
+
 }

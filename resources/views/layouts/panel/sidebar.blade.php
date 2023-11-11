@@ -36,6 +36,9 @@
 
                 <x-panel.menu-item href="{{ route('admin.vouchers.index') }}" route="admin.vouchers.index" icon="voucher" title="مدیریت کوپن"/>
 
+                <x-panel.menu-item href="{{ route('admin.orders.index') }}" route="admin.orders.index" icon="truck" title="مدیریت سفارشات"/>
+
+
             </x-panel.div-section>
         </x-panel.div-section>
     </x-panel.div-section>

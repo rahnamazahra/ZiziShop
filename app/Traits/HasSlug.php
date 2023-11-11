@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
+
 trait HasSlug
 {
     public function ensureUniqueSlug($request)

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasSlug;
+use  Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, MorphMany};
 
 class Product extends Model
 {
@@ -36,6 +38,11 @@ class Product extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function ratings()
     {
         return $this->hasMany(Rating::class);
@@ -44,6 +51,11 @@ class Product extends Model
     public function stocks()
     {
         return $this->hasMany(Stock::class);
+    }
+
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class);
     }
 
     public function generateUniqueSlug($slug)
@@ -85,10 +97,17 @@ class Product extends Model
         );
     }
 
+    public function priceWithDiscount(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => number_format($this->price - ($this->price * ($this->discount / 100))) . ' تومان',
+        );
+    }
+
     public function getRating(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->ratings()->avg('rating'),
+            get: fn() => ceil($this->ratings()->avg('rating')),
         );
     }
 
@@ -122,4 +141,12 @@ class Product extends Model
         return $query->where('category_id', $category);
     }
 
+    public function getBestSellersOfTheWeek()
+    {
+        return $this->withCount('orders', function (Builder $query) {
+                $query->where('created_at','>=', Carbon::today()->subDays(7));
+            })->oredrBy('orders_count')
+            ->take(6)
+            ->get();
+    }
 }

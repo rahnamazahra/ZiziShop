@@ -1,27 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
+<html class="no-js" lang="zxx">
+    <head>
 
-<html lang="fa" dir="rtl">
+        <title>پنل‌مدیریت - @yield('title')</title>
 
-<head>
+        <meta charset="utf-8" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:locale" content="fa" />
+        <meta property="og:type" content=""/>
+        <meta property="og:title" content=""/>
+        <meta property="og:url" content=""/>
+        <meta property="og:site_name" content="" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>پنل‌مدیریت - @yield('title')</title>
+        @include('layouts.panel.styles')
 
-    <meta charset="utf-8" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:locale" content="fa" />
-    <meta property="og:type" content=""/>
-    <meta property="og:title" content=""/>
-    <meta property="og:url" content=""/>
-    <meta property="og:site_name" content="" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+        @yield('custom-style')
 
-	@include('layouts.panel.styles')
-
-    @yield('custom-style')
-
-</head>
+    </head>
 
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed" data-kt-app-layout="light-sidebar" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
 
