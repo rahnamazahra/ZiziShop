@@ -63,6 +63,10 @@ class User extends Authenticatable
         );
     }
 
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
     public function isAdmin($userId)
     {
         $user = $this->find($userId);
@@ -75,5 +79,10 @@ class User extends Authenticatable
     {
         return $query->where('name', 'like', "%$search%")
                ->orWhere('mobile', 'like', "%$search%");
+    }
+
+    public function getCartAttribute()
+    {
+        return $this->cart()->firstOrCreate();
     }
 }
