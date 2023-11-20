@@ -100,7 +100,7 @@ class Product extends Model
     public function priceWithDiscount(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price - ($this->price * ($this->discount / 100))) . ' تومان',
+            get: fn() =>                                                                                                                                                      [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]] . ' تومان',
         );
     }
 

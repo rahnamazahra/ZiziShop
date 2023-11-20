@@ -13,8 +13,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('address_id')->nullable();
-            // referece
-            // voucher
+            $table->foreignId('voucher_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

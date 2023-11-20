@@ -12,12 +12,12 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->unsignedBigInteger('amount');
+            $table->foreignId('order_id');
+            $table->unsignedBigInteger('total');
             $table->string('gateway');
             $table->string('tracking code');
             $table->string('card number');
             $table->timestamps();
         });
     }
-
 };
