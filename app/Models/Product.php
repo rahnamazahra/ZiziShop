@@ -156,7 +156,6 @@ class Product extends Model
 
     public static function getBestSellersOfTheWeek()
     {
-
         return cache()->remember('bestSellersOfTheWeek', now()->addDays(1), function () {
             return self::whereHas('orders', function ($query) {
                 $query->where('orders.created_at', '>=', Carbon::today()->subDays(7));
