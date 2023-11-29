@@ -3,18 +3,21 @@
 namespace App\Models;
 
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasSlug;
 use  Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, MorphMany};
 
 class Product extends Model
 {
     use SoftDeletes;
     use HasSlug;
+    use HasFactory;
+
     protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', 'length', 'features'];
 
     public $timestamps = false;
@@ -26,11 +29,6 @@ class Product extends Model
     public function Category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function favorites(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'favorites');
     }
 
     public function tags(): BelongsToMany
@@ -48,6 +46,11 @@ class Product extends Model
         return $this->hasMany(Rating::class);
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
     public function stocks()
     {
         return $this->hasMany(Stock::class);
@@ -55,7 +58,7 @@ class Product extends Model
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Order::class);
     }
 
     public function generateUniqueSlug($slug)
@@ -90,18 +93,28 @@ class Product extends Model
         );
     }
 
-    public function priceLabel(): Attribute
+    public function oldPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price) . ' تومان',
+            get: fn() => $this->formatPrice($this->price),
         );
     }
 
-    public function priceWithDiscount(): Attribute
+    public function newPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() =>                                                                                                                                                      [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]] . ' تومان',
+            get: fn() => $this->formatPrice($this->formatDiscountCalculation($this->price, $this->discount)),
         );
+    }
+
+    public function formatPrice(int $price)
+    {
+        return number_format($price) . ' تومان';
+    }
+
+    private function formatDiscountCalculation(int $price, int $discount)
+    {
+       return $price - ($price * $discount / 100);
     }
 
     public function getRating(): Attribute
@@ -141,12 +154,16 @@ class Product extends Model
         return $query->where('category_id', $category);
     }
 
-    public function getBestSellersOfTheWeek()
+    public static function getBestSellersOfTheWeek()
     {
-        return $this->withCount('orders', function (Builder $query) {
-                $query->where('created_at','>=', Carbon::today()->subDays(7));
-            })->oredrBy('orders_count')
-            ->take(6)
-            ->get();
+        return self:: whereHas('orders', function ($query) {
+            $query->where('orders.created_at', '>=', Carbon::today()->subDays(7));
+        })
+        ->withCount('orders')
+        ->having('orders_count', '>=', 3)
+        ->take(4)
+        ->get();
     }
+
 }
+

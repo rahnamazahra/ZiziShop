@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('sku')->unique()->nullable();
-            $table->string('slug')->unique()->nullable();
+            $table->string('slug')->unique();
             $table->string('barcode')->unique()->nullable();
             $table->foreignId('category_id')->constrained();
             $table->unsignedInteger('price');

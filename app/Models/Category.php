@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\{HasSingleImage, HasSlug};
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\{HasMany, MorphMany};
 
@@ -12,6 +13,7 @@ class Category extends Model
     use SoftDeletes;
     use HasSingleImage;
     use HasSlug;
+    use HasFactory;
 
     protected $fillable = ['name', 'slug', 'description'];
 

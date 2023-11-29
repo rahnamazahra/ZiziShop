@@ -15,8 +15,7 @@ return new class extends Migration
             $table->foreignId('order_id');
             $table->unsignedBigInteger('total');
             $table->string('gateway');
-            $table->string('tracking code');
-            $table->string('card number');
+            $table->string('tracking_code');
             $table->timestamps();
         });
     }

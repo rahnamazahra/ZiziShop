@@ -14,8 +14,8 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->string('comment')->nullable();
-            $table->unsignedInteger('discount');
-            $table->unsignedInteger('shipping_discount');
+            $table->unsignedInteger('discount_percent');
+            $table->unsignedInteger('shipping_discount')->nullable();
             $table->unsignedInteger('mininum_purchase_total')->nullable();
             $table->unsignedInteger('maximum_discount')->nullable();
             $table->unsignedInteger('maximum_shipping_discount')->nullable();

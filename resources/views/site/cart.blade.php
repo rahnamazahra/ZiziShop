@@ -1,10 +1,11 @@
-<!-- breadcrumb area start -->
+@extends('layouts.site.master')
+@section('content')
+
          <section class="breadcrumb__area include-bg pt-95 pb-50">
             <div class="container">
                <div class="row">
                   <div class="col-xxl-12">
                      <div class="breadcrumb__content p-relative z-index-1">
-                        <h3 class="breadcrumb__title">سبد خرید</h3>
                          <div class="breadcrumb__list">
                             <span><a href="#">صفحه اصلی</a></span>
                             <span>سبد خرید</span>
@@ -32,13 +33,14 @@
                              </tr>
                            </thead>
                            <tbody>
+                            @foreach($cart->products as $product)
                               <tr>
                                  <!-- img -->
                                  <td class="tp-cart-img"><a href="product-details.html"> <img src="assets/img/product/cart/product-cart-1.jpg" alt=""></a></td>
                                  <!-- title -->
-                                 <td class="tp-cart-title"><a href="product-details.html">دم سفید افسانه ای .</a></td>
+                                 <td class="tp-cart-title"><a href="product-details.html">{{ $product->title }}</a></td>
                                  <!-- price -->
-                                 <td class="tp-cart-price"><span>76 تومان</span></td>
+                                 <td class="tp-cart-price"><span>{{ $product->old_price }}</span></td>
                                  <!-- quantity -->
                                  <td class="tp-cart-quantity">
                                     <div class="tp-product-quantity mt-10 mb-10">
@@ -47,7 +49,7 @@
                                              <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
                                        </span>
-                                       <input class="tp-cart-input" type="text" value="1">
+                                       <input class="tp-cart-input" type="text" value="{{  $product->pivot->count }}">
                                        <span class="tp-cart-plus">
                                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                              <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -58,147 +60,58 @@
                                  </td>
                                  <!-- action -->
                                  <td class="tp-cart-action">
-                                    <button class="tp-cart-action-btn">
-                                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
-                                       </svg>
-                                       <span>حذف</span>
-                                    </button>
+                                    <form action="{{ route('remove.to.cart',['product' => $product]) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="tp-cart-action-btn">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
+                                            </svg>
+                                            <span>حذف</span>
+                                        </button>
+                                    </form>
                                  </td>
                               </tr>
-                              <tr>
-                                 <!-- img -->
-                                 <td class="tp-cart-img"><a href="product-details.html"> <img src="assets/img/product/cart/product-cart-2.jpg" alt=""></a></td>
-                                 <!-- title -->
-                                 <td class="tp-cart-title"><a href="product-details.html">تامی هیلفیگر جدن زنانه</a></td>
-                                 <!-- price -->
-                                 <td class="tp-cart-price"><span>44 تومان</span></td>
-                                 <!-- quantity -->
-                                 <td class="tp-cart-quantity">
-                                    <div class="tp-product-quantity mt-10 mb-10">
-                                       <span class="tp-cart-minus">
-                                          <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                       <input class="tp-cart-input" type="text" value="1">
-                                       <span class="tp-cart-plus">
-                                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                             <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                    </div>
-                                 </td>
-                                 <!-- action -->
-                                 <td class="tp-cart-action">
-                                    <button class="tp-cart-action-btn">
-                                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
-                                       </svg>
-                                       <span>حذف</span>
-                                    </button>
-                                 </td>
-                              </tr>
-                              <tr>
-                                 <!-- img -->
-                                 <td class="tp-cart-img"><a href="product-details.html"> <img src="assets/img/product/cart/product-cart-3.jpg" alt=""></a></td>
-                                 <!-- title -->
-                                 <td class="tp-cart-title"><a href="product-details.html">پسران مدرسه مدرن ساده</a></td>
-                                 <!-- price -->
-                                 <td class="tp-cart-price"><span>62 تومان</span></td>
-                                 <!-- quantity -->
-                                 <td class="tp-cart-quantity">
-                                    <div class="tp-product-quantity mt-10 mb-10">
-                                       <span class="tp-cart-minus">
-                                          <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                       <input class="tp-cart-input" type="text" value="1">
-                                       <span class="tp-cart-plus">
-                                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                             <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                    </div>
-                                 </td>
-                                 <!-- action -->
-                                 <td class="tp-cart-action">
-                                    <button class="tp-cart-action-btn">
-                                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
-                                       </svg>
-                                       <span>حذف</span>
-                                    </button>
-                                 </td>
-                              </tr>
-                              <tr>
-                                 <!-- img -->
-                                 <td class="tp-cart-img"><a href="product-details.html"> <img src="assets/img/product/cart/product-cart-4.jpg" alt=""></a></td>
-                                 <!-- title -->
-                                 <td class="tp-cart-title"><a href="product-details.html">جدید کالوین کلاین گابریانا</a></td>
-                                 <!-- price -->
-                                 <td class="tp-cart-price"><span>93 تومان</span></td>
-                                 <!-- quantity -->
-                                 <td class="tp-cart-quantity">
-                                    <div class="tp-product-quantity mt-10 mb-10">
-                                       <span class="tp-cart-minus">
-                                          <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                       <input class="tp-cart-input" type="text" value="1">
-                                       <span class="tp-cart-plus">
-                                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                             <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                    </div>
-                                 </td>
-                                 <!-- action -->
-                                 <td class="tp-cart-action">
-                                    <button class="tp-cart-action-btn">
-                                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
-                                       </svg>
-                                       <span>حذف</span>
-                                    </button>
-                                 </td>
-                              </tr>
+                            @endforeach
+
                            </tbody>
                          </table>
                      </div>
+
                      <div class="tp-cart-bottom">
                         <div class="row align-items-end">
                            <div class="col-xl-6 col-md-8">
                               <div class="tp-cart-coupon">
-                                 <form action="#">
+
+                                <form action="{{ route('vouch') }}" method="post">
+                                    @csrf
                                     <div class="tp-cart-coupon-input-box">
-                                       <label>کد کوپن:</label>
-                                       <div class="tp-cart-coupon-input d-flex align-items-center">
-                                          <input type="text" placeholder="کد کوپن را وارد کنید">
-                                          <button type="submit">اعمال</button>
-                                       </div>
+                                        <label>کد کوپن:</label>
+                                        <div class="tp-cart-coupon-input d-flex align-items-center">
+                                            <input type="text" name="voucher" placeholder="کد کوپن را وارد کنید">
+                                            <button type="submit">اعمال</button>
+                                        </div>
                                     </div>
-                                 </form>
+                                </form>
+
                               </div>
                            </div>
+
                            <div class="col-xl-6 col-md-4">
                               <div class="tp-cart-update text-md-start">
                                  <button type="button" class="tp-cart-update-btn">به روز رسانی سبد خرید</button>
                                </div>
                             </div>
+
                          </div>
                       </div>
                    </div>
+
                    <div class="col-xl-3 col-lg-4 col-md-6">
                       <div class="tp-cart-checkout-wrapper">
                          <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
                             <span class="tp-cart-checkout-top-title">مجموع فرعی</span>
-                            <span class="tp-cart-checkout-top-price">742 تومان</span>
+                            <span class="tp-cart-checkout-top-price">{{ $cart->raw_total }}</span>
                          </div>
                          <div class="tp-cart-checkout-shipping">
                             <h4 class="tp-cart-checkout-shipping-title">ارسال</h4>
@@ -218,12 +131,18 @@
                                </div>
                             </div>
                          </div>
+                           @if ($cart->voucher)
+                                <span>کد کوپن {{ $cart->voucher->code }} -  تخفیف {{ $cart->voucher->discount_percent }}%</span>
+                            @endif
                          <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
                             <span>مجموع</span>
-                            <span>724 تومان</span>
+                            <span>{{ $cart->total }}</span>
                          </div>
                          <div class="tp-cart-checkout-proceed">
-                            <a href="checkout.html" class="tp-cart-checkout-btn w-100">رفتن به پرداخت</a>
+                            <form method="post" action="{{ route('checkout')}}" class="mt-16 flex justify-center">
+                            @csrf
+                                <button type="submit" href="checkout.html" class="tp-cart-checkout-btn w-100">رفتن به پرداخت</button>
+                            </form>
                          </div>
                      </div>
                   </div>
@@ -231,3 +150,4 @@
             </div>
          </section>
          <!-- cart area end -->
+@endsection

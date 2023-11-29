@@ -11,16 +11,13 @@ use Illuminate\View\Component;
 class Header extends Component
 {
 
-    public function __construct()
-    {
-        //
-    }
-
     public function render(): View|Closure|string
     {
         return view('components.site.header', [
             'categories' => Category::all(),
             'vouchers'  => Voucher::all(),
+            'total_count_cart' => auth()->user()?->cart->count ?? 0,
+            'total_count_favorite' => auth()->user()?->favorites->count() ?? 0,
         ]);
     }
 }

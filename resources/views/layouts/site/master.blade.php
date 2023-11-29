@@ -17,11 +17,11 @@
 <body>
     @include('layouts.site.pre-loader')
     @include('layouts.site.back-to-top')
+    @include('layouts.site.header')
     @include('layouts.site.offcanvas-area')
     @include('layouts.site.mobile-menu')
     @include('layouts.site.search-area')
     @include('layouts.site.cart-mini')
-    <x-header/>
 
     <main>
         @yield('content')

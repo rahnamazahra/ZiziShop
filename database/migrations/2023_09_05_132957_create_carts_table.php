@@ -9,10 +9,11 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::create('cart', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
+            $table->text('gateway_ref')->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('address_id')->nullable();
+            $table->foreignId('address_id')->nullable()->constrained();
             $table->foreignId('voucher_id')->nullable()->constrained();
             $table->timestamps();
         });

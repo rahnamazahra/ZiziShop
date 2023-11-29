@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Casts\JalaliDate;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany};
+use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany, HasMany};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -40,9 +40,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function favorites(): BelongsToMany
+    public function favorites(): HasMany
     {
-        return $this->belongsToMany(Product::class, 'favorites');
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites', 'user_id', 'product_id')->withTimestamps();
     }
 
     public function city():BelongsTo
@@ -67,6 +72,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Cart::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function isAdmin($userId)
     {
         $user = $this->find($userId);
@@ -85,4 +96,7 @@ class User extends Authenticatable
     {
         return $this->cart()->firstOrCreate();
     }
+
+
+
 }

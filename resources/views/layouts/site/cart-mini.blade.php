@@ -31,6 +31,23 @@
                          </div>
                          <a href="#" class="cartmini__del"><i class="fa-regular fa-xmark"></i></a>
                      </div>
+
+                     <div class="cartmini__widget-item">
+                         <div class="cartmini__thumb">
+                           <a href="product-details.html">
+                              <img src="assets/img/product/product-1.jpg" alt="">
+                           </a>
+                         </div>
+                         <div class="cartmini__content">
+                           <h5 class="cartmini__title"><a href="product-details.html">قفل هوشمند سطح پیچ</a></h5>
+                           <div class="cartmini__price-wrapper">
+                              <span class="cartmini__price">46 هزار</span>
+                              <span class="cartmini__quantity">x2</span>
+                           </div>
+                         </div>
+                         <a href="#" class="cartmini__del"><i class="fa-regular fa-xmark"></i></a>
+                     </div>
+
                  </div>
                  <!-- for wp -->
                  <!-- if no item in cart -->
@@ -46,7 +63,7 @@
                      <span>113 هزار</span>
                  </div>
                  <div class="cartmini__checkout-btn">
-                     <a href="cart.html" class="tp-btn mb-10 w-100">مشاهده سبد خرید</a>
+                     <a href="{{ route('cart.index') }}" class="tp-btn mb-10 w-100">مشاهده سبد خرید</a>
                      <a href="checkout.html" class="tp-btn tp-btn-border w-100"> بررسی</a>
                  </div>
              </div>

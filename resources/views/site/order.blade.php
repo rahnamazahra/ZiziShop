@@ -1,3 +1,5 @@
+@extends('layouts.site.master')
+@section('content')
 <!-- breadcrumb area start -->
          <section class="breadcrumb__area include-bg pt-95 pb-90">
             <div class="container">
@@ -133,3 +135,4 @@
             </div>
          </section>
          <!-- order area end -->
+@endsection
