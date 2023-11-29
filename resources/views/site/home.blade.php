@@ -1959,7 +1959,7 @@
 
 
         <div class="row">
-            @forelse($best_sellers as $best_seller)
+            @forelse($bestSellersOfTheWeek as $best_seller)
                     <div class="col-xl-3 col-md-6 col-sm-6 infinite-item">
                     <div class="tp-product-item-2 mb-40">
                         <div class="tp-product-thumb-2 p-relative z-index-1 fix w-img">

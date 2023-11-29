@@ -156,13 +156,16 @@ class Product extends Model
 
     public static function getBestSellersOfTheWeek()
     {
-        return self:: whereHas('orders', function ($query) {
-            $query->where('orders.created_at', '>=', Carbon::today()->subDays(7));
-        })
-        ->withCount('orders')
-        ->having('orders_count', '>=', 3)
-        ->take(4)
-        ->get();
+
+        return cache()->remember('bestSellersOfTheWeek', now()->addDays(1), function () {
+            return self::whereHas('orders', function ($query) {
+                $query->where('orders.created_at', '>=', Carbon::today()->subDays(7));
+            })
+            ->withCount('orders')
+            ->having('orders_count', '>=', 3)
+            ->take(4)
+            ->get();
+        });
     }
 
 }

@@ -26,7 +26,7 @@ class HomeController extends Controller
         return view('site.home', [
             'categories' => $categories,
             'products'  => Product::get(),
-            'best_sellers' => Product::getBestSellersOfTheWeek(),
+            'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
         ]);
     }
 }
