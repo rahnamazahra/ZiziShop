@@ -13,8 +13,10 @@ class HomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $categories = cache()->remember('categories', now()->addMinutes(5), function () {
-            return Category::all();
+        $categories = cache()->remember('categories', now()->addSeconds(1), function () {
+            return Category::withCount(['products' => function($query) {
+                $query->where('is_published', 1);
+            }])->get();
         });
 
         // if($request->has("search")) {
@@ -25,7 +27,7 @@ class HomeController extends Controller
 
         return view('site.home', [
             'categories' => $categories,
-            'products'  => Product::get(),
+            'products'  => Product::where('is_published', 1)->inRandomOrder()->take(8)->get(),
             'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
         ]);
     }

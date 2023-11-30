@@ -27,4 +27,11 @@ class Category extends Model
         return $query->where('name', 'like', "%$search%");
     }
 
+    public function getAllCategories()
+    {
+        return cache()->remember('categories', now()->addMonths(1), function () {
+            return Category::all();
+        });
+    }
+
 }

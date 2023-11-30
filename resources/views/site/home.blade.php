@@ -12,17 +12,15 @@
                             <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                                 <button class="nav-link active" id="nav-allCollection-tab" data-bs-toggle="tab" data-bs-target="#nav-allCollection" type="button" role="tab" aria-controls="nav-allCollection" aria-selected="true">
                                     همه مجموعه
-                                    <span class="tp-product-tab-tooltip">26</span>
+                                    <span class="tp-product-tab-tooltip">{{ $categories->sum('products_count') }}</span>
                                 </button>
-                                <button class="nav-link" id="nav-shoe-tab" data-bs-toggle="tab" data-bs-target="#nav-shoe" type="button" role="tab" aria-controls="nav-shoe" aria-selected="false">کفش
-                                <span class="tp-product-tab-tooltip">05</span>
-                                </button>
-                                <button class="nav-link" id="nav-clothing-tab" data-bs-toggle="tab" data-bs-target="#nav-clothing" type="button" role="tab" aria-controls="nav-clothing" aria-selected="false">تن پوش
-                                <span class="tp-product-tab-tooltip">14</span>
-                                </button>
-                                <button class="nav-link" id="nav-bags-tab" data-bs-toggle="tab" data-bs-target="#nav-bags" type="button" role="tab" aria-controls="nav-bags" aria-selected="false" >کیف ها
-                                <span class="tp-product-tab-tooltip">19</span>
-                                </button>
+
+                                @foreach($categories as $category)
+                                    <button class="nav-link" id="nav-shoe-tab" data-bs-toggle="tab" data-bs-target="#nav-shoe" type="button" role="tab" aria-controls="nav-shoe" aria-selected="false">
+                                        {{ $category->name }}
+                                        <span class="tp-product-tab-tooltip">{{ $category->products_count }}</span>
+                                    </button>
+                                @endforeach
                             </div>
                             </nav>
                     </div>
@@ -108,6 +106,8 @@
                                                     @if($product->discount)
                                                         <span class="tp-product-price-2 new-price">{{ $product->new_price }}</span>
                                                         <span class="tp-product-price-2 old-price">{{ $product->old_price }}</span>
+                                                    @elseif(!$product->inventory)
+                                                        <span class="text-danger">ناموجود</span>
                                                     @else
                                                         <span class="tp-product-price-2 new-price">{{ $product->old_price }}</span>
                                                     @endif
@@ -2047,7 +2047,7 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="tp-seller-more text-center mt-10">
-                <a href="shop.html" class="tp-btn tp-btn-border tp-btn-border-sm">خرید همه محصولات</a>
+                <a href="shop.html" class="tp-btn tp-btn-border tp-btn-border-sm">مشاهده همه محصولات</a>
                 </div>
             </div>
         </div>
@@ -2056,59 +2056,6 @@
     </section>
     <!-- best seller area end -->
 
-    <!-- instagram area start -->
-    <section class="tp-instagram-area">
-    <div class="container-fluid pl-20 pr-20">
-        <div class="row row-cols-lg-5 row-cols-sm-2 row-cols-1 gx-2 gy-2 gy-lg-0">
-            <div class="col">
-                <div class="tp-instagram-item-2 w-img">
-                <img src="{{('site/assets/img/instagram/2/insta-1.jpg') }}"alt="">
-                <div class="tp-instagram-icon-2">
-                    <a href="assets/img/instagram/2/insta-1.jpg') }}"class="popup-image"><i class="fa-brands fa-instagram"></i></a>
-                </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="tp-instagram-item-2 w-img">
-                <img src="{{ ('site/assets/img/instagram/2/insta-2.jpg') }}"alt="">
-                <div class="tp-instagram-icon-2">
-                    <a href="assets/img/instagram/2/insta-2.jpg') }}"class="popup-image"><i class="fa-brands fa-instagram"></i></a>
-                </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="tp-instagram-banner text-center">
-                    <div class="tp-instagram-banner-icon mb-40">
-                        <a href="#">
-                            <img src="{{ ('site/assets/img/instagram/2/insta-icon.png') }}" alt="">
-                        </a>
-                    </div>
-                    <div class="tp-instagram-banner-content">
-                        <span>ما را در</span> دنبال کنید
-                        <a href="#">اینستاگرام</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="tp-instagram-item-2 w-img">
-                <img src="{{ ('site/assets/img/instagram/2/insta-3.jpg') }}"alt="">
-                <div class="tp-instagram-icon-2">
-                    <a href="{{ ('site/assets/img/instagram/2/insta-3.jpg') }}"class="popup-image"><i class="fa-brands fa-instagram"></i></a>
-                </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="tp-instagram-item-2 w-img">
-                <img src="{{('site/assets/img/instagram/2/insta-4.jpg') }}"alt="">
-                <div class="tp-instagram-icon-2">
-                    <a href="{{ ('site/assets/img/instagram/2/insta-4.jpg') }}"class="popup-image"><i class="fa-brands fa-instagram"></i></a>
-                </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-    <!-- instagram area end -->
 
     <div class="modal fade tp-product-modal tp-product-modal-styleDarkRed" id="producQuickViewModal" tabindex="-1" aria-labelledby="producQuickViewModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

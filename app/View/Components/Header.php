@@ -13,8 +13,12 @@ class Header extends Component
 
     public function render(): View|Closure|string
     {
+        $categories = cache()->remember('categories', now()->addMonths(1), function () {
+            return Category::all();
+        });
+
         return view('components.site.header', [
-            'categories' => Category::all(),
+            'categories' => $categories, //how using method in model => Category::getAllCategories
             'vouchers'  => Voucher::all(),
             'total_count_cart' => auth()->user()?->cart->count ?? 0,
             'total_count_favorite' => auth()->user()?->favorites->count() ?? 0,
