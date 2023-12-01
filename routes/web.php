@@ -20,7 +20,7 @@ require __DIR__.'/auth.php';
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{slug}/detail', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product:slug}/detail', [ProductController::class, 'show'])->name('products.show');
 Route::get('/view-category/{slug}', CategoryProductController::class);
 
 Route::middleware('auth')->group(function () {
@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/remove-from-cart/{product}', [CartManagerController::class, 'destroy'])->name('remove.to.cart');
     Route::post('checkout', CheckoutController::class)->name('checkout');
     Route::any('verify', VerifyPaymentController::class)->name('verify');
+    Route::post('/comment/{product}', [ProductController::class, 'addComment'])->name('add.comment');
 
 
 });

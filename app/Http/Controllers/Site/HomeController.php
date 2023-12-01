@@ -24,10 +24,10 @@ class HomeController extends Controller
         // }
 
         // $products = Product::where("name","like","%".$search."%")->get();
-
+//Product::where('is_published', 1)->inRandomOrder()->take(8)->get(),
         return view('site.home', [
             'categories' => $categories,
-            'products'  => Product::where('is_published', 1)->inRandomOrder()->take(8)->get(),
+            'products'  => Product::where('is_published', 1)->take(8)->get(),
             'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
         ]);
     }

@@ -12,7 +12,7 @@ return new class extends Migration
         Schema::create('favorites', function (Blueprint $table) {
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unique(['user_id', 'product_id']);
+            //$table->unique(['user_id', 'product_id']);
             $table->timestamps();
         });
     }

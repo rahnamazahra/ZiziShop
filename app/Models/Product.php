@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, MorphMany};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, HasMany, MorphMany};
 
 class Product extends Model
 {
@@ -41,24 +41,34 @@ class Product extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
-    public function ratings()
-    {
-        return $this->hasMany(Rating::class);
-    }
-
-    public function favorites()
+    public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
     }
 
-    public function stocks()
+    public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class);
+    }
+
+    public function colors(): BelongsToMany
+    {
+        return $this->belongsToMany(Color::class, 'stocks');
+    }
+
+    public function sizes(): BelongsToMany
+    {
+        return $this->belongsToMany(Size::class, 'stocks');
     }
 
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class);
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
     }
 
     public function generateUniqueSlug($slug)
@@ -121,6 +131,48 @@ class Product extends Model
     {
         return Attribute::make(
             get: fn() => ceil($this->ratings()->avg('rating')),
+        );
+    }
+
+    public function getRatingOne(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->where('rating', 1)->count('rating'),
+        );
+    }
+
+    public function getRatingTwo(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->where('rating', 2)->count('rating'),
+        );
+    }
+
+    public function getRatingThree(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->where('rating', 3)->count('rating'),
+        );
+    }
+
+    public function getRatingFour(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->where('rating', 4)->count('rating'),
+        );
+    }
+
+    public function getRatingFive(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->where('rating', 5)->count('rating'),
+        );
+    }
+
+    public function getVote(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->ratings()->count(),
         );
     }
 

@@ -27,7 +27,6 @@ class User extends Authenticatable
     protected $casts = [
         'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
-        'birthday' => JalaliDate::class,
     ];
 
     public function image(): MorphOne
@@ -76,6 +75,11 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
     }
 
     public function isAdmin($userId)

@@ -12,9 +12,9 @@ class Color extends Model
 
     public $timestamps = false;
 
-    public function Products(): BelongsToMany
+    public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class, 'stocks');
     }
 
     public static function scopeSearch($query, $search)

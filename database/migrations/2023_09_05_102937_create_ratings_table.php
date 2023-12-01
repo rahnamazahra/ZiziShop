@@ -11,7 +11,7 @@ class CreateRatingsTable extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            $table->integer('rating');
+            $table->integer('rating'); //Todo replace score
             $table->text('comment')->nullable();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('user_id')->constrained();
