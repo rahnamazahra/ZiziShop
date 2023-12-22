@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedInteger('Height')->nullable();
             $table->unsignedInteger('length')->nullable();
             $table->json('features')->nullable();
+            $table->unsignedBigInteger('visit')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,10 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product:slug}/detail', [ProductController::class, 'show'])->name('products.show');
-Route::get('/view-category/{slug}', CategoryProductController::class);
+Route::get('/view-category/{category:slug}', [CategoryProductController::class, 'index']);
+Route::post('/view-category/{category:slug}', [CategoryProductController::class, 'filetrProduct'])->name('products.filter');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');

@@ -59,22 +59,24 @@
                               </div>
 
                                 <div class="col-xl-6">
-                                    <form action="" method="">
+
+                                    <form action="{{ route('products.filter', $category) }}" method="POST">
+                                        @csrf
                                         <div class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end">
                                             <div class="tp-shop-top-select">
-                                                <select name="sort_by">
+                                                <select name="filter">
                                                     <option value="defualt">مرتب‌سازی پیش‌فرض</option>
                                                     <option value="new">مرتبط‌ترین</option>
-                                                    <option value="new">پربازدیدترین</option>
-                                                    <option value="new">پرفروش‌ترین</option>
-                                                    <option value="new">جدید‌ترین</option>
-                                                    <option value="">ارزان‌ترین</option>
-                                                    <option value="">گران‌ترین</option>
+                                                    <option value="MostVisited">پربازدیدترین</option>
+                                                    <option value="BestSelling">پرفروش‌ترین</option>
+                                                    <option value="Latest">جدید‌ترین</option>
+                                                    <option value="Chipset">ارزان‌ترین</option>
+                                                    <option value="Expensive">گران‌ترین</option>
                                                 </select>
                                             </div>
 
                                             <div class="tp-shop-top-filter">
-                                            <button type="button" class="tp-filter-btn filter-open-btn">
+                                            <button type="submit" class="tp-filter-btn filter-open-btn">
                                                 <span>
                                                     <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M14.9998 3.45001H10.7998" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>

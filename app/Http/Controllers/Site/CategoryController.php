@@ -11,12 +11,12 @@ use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
 
-    public function index()
+    public function index(Category $category)
     {
+        dd($category->ExpensiveProducts());
+
         return view('site.home');
     }
-
-
 
 
 }

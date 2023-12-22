@@ -8,16 +8,28 @@ use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
-    public function __invoke(string $slug)
+    public function index(Category $category)
     {
-        $products = Product::query()
-            ->whereHas('category', fn ($q) => $q->where('slug', $slug))
-            ->where('is_published', 1)
-            ->orderBy('id','desc')
-            ->get();
-
         return view('site.products', [
-            'products'=> $products,
+            'category' => $category,
+            'products'=> $category->getAllProducts()
         ]);
     }
+
+    public function filetrProduct(Request $request, Category $category)
+    {
+        $filter = $request->input('filter');
+
+        dd(match ($filter)
+        {
+            'MostVisited' => $category->getMostVisitedProducts(),
+            'BestSelling' => $category->getBestSellingProducts(),
+            'Latest' => $category->getLatestProducts(),
+            'Chipset' =>  $category->getChipsetProducts(),
+            'Expensive' => $category->getExpensiveProducts()
+        });
+
+    }
+
+
 }
