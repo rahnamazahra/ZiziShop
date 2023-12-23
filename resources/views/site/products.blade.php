@@ -30,14 +30,15 @@
                            <div class="tp-shop-widget-content">
                               <div class="tp-shop-widget-filter">
                                  <div id="slider-range" class="mb-10"></div>
-                                 <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                                    <span class="input-range">
-                                       <input type="text" id="amount" name="amount" readonly>
-                                    </span>
+                                 <form action="{{ route('category.products', $category) }}" method="GET">
+                                    <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
+                                        <span class="input-range">
+                                            <input type="text" id="amount" name="amount" readonly>
+                                        </span>
 
-                                    <button class="tp-shop-widget-filter-btn" type="button">فیلتر</button>
-
-                                 </div>
+                                        <button class="tp-shop-widget-filter-btn" type="submit">فیلتر</button>
+                                    </div>
+                                 </form>
                               </div>
                            </div>
                         </div>
@@ -60,18 +61,17 @@
 
                                 <div class="col-xl-6">
 
-                                    <form action="{{ route('products.filter', $category) }}" method="POST">
-                                        @csrf
+                                    <form action="{{ route('category.products', $category) }}" method="GET">
+
                                         <div class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end">
                                             <div class="tp-shop-top-select">
                                                 <select name="filter">
                                                     <option value="defualt">مرتب‌سازی پیش‌فرض</option>
-                                                    <option value="new">مرتبط‌ترین</option>
-                                                    <option value="MostVisited">پربازدیدترین</option>
-                                                    <option value="BestSelling">پرفروش‌ترین</option>
-                                                    <option value="Latest">جدید‌ترین</option>
-                                                    <option value="Chipset">ارزان‌ترین</option>
-                                                    <option value="Expensive">گران‌ترین</option>
+                                                    <option value="mostVisited">پربازدیدترین</option>
+                                                    <option value="bestSelling">پرفروش‌ترین</option>
+                                                    <option value="latest">جدید‌ترین</option>
+                                                    <option value="chipset">ارزان‌ترین</option>
+                                                    <option value="expensive">گران‌ترین</option>
                                                 </select>
                                             </div>
 

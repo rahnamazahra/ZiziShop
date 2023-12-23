@@ -84,11 +84,17 @@ class Category extends Model
 
     public function getMostVisitedProducts()
     {
-        return $this->products
+        return $this->products->where('is_published', 1)
         ->sortByDesc('visit')
         ->all();
     }
 
-    
+    public function getProductsPriceRange($minPrice, $maxPrice)
+    {
+        
+        return $this->products->where('is_published', 1)
+        ->whereBetween('price', [$minPrice, $maxPrice])
+        ->all();
+    }
 
 }

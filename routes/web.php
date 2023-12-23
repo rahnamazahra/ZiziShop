@@ -22,8 +22,7 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product:slug}/detail', [ProductController::class, 'show'])->name('products.show');
-Route::get('/view-category/{category:slug}', [CategoryProductController::class, 'index']);
-Route::post('/view-category/{category:slug}', [CategoryProductController::class, 'filetrProduct'])->name('products.filter');
+Route::get('/view-category/{category:slug}', [CategoryProductController::class, 'index'])->name('category.products');
 
 
 

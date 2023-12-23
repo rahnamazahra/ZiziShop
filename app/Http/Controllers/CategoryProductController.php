@@ -8,28 +8,50 @@ use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
-    public function index(Category $category)
+    public function index(Request $request, Category $category)
     {
+        if(($request->input('filter') and $request->input('filter')!='defualt') or ($request->input('amount'))) {
+           $products = $this->getProductsFromRequest($request, $category);
+        }
+        else {
+            $products = $category->getAllProducts();
+        }
+
         return view('site.products', [
             'category' => $category,
-            'products'=> $category->getAllProducts()
+            'products'=> $products
         ]);
+
     }
 
-    public function filetrProduct(Request $request, Category $category)
+    public function getProductsFromRequest($request, $category)
     {
+
+
+        if($request->input('amount'))
+        {
+            $range = $request->input('amount');
+
+            $amounts = explode('تومان', $range);
+
+            $minAmount = (int) $amounts[0];
+            $maxAmount = (int) $amounts[1];
+
+            return $category->getProductsPriceRange($minAmount, $maxAmount);
+        }
+
         $filter = $request->input('filter');
 
-        dd(match ($filter)
+        return match ($filter)
         {
-            'MostVisited' => $category->getMostVisitedProducts(),
-            'BestSelling' => $category->getBestSellingProducts(),
-            'Latest' => $category->getLatestProducts(),
-            'Chipset' =>  $category->getChipsetProducts(),
-            'Expensive' => $category->getExpensiveProducts()
-        });
+            'relevant' => $category->getAllRelevantProducts(),
+            'mostVisited' => $category->getMostVisitedProducts(),
+            'bestSelling' => $category->getBestSellingProducts(),
+            'latest' => $category->getLatestProducts(),
+            'chipset' =>  $category->getChipsetProducts(),
+            'expensive' => $category->getExpensiveProducts()
+        };
 
     }
-
 
 }
