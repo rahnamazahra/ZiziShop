@@ -18,5 +18,6 @@ class CheckoutController extends Controller
             ->purchase($invoice, function($driver, $transactionId) use ($request) {
                 $request->user()->cart->update(['gateway_ref' => $transactionId]);
             })->pay()->render();
+
     }
 }

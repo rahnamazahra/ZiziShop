@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCreated;
 use Illuminate\Http\Request;
-use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Facade\Payment;
+use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 
 class VerifyPaymentController extends Controller
 {
@@ -38,7 +39,10 @@ class VerifyPaymentController extends Controller
                 'tracking_code' => $receipt->getReferenceId(),
             ]);
 
+            event(new OrderCreated($order));
+
             $cart->reset();
+
 
         } catch (InvalidPaymentException $exception) {
             // return error view
