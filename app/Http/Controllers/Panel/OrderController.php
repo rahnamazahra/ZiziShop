@@ -12,7 +12,7 @@ class OrderController extends Controller
     public function index()
     {
         return view("panel.orders.index",[
-            'orders' => Order::paginate(15),
+            'orders' => Order::orderByDesc('created_at')->paginate(15),
         ]);
     }
 
@@ -28,7 +28,17 @@ class OrderController extends Controller
 
     public function show(string $id)
     {
-        //
+        $notification = auth()->user()->notifications
+            ->first(function ($item) use ($id) {
+                return $item->data['order_id'] == $id;
+            });
+
+
+        if ($notification && !$notification->read_at) {
+            $notification->markAsRead();
+        }
+
+        return to_route('admin.orders.index');
     }
 
     public function edit(string $id)

@@ -11,11 +11,12 @@ use Illuminate\Notifications\Messages\MailMessage;
 class AdminOrderNotification extends Notification
 {
     use Queueable;
+
     private $order;
 
     public function __construct(Order $order)
     {
-        $this->$order = $order;
+        $this->order = $order;
     }
 
     /**
@@ -25,7 +26,7 @@ class AdminOrderNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['broadcast'];
+        return ['database'];
     }
 
     /**
@@ -36,8 +37,8 @@ class AdminOrderNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'id' => $this->order->id,
-            'registration_date' => $this->order->created_at
+            'order_id' => $this->order->id,
+            'order_careated_at' => $this->order->created_at,
         ];
     }
 }

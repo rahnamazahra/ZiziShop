@@ -13,6 +13,10 @@ class SendAdminNotification implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    public function __construct(){
+
+    }
+
     public function handle(OrderCreated $event)
     {
         $order = $event->order;
@@ -24,5 +28,7 @@ class SendAdminNotification implements ShouldQueue
         }
 
     }
+
+    
 
 }

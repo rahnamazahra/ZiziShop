@@ -39,10 +39,10 @@ class VerifyPaymentController extends Controller
                 'tracking_code' => $receipt->getReferenceId(),
             ]);
 
-            event(new OrderCreated($order));
+            OrderCreated::dispatch($order);
+           // event(new OrderCreated($order));
 
             $cart->reset();
-
 
         } catch (InvalidPaymentException $exception) {
             // return error view

@@ -18,8 +18,12 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
-                    <x-th>نام</x-th>
-                    <x-th>کد</x-th>
+                    <x-th>وضعیت</x-th>
+                    <x-th>نام مشتری</x-th>
+                    <x-th>شماره تلفن مشتری</x-th>
+                    <x-th>آدرس پستی</x-th>
+                    <x-th>زمان سفارش</x-th>
+                    <x-th>مبلغ فاکتور</x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
 
@@ -27,13 +31,15 @@
 
                     <x-tr>
                         <x-td>
-                            <span class="text-gray-800 fs-4 fw-bolder">{{ $order->user()->name }}</span>
+                            
                         </x-td>
 
                         <x-td>
-                            <div style="background: {{ $order->code }}">
-                                <span class="text-gray-800 fs-4 fw-bolder">{{ $order->code }}</span>
-                            </div>
+                            <span class="text-gray-800 fs-4 fw-bolder">{{ $order->user->name }}</span>
+                        </x-td>
+
+                        <x-td>
+                            <span class="text-gray-800 fs-4 fw-bolder">{{ $order->created_at }}</span>
                         </x-td>
 
                         <x-td>

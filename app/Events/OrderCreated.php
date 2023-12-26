@@ -16,10 +16,12 @@ class OrderCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $order;
+
     public function __construct(Order $order)
     {
-        $this->$order = $order;
+        $this->order = $order;
     }
+
 
     /**
      * Get the channels the event should broadcast on.
@@ -29,7 +31,7 @@ class OrderCreated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('admin-panel'),
         ];
     }
 }

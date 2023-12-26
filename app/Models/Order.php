@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OrderStatusEnum;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Order extends Model
 {
     use HasFactory;
+
 
     protected $fillable = [
         'user_id',
@@ -32,5 +37,11 @@ class Order extends Model
         return $this->hasOne(Payment::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
 
+    }
+
+    
 }
