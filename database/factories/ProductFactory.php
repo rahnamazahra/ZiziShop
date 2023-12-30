@@ -20,6 +20,7 @@ class ProductFactory extends Factory
             'name' =>  $this->faker->word,
             'slug' => $this->faker->slug,
             'price' => $this->faker->numberBetween(10, 1000) * 1000,
+            'inventory' => 10,
         ];
     }
 }

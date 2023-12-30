@@ -50,11 +50,13 @@ class Cart extends Model
 
     public function add(Product $product)
     {
-        if ($this->products()->whereId($product->id)->count()) {
-            return $this->products()->where("id", $product->id)->first()->pivot->increment('count');
-        }
+        if ($product->checkProductStock($product, 1)) {
+            if ($this->products()->whereId($product->id)->count()) {
+                return $this->products()->where("id", $product->id)->first()->pivot->increment('count');
+            }
 
-        $this->products()->attach($product);
+            $this->products()->attach($product);
+        }
     }
 
     public function getCountAttribute()

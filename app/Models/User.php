@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\JalaliDate;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany, HasMany};
@@ -104,6 +105,9 @@ class User extends Authenticatable
         return $this->cart()->firstOrCreate();
     }
 
-
+    public function routeNotificationForVonage(Notification $notification): string
+    {
+        return $this->mobile;
+    }
 
 }

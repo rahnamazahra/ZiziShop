@@ -2,9 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\OrderCreated;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\User;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\NewProductOrderNotificationEvent;
+use App\Notifications\NewProductOrderNotification;
 
 class SendUserSMS
 {
@@ -16,11 +18,18 @@ class SendUserSMS
         //
     }
 
+
     /**
      * Handle the event.
      */
-    public function handle(OrderCreated $event): void
+    public function handle(NewProductOrderNotificationEvent $event)
     {
-        //
+        $order = $event->order;
+
+        if (auth()->check()) {
+            $user = User::find(auth()->user()->id);
+            $user->notify(new NewProductOrderNotification($order));
+        }
+
     }
 }

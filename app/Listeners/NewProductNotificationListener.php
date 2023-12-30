@@ -3,13 +3,13 @@
 namespace App\Listeners;
 
 use App\Models\User;
-use App\Events\OrderCreated;
+use App\Events\NewProductOrderNotificationEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\AdminOrderNotification;
+use App\Notifications\NewProductOrderNotification;
 
-class SendAdminNotification implements ShouldQueue
+class NewProductNotificationListener implements ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -17,18 +17,18 @@ class SendAdminNotification implements ShouldQueue
 
     }
 
-    public function handle(OrderCreated $event)
+    public function handle(NewProductOrderNotificationEvent $event)
     {
         $order = $event->order;
 
         $admin = User::find(1);
 
         if ($admin) {
-            $admin->notify(new AdminOrderNotification($order));
+            $admin->notify(new NewProductOrderNotification($order));
         }
 
     }
 
-    
+
 
 }

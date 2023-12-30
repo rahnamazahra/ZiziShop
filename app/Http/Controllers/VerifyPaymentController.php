@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OrderCreated;
+use App\Events\NewProductOrderNotificationEvent;
 use Illuminate\Http\Request;
 use Shetabit\Payment\Facade\Payment;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
@@ -39,8 +39,7 @@ class VerifyPaymentController extends Controller
                 'tracking_code' => $receipt->getReferenceId(),
             ]);
 
-            OrderCreated::dispatch($order);
-           // event(new OrderCreated($order));
+            NewProductOrderNotificationEvent::dispatch($order);
 
             $cart->reset();
 

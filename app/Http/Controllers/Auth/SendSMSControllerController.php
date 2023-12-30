@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
+use Tzsk\Sms\Facades\Sms;
 
 
 class SendSMSControllerController extends Controller
@@ -18,7 +19,7 @@ class SendSMSControllerController extends Controller
 
         session()->put('verification_code', $verificationCode);
 
-        //TODO send $verificationCode with sms to $mobile
+        sms()->send("کدفعالسازی شما: " . $verificationCode)->to([$mobile])->dispatch();
 
         return view('auth.verify_mobile');
     }

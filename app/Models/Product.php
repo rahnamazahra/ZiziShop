@@ -219,5 +219,22 @@ class Product extends Model
         });
     }
 
+    public function checkProductStock($product,$quantity)
+    {
+
+        if($product->inventory >= $quantity)
+        {
+            return $this->reduceProductStock($product, $quantity);
+        }
+        return false;
+    }
+
+    public function reduceProductStock($product, $quantity)
+    {
+
+        return Product::whereId($product->id)->decrement('inventory', $quantity);
+
+    }
+
 }
 

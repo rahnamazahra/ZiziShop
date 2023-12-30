@@ -161,16 +161,18 @@ return [
          */
         Maatwebsite\Excel\ExcelServiceProvider::class,
         willvincent\Rateable\RateableServiceProvider::class,
+        GhaniniaIR\Shipping\ShippingServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
+
 
     ])->toArray(),
 
@@ -187,6 +189,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Shipping' =>GhaniniaIR\Shipping\Shipping::class,
     ])->toArray(),
 
 ];

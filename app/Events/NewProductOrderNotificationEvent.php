@@ -11,7 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class OrderCreated
+class NewProductOrderNotificationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,16 +22,10 @@ class OrderCreated
         $this->order = $order;
     }
 
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new PrivateChannel('admin-panel'),
-        ];
+        return new Channel('new-product-orders');
+
     }
+
 }
