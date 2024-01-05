@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\site;
+namespace App\Http\Controllers\Site;
 
 use App\Models\Order;
 use App\Models\Product;
@@ -19,12 +19,6 @@ class HomeController extends Controller
             }])->get();
         });
 
-        // if($request->has("search")) {
-        //     $search = $request->query('search');
-        // }
-
-        // $products = Product::where("name","like","%".$search."%")->get();
-//Product::where('is_published', 1)->inRandomOrder()->take(8)->get(),
         return view('site.home', [
             'categories' => $categories,
             'products'  => Product::where('is_published', 1)->take(8)->get(),
@@ -32,3 +26,5 @@ class HomeController extends Controller
         ]);
     }
 }
+
+

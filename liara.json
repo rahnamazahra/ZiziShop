@@ -1,0 +1,13 @@
+{
+  "platform": "laravel",
+  "app": "my-shop",
+  "laravel": {
+    "phpVersion": "8.1"
+  },
+  "disks": [
+    {
+      "name": "public",
+      "mountTo": "public"
+    }
+  ]
+}

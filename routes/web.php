@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\site\HomeController;
+use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\CartManagerController;
 use App\Http\Controllers\Site\ProductController;
 use App\Http\Controllers\VerifyPaymentController;
@@ -18,7 +18,7 @@ use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 
 require __DIR__.'/auth.php';
 
-Route::get('/', HomeController::class)->name('home');
+Route::get('/', HomeController::class);
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product:slug}/detail', [ProductController::class, 'show'])->name('products.show');
