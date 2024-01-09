@@ -16,7 +16,7 @@ class SendSMSController extends Controller
             $result = $user->checkSendingSmsCodeVerify();
         }
 
-        return view('auth.verify-mobile');
+        return view('auth.verify-mobile', ['mobile' => $mobile]);
 
     }
 
