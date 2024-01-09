@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Notifications\Channels\SmsChannel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+       $this->app->when(SmsChannel::class)
+        ->give(function () {
+            return new SmsChannel();
+        });
+
     }
 }

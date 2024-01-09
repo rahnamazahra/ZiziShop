@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Casts\JalaliDate;
+use Cryptommer\Smsir\Smsir;
+use Illuminate\Support\Facades\Cache;
+use Cryptommer\Smsir\Objects\Parameters;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -109,5 +112,35 @@ class User extends Authenticatable
     {
         return $this->mobile;
     }
+
+    public function sendSmsCodeVerify($mobile)
+    {
+        $verificationCode = random_int(100000, 999999);
+        session()->put('verification_code', $verificationCode);
+
+        $name = "Code";
+        $value = $verificationCode;
+        $templateId = 100000;
+
+        $parameter = new Parameters($name, $value);
+        $parameters = array($parameter);
+        $send = smsir::Send();
+
+        $send->Verify($mobile, $templateId, $parameters);
+
+        Cache::put('last_sent_time_' . $mobile, now(), 1);
+
+    }
+
+    public function checkSendingSmsCodeVerify()
+    {
+        $lastSentTime = Cache::get('last_sent_time_' . $this->mobile);
+        if ($lastSentTime && now()->diffInMinutes($lastSentTime) < 1) {
+            return true;
+        }
+
+       $this->sendSmsCodeVerify($this->mobile);
+    }
+
 
 }

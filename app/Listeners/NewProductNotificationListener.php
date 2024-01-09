@@ -21,11 +21,19 @@ class NewProductNotificationListener implements ShouldQueue
     {
         $order = $event->order;
 
-        $admin = User::find(1);
+        // $admin = User::find(1);
 
-        if ($admin) {
-            $admin->notify(new NewProductOrderNotification($order));
+        // if ($admin) {
+        //     $admin->notify(new NewProductOrderNotification($order));
+        // }
+
+        $order = $event->order;
+
+        if (auth()->check()) {
+            $user = User::find(auth()->user()->id);
+            $user->notify(new NewProductOrderNotification($order));
         }
+
 
     }
 

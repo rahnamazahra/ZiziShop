@@ -2,58 +2,37 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+
 
 
 class VerifyMobileSMSController extends Controller
 {
 
-    public function __invoke(Request $request): RedirectResponse
+    public function __invoke(Request $request)
     {
-        $request->validate([
-            'verification_code' => 'required|string',
-        ]);
+        $enteredCode = $request->input('verification_code');
 
-        $verificationCode = $request->input('verification_code');
+        if ($enteredCode == session()->get('verification_code')) {
 
-        $storedCode = Session::get('verification_code');
-
-        if ($verificationCode === $storedCode) {
-
-            Session::forget('verification_code');
+            session()->forget('verification_code');
 
             $user = User::where('mobile', $request->input('mobile'))->first();
 
             if ($user) {
-                Auth::login($user);
-
-                return redirect(RouteServiceProvider::MANAGMENT)->with('swal', [
-                    'title' => 'موفقیت‌آمیز!',
-                    'message' => 'به پنل مدیریتی فروشگاه خوش‌آمدید',
-                    'icon' => 'success',
-                ]);
-
-            } else {
-                return redirect()->back()->with('swal', [
-                    'title' => 'خطا!',
-                    'message' => 'شماره موبایل شما ثبت نشده است.',
-                    'icon' => 'error',
-                ]);
+                $user->mobile_verified_at = Carbon::now();
+                $user->save();
             }
 
+            return redirect()->route('auth.login.form')->with('success', 'Mobile number verified successfully.');
+
         } else {
-            throw ValidationException::withMessages([
-                'verification_code' => 'کدوارد شده صحیح نمی باشد.',
-            ]);
+            return redirect()->back()->withErrors(['error' => 'کد وارد شده صحیح نمی باشد.']);
         }
     }
 }

@@ -1,24 +1,26 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Thanks for signing up! Before getting started, could you verify your mobile by sms.') }}
-    </div>
+@extends('layouts.auth.master')
 
+@section('title', 'فعالسازی موبایل')
+
+@section('content')
     <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.mobile') }}">
+        <form method="POST" action="{{ route('auth.mobile.verify') }}">
             @csrf
-            <!-- hidden mobile -->
-                <x-text-input id="mobile" class="block mt-1 w-full" type="hidden" name="mobile" :value="{{ session('mobile') }}"/>
-            <!-- code -->
+            <x-form.input id="mobile" class="block mt-1 w-full" type="hidden" name="mobile" value="{{ $mobile }}"/>
+
             <div class="mt-4">
-                <x-input-label for="verification_code" :value="__('verification_code')" />
-                <x-text-input id="verification_code" class="block mt-1 w-full" type="text" name="verification_code" :value="old('verification_code')" required/>
-                <x-input-error :messages="$errors->get('verification_code')" class="mt-2" />
+                <x-form.label id="mobile">کد</x-form.label>
+                <x-form.input type="mobile" id="verification_code" name="verification_code" class="form-control mb-2 input-just-number" value="" autocomplete="off"/>
             </div>
-            <div>
-                <x-primary-button>
-                    {{ __('Verification Mobile') }}
-                </x-primary-button>
-            </div>
+
+            <x-panel.div-section class="text-center">
+                <x-form.btn type="submit" class="btn btn-lg btn-primary btn-submit w-100 mb-5" title="">
+                    <x-panel.span class="indicator-label">فعالسسازی</x-panel.span>
+                    <x-panel.span class="indicator-progress">لطفا چندلحظه صبر کنید ...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </x-panel.span>
+                </x-form.btn>
+            </x-panel.div-section>
         </form>
     </div>
-</x-guest-layout>
+@endsection

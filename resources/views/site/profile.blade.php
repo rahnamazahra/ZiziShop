@@ -49,7 +49,7 @@
                                        </div>
                                        <div class="col-md-6">
                                           <div class="profile__main-logout text-sm-start">
-                                             <a href="login.html" class="tp-logout-btn">خروج</a>
+                                             <a href="{{ route('auth.logout') }}" class="tp-logout-btn">خروج</a>
                                           </div>
                                        </div>
                                     </div>

@@ -30,14 +30,15 @@ class RegisteredUserController extends Controller
     public function store(RegisterRequest $request): RedirectResponse
     {
 
-        $user = User::create([
+        $user = User::firstOrCreate([
+            'name' => $request->name,
             'mobile' => $request->mobile,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        session()->put('mobile', $request->mobile);
 
-        return redirect()->route('auth.send_sms');
+        return to_route('auth.mobile.sendCode');
     }
 
 }

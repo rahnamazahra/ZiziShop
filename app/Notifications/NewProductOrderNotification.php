@@ -3,13 +3,12 @@
 namespace App\Notifications;
 
 use App\Models\Order;
-use Tzsk\Sms\Builder;
-use Tzsk\Sms\Channels\SmsChannel;
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Bus\Queueable;
+use App\Notifications\Channels\SmsChannel;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\VonageMessage;
+
 
 class NewProductOrderNotification extends Notification
 {
@@ -29,7 +28,7 @@ class NewProductOrderNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['broadcast', 'database', SmsChannel::class];
+        return [SmsChannel::class, 'broadcast', 'database'];
 
     }
 
@@ -54,12 +53,14 @@ class NewProductOrderNotification extends Notification
             'order_id' => $this->order->id,
             'message' => 'یک سفارش جدید دارید',
         ];
+
     }
 
     public function toSms($notifiable)
     {
-        return (new Builder)
-        ->send('سفارش شما با شناسه '. $this->order->id .'ثبت شد')
-        ->to([$notifiable->mobile]);
+        return 'کابر گرامی سفارش شما به شماره ' . $this->order->id . ' ثبت شد.';
+
     }
+
+
 }

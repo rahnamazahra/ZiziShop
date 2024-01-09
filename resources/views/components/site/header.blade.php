@@ -21,7 +21,7 @@
                                 <a href="cart.html">سبد خرید</a>
                             </li>
                             <li>
-                                <a href="login.html">خروج</a>
+                                <a href="{{ route('auth.logout') }}">خروج</a>
                             </li>
                             </ul>
                         </div>
