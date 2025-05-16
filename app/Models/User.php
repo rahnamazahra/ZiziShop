@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use App\Casts\JalaliDate;
 use Cryptommer\Smsir\Smsir;
 use Illuminate\Support\Facades\Cache;
 use Cryptommer\Smsir\Objects\Parameters;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\{MorphOne, BelongsTo, BelongsToMany, HasMany};
+use Illuminate\Notifications\Notifiable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
+
     use SoftDeletes;
     use Notifiable;
 
@@ -35,6 +36,26 @@ class User extends Authenticatable
         'mobile_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+       /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     public function image(): MorphOne
     {

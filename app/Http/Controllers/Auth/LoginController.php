@@ -32,16 +32,6 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            if ($user->isAdmin($user->id)) {
-
-                return redirect()->intended(RouteServiceProvider::MANAGMENT)->with('swal', [
-                    'title' => 'موفقیت‌آمیز!',
-                    'message' => 'به پنل مدیریتی فروشگاه خوش‌آمدید',
-                    'icon' => 'success',
-                ]);
-
-            }
-
             return redirect()->intended(RouteServiceProvider::HOME);
 
         } else {

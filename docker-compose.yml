@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app-zizi-shop
+    volumes:
+      - .:/var/www
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    working_dir: /var/www
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    environment:
+      HTTP_PROXY: socks5h://172.17.0.1:12334
+      HTTPS_PROXY: socks5h://172.17.0.1:12334
+
+  db:
+    image: mysql:5.7
+    container_name: mysql-zizi-shop
+    environment:
+      MYSQL_ROOT_PASSWORD: romina89
+      MYSQL_DATABASE: zizi_shop
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3308:3306"
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-zizi-shop
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: romina89
+    ports:
+      - "8083:80"
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
+

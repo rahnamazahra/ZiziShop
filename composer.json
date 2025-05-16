@@ -2,10 +2,13 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "cryptommer/smsir": "*",
         "fakerphp/faker": "^1.9.1",
         "ghaninia/shipping": "^0.1.0",
@@ -23,7 +26,9 @@
         "mockery/mockery": "^1.4.4",
         "morilog/jalali": "3.*",
         "nunomaduro/collision": "^7.0",
+        "php-open-source-saver/jwt-auth": "^2.3",
         "phpunit/phpunit": "^10.1",
+        "prettus/l5-repository": "^2.10",
         "pusher/pusher-php-server": "^7.2",
         "shetabit/payment": "^5.4",
         "spatie/laravel-ignition": "^2.0",
@@ -34,7 +39,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -66,7 +74,6 @@
                 "Smsir": "Smsir"
             }
         }
-
     },
     "config": {
         "optimize-autoloader": true,
