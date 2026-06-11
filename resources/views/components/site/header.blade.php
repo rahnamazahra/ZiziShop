@@ -8,23 +8,7 @@
                 <div class="col-md-6">
                 <div class="tp-header-top-right tp-header-top-black d-flex align-items-center justify-content-end">
                     <div class="tp-header-top-menu d-flex align-items-center justify-content-end">
-                        <div class="tp-header-top-menu-item tp-header-setting">
-                            <span class="tp-header-setting-toggle" id="tp-header-setting-toggle">تنظیمات</span>
-                            <ul>
-                            <li>
-                                <a href="profile.html">پنل کاربری</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('favorites.index') }}">لیست علاقه مندیها</a>
-                            </li>
-                            <li>
-                                <a href="cart.html">سبد خرید</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('auth.logout') }}">خروج</a>
-                            </li>
-                            </ul>
-                        </div>
+                        {{-- منوی تنظیمات حذف شد --}}
                     </div>
                 </div>
                 </div>
@@ -39,9 +23,7 @@
                 <div class="row align-items-center">
                 <div class="col-xl-2 col-lg-5 col-md-5 col-sm-4 col-6">
                     <div class="logo">
-                        <a href="index.html">
-                            <img src="{{ asset('site/assets/img/logo/logo.svg') }}" alt="logo">
-                        </a>
+                        <a href="{{ url('/') }}" class="gr-brand" style="font-size:26px;font-weight:700;color:#ffffff;white-space:nowrap;">گالری رهنما</a>
                     </div>
                 </div>
                 <div class="col-xl-5 d-none d-xl-block">
@@ -57,20 +39,23 @@
                                     <ul class="tp-submenu tp-mega-menu mega-menu-style-2">
                                         @foreach($categories as $category)
                                             <li>
-                                                <a href="{{ url('view-category'.'/'.$category->slug) }}" class="mega-menu-title">{{ $category->name }}</a>
+                                                <a href="{{ url('/') }}#nav-{{ $category->id }}" class="mega-menu-title gr-cat-link" data-cat="{{ $category->id }}">{{ $category->name }}</a>
                                             </li>
                                         @endforeach
                                     </ul>
                                 </li>
 
-                                <li><a href="coupon.html">کوپن</a></li>
-
-                                <li><a href="contact.html">تماس</a></li>
                             </ul>
                         </nav>
                     </div>
                     <div class="tp-category-menu-wrapper d-none">
                         <nav class="tp-category-menu-content">
+                            <ul>
+                                @foreach($categories as $category)
+                                    <li><a href="{{ url('/') }}#nav-{{ $category->id }}" class="gr-cat-link" data-cat="{{ $category->id }}">{{ $category->name }}</a></li>
+                                @endforeach
+                            </ul>
+                            @if(false)
                             <ul>
                                 <li>
                                 <a href="shop.html">
@@ -262,36 +247,41 @@
                                     </a>
                                 </li>
                             </ul>
+                            @endif
                         </nav>
                     </div>
                 </div>
                 <div class="col-xl-5 col-lg-7 col-md-7 col-sm-8 col-6">
                     <div class="tp-header-bottom-right d-flex align-items-center justify-content-end pr-30">
-                        <div class="tp-header-search-2 d-none d-sm-block">
-                            <form action="#">
-                            <input type="text" placeholder="جستجو در محصولات">
-                            <button type="submit">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M18.9999 19L14.6499 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            </form>
-                        </div>
 
                         <div class="tp-header-action d-flex align-items-center mr-30">
 
-                            <div class="tp-header-action-item d-none d-lg-block">
-                                <a href="{{ route('favorites.index') }}" class="tp-header-action-btn">
+                            {{-- آیکن علاقه‌مندی موقتاً حذف شده است --}}
 
-                                    <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M11.239 18.8538C13.4096 17.5179 15.4289 15.9456 17.2607 14.1652C18.5486 12.8829 19.529 11.3198 20.1269 9.59539C21.2029 6.25031 19.9461 2.42083 16.4289 1.28752C14.5804 0.692435 12.5616 1.03255 11.0039 2.20148C9.44567 1.03398 7.42754 0.693978 5.57894 1.28752C2.06175 2.42083 0.795919 6.25031 1.87187 9.59539C2.46978 11.3198 3.45021 12.8829 4.73806 14.1652C6.56988 15.9456 8.58917 17.5179 10.7598 18.8538L10.9949 19L11.239 18.8538Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M7.26062 5.05302C6.19531 5.39332 5.43839 6.34973 5.3438 7.47501" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            @auth('web')
+                            @php($grWallet = auth('web')->user()->wallet)
+                            <div class="tp-header-action-item gr-account-wrap gr-wallet-wrap">
+                                <a href="#" class="tp-header-action-btn gr-wallet-btn" title="کیف پول من" onclick="return false;">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H5a1 1 0 0 0 0 2h15a1 1 0 0 1 1 1v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/>
+                                        <circle cx="16.5" cy="13.5" r="1.2" fill="currentColor"/>
                                     </svg>
-
-                                    <span class="tp-header-action-badge">{{ $total_count_favorite }}</span>
+                                    <span class="gr-wallet-amount">{{ number_format($grWallet->usableBalance()) }} تومان</span>
                                 </a>
+                                <div class="gr-account-menu gr-wallet-menu">
+                                    <div class="gr-wallet-pop-balance">
+                                        <span>موجودی کیف پول</span>
+                                        <strong>{{ number_format($grWallet->usableBalance()) }} تومان</strong>
+                                    </div>
+                                    @if($grWallet->expires_at && ! $grWallet->isExpired())
+                                        <div class="gr-wallet-pop-note">اعتبار تا {{ gdate($grWallet->expires_at) }}</div>
+                                    @else
+                                        <div class="gr-wallet-pop-note">با اولین خرید {{ number_format(\App\Models\Wallet::FIRST_CHARGE) }} تومان شارژ می‌شود</div>
+                                    @endif
+                                    <div class="gr-wallet-pop-hint">هر خرید موفق، کیف پول شما را شارژ می‌کند (اعتبار ۳ ماهه).</div>
+                                </div>
                             </div>
+                            @endauth
 
                             <div class="tp-header-action-item">
                                 <a href="#"  class="tp-header-action-btn cartmini-open-btn" >
@@ -303,9 +293,27 @@
                                         <path d="M13.5343 10.1018H13.5801" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
 
-                                    <span class="tp-header-action-badge">{{ $total_count_cart }}</span>
+                                    <span class="tp-header-action-badge js-cart-badge">{{ $total_count_cart }}</span>
 
                                 </a>
+                            </div>
+
+                            <div class="tp-header-action-item gr-account-wrap">
+                                <a href="#" class="tp-header-action-btn gr-account-btn" aria-label="حساب کاربری">
+                                    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="1.5"/>
+                                        <path d="M1 21a9 9 0 0 1 18 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </a>
+                                <ul class="gr-account-menu">
+                                    @auth('web')
+                                        <li><a href="{{ route('account.profile') }}">پروفایل من</a></li>
+                                        <li><a href="{{ route('account.custom-orders') }}">سفارش‌های ویژه‌ی من</a></li>
+                                        <li><a href="{{ route('auth.logout') }}">خروج</a></li>
+                                    @else
+                                        <li><a href="{{ route('auth.login.form') }}">ورود / ثبت‌نام</a></li>
+                                    @endauth
+                                </ul>
                             </div>
 
                             <div class="tp-header-action-item tp-header-hamburger mr-20 d-xl-none">

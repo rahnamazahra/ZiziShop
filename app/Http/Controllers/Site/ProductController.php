@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,7 +14,13 @@ class ProductController extends Controller
 
     public function index()
     {
-        return view('site.home');
+        return view('site.home', [
+            'categories' => Category::withCount(['products' => function ($query) {
+                $query->where('is_published', 1);
+            }])->get(),
+            'products' => Product::where('is_published', 1)->latest()->get(),
+            'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
+        ]);
     }
 
 

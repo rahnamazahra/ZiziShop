@@ -31,6 +31,22 @@ class ColorController extends Controller
         return to_route('admin.colors.index');
     }
 
+    public function show(Color $color)
+    {
+        return view('panel.shared.show', [
+            'title'      => 'جزئیات رنگ: ' . $color->name,
+            'items'      => [
+                'نام'   => $color->name,
+                'کد رنگ' => $color->code
+                    ? '<span style="display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:middle;background:' . e($color->code) . ';border:1px solid #ddd;"></span> ' . e($color->code)
+                    : '—',
+            ],
+            'editUrl'    => route('admin.colors.edit', $color),
+            'backUrl'    => route('admin.colors.index'),
+            'breadcrumb' => ['داشبورد' => route('admin.dashboard'), 'رنگ‌ها' => route('admin.colors.index')],
+        ]);
+    }
+
     public function edit(Color $color)
     {
         return view('panel.colors.edit', [
@@ -50,7 +66,14 @@ class ColorController extends Controller
 
     public function destroy(Color $color)
     {
+        // حذف تنوع‌های (stock) وابسته به این رنگ و سپس حذف رنگ
+        Stock::where('color_id', $color->id)->delete();
+        $color->delete();
 
-       //
+        return to_route('admin.colors.index')->with('swal', [
+            'title'   => 'حذف شد',
+            'message' => 'رنگ «' . $color->name . '» حذف شد.',
+            'icon'    => 'success',
+        ]);
     }
 }

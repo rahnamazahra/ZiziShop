@@ -4,39 +4,30 @@ namespace App\Listeners;
 
 use App\Models\User;
 use App\Events\NewProductOrderNotificationEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Cryptommer\Smsir\Smsir;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewProductOrderNotification;
 
-class NewProductNotificationListener implements ShouldQueue
+class NewProductNotificationListener
 {
-    use InteractsWithQueue;
-
-    public function __construct(){
-
-    }
-
     public function handle(NewProductOrderNotificationEvent $event)
     {
         $order = $event->order;
 
-        // $admin = User::find(1);
+        // اعلان به همه‌ی ادمین‌ها (نوتیفیکیشن زنگوله + پیامک)
+        $admins = User::whereHas('roles', fn ($q) => $q->where('name', 'admin'))->get();
+        Notification::send($admins, new NewProductOrderNotification($order));
 
-        // if ($admin) {
-        //     $admin->notify(new NewProductOrderNotification($order));
-        // }
-
-        $order = $event->order;
-
-        if (auth()->check()) {
-            $user = User::find(auth()->user()->id);
-            $user->notify(new NewProductOrderNotification($order));
+        // پیامک به مشتری
+        if ($order->user && $order->user->mobile) {
+            try {
+                $message    = 'سفارش شما به شماره ' . $order->id . ' با موفقیت ثبت شد. گالری رهنما';
+                $lineNumber = config('smsir.line-number') ?: 30007732907923;
+                Smsir::Send()->bulk($message, [$order->user->mobile], null, $lineNumber);
+            } catch (\Throwable $e) {
+                Log::warning('Customer order SMS failed: ' . $e->getMessage());
+            }
         }
-
-
     }
-
-
-
 }

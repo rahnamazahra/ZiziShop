@@ -39,6 +39,26 @@ class CategoryController extends Controller
     }
 
 
+    public function show(Category $category)
+    {
+        $category->loadCount('products');
+
+        return view('panel.shared.show', [
+            'title'      => 'جزئیات دسته‌بندی: ' . $category->name,
+            'images'     => $category->image ? [$category->image_url] : [],
+            'items'      => [
+                'نام'           => $category->name,
+                'اسلاگ'         => $category->slug,
+                'توضیحات'       => $category->description ?: '—',
+                'تعداد محصولات' => $category->products_count . ' محصول',
+                'تاریخ ایجاد'    => gdate($category->created_at),
+            ],
+            'editUrl'    => route('admin.categories.edit', $category),
+            'backUrl'    => route('admin.categories.index'),
+            'breadcrumb' => ['داشبورد' => route('admin.dashboard'), 'دسته‌بندی‌ها' => route('admin.categories.index')],
+        ]);
+    }
+
     public function edit(Category $category)
     {
         return view('panel.categories.edit', ['category' => $category]);

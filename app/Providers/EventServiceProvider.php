@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use App\Events\NewProductOrderNotificationEvent;
-use App\Listeners\SendUserSMS;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\NewProductNotificationListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -23,7 +21,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewProductOrderNotificationEvent::class => [
             NewProductNotificationListener::class,
-            SendUserSMS::class,
         ],
     ];
 

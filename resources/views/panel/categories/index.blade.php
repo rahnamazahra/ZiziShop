@@ -87,6 +87,8 @@
                                     <x-delete-button />
                                 </x-form>
 
+                                <x-detail-button :href="route('admin.categories.show', $category)"/>
+
                                 <x-edit-button :href="route('admin.categories.edit', $category)"/>
 
                             @endif

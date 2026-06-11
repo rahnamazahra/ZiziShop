@@ -10,7 +10,7 @@
 				<x-form method="POST" :action="route('auth.login.verify')" class="form w-100" novalidate="novalidate" id="kt_sign_in_form" >
 
 					<x-panel.div-section class="text-center mb-10">
-				        <img alt="Logo" src="{{ asset('/images/logo/logo.png') }}" class="h-80px mb-5" />
+				        <h2 class="fw-bold mb-3" style="color:#343265;">گالری رهنما</h2>
                         <x-panel.heading level="1">
                             ورود | ثبت‌نام
                         </x-panel.heading>
@@ -38,7 +38,7 @@
 						</x-form.btn>
 
                         <x-panel.div-section class="text-gray-400">
-							<a href="" class="link-primary fw-bolder">ایجاد حساب کاربری</a>
+							<a href="{{ route('auth.register.form') }}" class="link-primary fw-bolder">ایجاد حساب کاربری</a>
 						</x-panel.div-section>
 					</x-panel.div-section>
 

@@ -20,6 +20,8 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
+        'first_name',
+        'last_name',
         'name',
         'mobile',
         'birthday',
@@ -27,6 +29,16 @@ class User extends Authenticatable implements JWTSubject
         'province_id',
         'city_id',
     ];
+
+    protected static function booted(): void
+    {
+        // همگام‌سازی نام نمایشی از نام و نام خانوادگی هنگام ذخیره
+        static::saving(function (User $user) {
+            if ($user->first_name || $user->last_name) {
+                $user->name = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+            }
+        });
+    }
 
     protected $hidden = [
         'password',
@@ -105,6 +117,21 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Order::class);
     }
 
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function getWalletAttribute()
+    {
+        return $this->wallet()->firstOrCreate([]);
+    }
+
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
@@ -120,8 +147,32 @@ class User extends Authenticatable implements JWTSubject
 
     public static function scopeSearch($query, $search)
     {
-        return $query->where('name', 'like', "%$search%")
-               ->orWhere('mobile', 'like', "%$search%");
+        return $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('mobile', 'like', "%$search%")
+              ->orWhereHas('city', function ($c) use ($search) {
+                  $c->where('name', 'like', "%$search%")
+                    ->orWhereHas('province', fn ($p) => $p->where('name', 'like', "%$search%"));
+              });
+        });
+    }
+
+    /**
+     * فقط کاربران عادی (بدون نقش ادمین).
+     */
+    public static function scopeCustomersOnly($query)
+    {
+        return $query->whereDoesntHave('roles', fn ($q) => $q->where('name', 'admin'));
+    }
+
+    /**
+     * کاربرانی که امروز (روز و ماه) تولدشان است.
+     */
+    public static function scopeBirthdayToday($query)
+    {
+        return $query->whereNotNull('birthday')
+            ->whereMonth('birthday', now()->month)
+            ->whereDay('birthday', now()->day);
     }
 
     public function getCartAttribute()

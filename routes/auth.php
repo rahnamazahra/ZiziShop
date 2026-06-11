@@ -15,7 +15,7 @@ Route::middleware('guest')->group(function () {
     Route::post('mobile-verify', VerifyMobileSMSController::class)->name('auth.mobile.verify');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
 
     Route::get('logout', [LoginController::class, 'destroy'])->name('auth.logout');
 });

@@ -80,6 +80,8 @@
                                     <x-delete-button />
                                 </x-form>
 
+                                <x-detail-button :href="route('admin.vouchers.show', $voucher)"/>
+
                                 <x-edit-button :href="route('admin.vouchers.edit', $voucher)"/>
                             </div>
                         </x-td>

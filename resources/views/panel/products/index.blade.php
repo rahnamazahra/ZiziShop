@@ -13,10 +13,6 @@
             <x-panel.card-title>
                 <x-panel.search :action="route('admin.products.index', ['search'])" />
 
-                <x-form.btn type="button" class="btn-outline btn-outline-light btn-active-light" title="فیلتر" data-bs-toggle="collapse" data-bs-target="#filter_search">
-                    <x-svg.icon-svg icon='filter' />
-                </x-form.btn>
-
                 @if (request()->has('search') or request()->has('category'))
                     <x-form.btn-a :href="route('admin.products.index')" class="btn-light-primary" title="حذف فیلتر">
                         حذف فیلتر
@@ -63,52 +59,6 @@
 
         <x-panel.card-body>
 
-             <div id="filter_search" class="flex collapse">
-                <x-form method="GET" :action="route('admin.products.index')">
-                    <div class="row mb-8">
-
-                        <div class="col-md-2 fv-row">
-                            <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
-                                <div class="text-gray-400 fs-7 me-2">دسته‌بندی</div>
-                                <select name="category" id="category" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="لطفا انتخاب کنید" tabindex="-1" aria-hidden="true">
-                                    <option @selected(! request()->filled('category')) value=" ">همه</option>
-                                    @foreach($categories as $category)
-                                        <option @selected(request()->query('category') == $category->id) value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 fv-row">
-                            <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
-                                <div class="text-gray-400 fs-7 me-2">وضعیت</div>
-                                <select name="is_published" id="is_published" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option @selected(! request()->filled('is_published')) value=" ">همه</option>
-                                    <option @selected(request()->query('is_published') == '1') value="1">انتشار</option>
-                                    <option @selected(request()->query('is_published') == '0') value="0">عدم انتشار</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 fv-row">
-                            <div class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
-                                <div class="text-gray-400 fs-7 me-2">سلامت</div>
-                                <select name="is_healthy" id="is_healthy" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option @selected(! request()->filled('is_published')) value=" ">همه</option>
-                                    <option @selected(request()->query('is_healthy') == '1') value="1">سالم</option>
-                                    <option @selected(request()->query('is_healthy') == '0') value="0">ایرادجزئی</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-1">
-                            <x-form.btn type="submit" class="btn btn-sm btn-primary" title="جست‌وجو">جست‌و‌جو</x-form.btn>
-                        </div>
-
-                    </div>
-                </x-form>
-            </div>
-
             <x-table>
                 <x-tr>
                     <x-th></x-th>
@@ -129,7 +79,7 @@
                             <div class="d-flex align-items-center">
 
                                 <a href="" class="symbol symbol-50px">
-                                    <span class="symbol-label" style="background-image:url('{{ $product->image_url }}');"></span>
+                                    <span class="symbol-label" style="background-image:url('{{ $product->poster_url }}');"></span>
                                 </a>
 
                                 <div class="ms-5">
@@ -205,7 +155,9 @@
                                     <x-delete-button />
                                 </x-form>
 
-                                <x-edit-button :href="route('admin.products.edit', ['product' => $product])"/>
+                                <x-detail-button :href="route('admin.products.show', $product)"/>
+
+        <x-edit-button :href="route('admin.products.edit', ['product' => $product])"/>
 
                             @endif
 

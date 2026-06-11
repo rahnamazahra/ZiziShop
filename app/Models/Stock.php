@@ -11,7 +11,7 @@ class Stock extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['product_id', 'color_id', 'size_id', 'count'];
+    protected $fillable = ['product_id', 'color_id', 'size_id', 'count', 'price'];
 
     public function product(): BelongsTo
     {

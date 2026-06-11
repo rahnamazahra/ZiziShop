@@ -14,32 +14,32 @@ class VerifyPaymentController extends Controller
     {
         try {
             $cart = $request->user()->cart;
-            $receipt = Payment::amount($cart->total)
+
+            // مبلغ پرداخت‌شده از طریق درگاه = کل منهای اعتبار کیف پول
+            $walletUsed = (int) session('checkout_wallet_used', 0);
+            $payable    = max(0, (int) $cart->total - $walletUsed);
+
+            $receipt = Payment::amount($payable)
                 ->transactionId($cart->gateway_ref)
                 ->verify();
 
-            $order = $request->user()->orders()->create([
-                'voucher_id' => $cart->voucher_id,
-                'shipping_fee' => 3500,
-                'total' => $cart->total,
-                'address_text' => 'sss'
-            ]);
+            // خرج‌کردن اعتبار کیف پول استفاده‌شده در این خرید
+            $request->user()->wallet->spend($walletUsed);
 
-            $cart->products->each(function ($product) use ($order) {
-                $order->products()->attach($product, [
-                    'count' => $product->pivot->count,
-                    'price' => $product->price,
-                ]);
-            });
-
-            $order->payment()->create([
-                'user_id' => $request->user()->id,
-                'total' => $cart->total,
-                'gateway' => $receipt->getDriver(),
-                'tracking_code' => $receipt->getReferenceId(),
-            ]);
+            $order = \App\Models\Order::createFromCart(
+                $request->user(),
+                $cart,
+                $walletUsed,
+                $receipt->getDriver(),
+                $receipt->getReferenceId()
+            );
 
             NewProductOrderNotificationEvent::dispatch($order);
+
+            // پاداش کیف پول پس از خرید موفق
+            $reward = $request->user()->wallet->reward();
+            session()->flash('wallet_reward', $reward);
+            session()->forget('checkout_wallet_used');
 
             $cart->reset();
 

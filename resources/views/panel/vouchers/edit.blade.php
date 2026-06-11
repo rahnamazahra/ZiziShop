@@ -1,111 +1,103 @@
 @extends('layouts.panel.master')
 
-@section('title', 'کوپن')
+@section('title', 'ویرایش کوپن')
 
 @section('breadcrumb')
-    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'کوپن' => route('admin.vouchers.index'), 'ویرایش کوپن' => route('admin.vouchers.edit', ['voucher' => $voucher])]" title='کاربران' />
+    <x-panel.breadcrumb :breadcrumb="['داشبورد' => route('admin.dashboard'), 'کوپن‌ها' => route('admin.vouchers.index'), 'ویرایش' => '#']" title='ویرایش کوپن' />
 @endsection
 
+@php
+    $discountType = $voucher->amount ? 'amount' : 'percent';
+    $value        = $voucher->amount ?: $voucher->discount_percent;
+    $audience     = $voucher->user_id ? 'user' : 'all';
+    $productScope = $voucher->product_id ? 'product' : 'all';
+@endphp
+
 @section('content')
-    <form method="POST" action="{{ route('admin.vouchers.update', ['voucher' => $voucher]) }}">
+    <form method="POST" action="{{ route('admin.vouchers.update', $voucher) }}">
         @csrf
-        @method("PATCH")
-
+        @method('PUT')
         <x-panel.card>
-
             <x-panel.card-header>
-                <x-panel.card-title>
-                   <x-panel.heading level="1"> ایجاد کوپن جدید</x-panel.heading>
-                </x-panel.card-title>
+                <x-panel.card-title><x-panel.heading level="2">ویرایش کوپن</x-panel.heading></x-panel.card-title>
             </x-panel.card-header>
 
             <x-panel.card-body>
-                <x-panel.row>
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="code" class="required">کد تخفیف</x-form.label>
-                        <x-form.input type="text" name="code" value="{{ old('code', $voucher->code) }}"/>
-                        <x-form.input-error :messages="$errors->get('code')" class="mt-2" />
-                    </x-panel.div-section>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label required">کد تخفیف</label>
+                        <input type="text" name="code" class="form-control" value="{{ old('code', $voucher->code) }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label required">نوع تخفیف</label>
+                        <select name="discount_type" class="form-select" required>
+                            <option value="percent" @selected(old('discount_type', $discountType)==='percent')>درصدی</option>
+                            <option value="amount" @selected(old('discount_type', $discountType)==='amount')>مبلغی (تومان)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label required">مقدار</label>
+                        <input type="number" name="value" class="form-control" value="{{ old('value', $value) }}" min="1" required>
+                    </div>
 
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="discount" class="">میزان تخفیف</x-form.label>
-                        <x-form.input type="discount" name="discount" value="{{ old('discount', $voucher->discount) }}"/>
-                        <x-form.input-error :messages="$errors->get('discount')" class="mt-2" />
-                    </x-panel.div-section>
+                    <div class="col-md-6">
+                        <label class="form-label required">برای کدام کاربران؟</label>
+                        <select name="audience" class="form-select" required onchange="document.getElementById('mobile-box').style.display = this.value==='user' ? 'block':'none';">
+                            <option value="all" @selected(old('audience', $audience)==='all')>همه‌ی کاربران</option>
+                            <option value="user" @selected(old('audience', $audience)==='user')>کاربر خاص</option>
+                        </select>
+                        <div id="mobile-box" class="mt-2" style="display:{{ $audience==='user' ? 'block':'none' }};">
+                            <input type="text" name="mobile" class="form-control" value="{{ old('mobile', optional($voucher->user)->mobile) }}" maxlength="11">
+                        </div>
+                    </div>
 
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="start_date" class="">تاریخ شروع تخفیف</x-form.label>
-                        <x-form.input type="start_date" id="input_date" name="start_date" value="{{ old('start_date', $voucher->start_date) }}" data-jdp/>
-                        <span id="calendar"></span>
-                        <x-form.input-error :messages="$errors->get('start_date')" class="mt-2" />
-                    </x-panel.div-section>
+                    <div class="col-md-6">
+                        <label class="form-label required">برای کدام محصولات؟</label>
+                        <select name="product_scope" class="form-select" required onchange="document.getElementById('product-box').style.display = this.value==='product' ? 'block':'none';">
+                            <option value="all" @selected(old('product_scope', $productScope)==='all')>همه‌ی محصولات</option>
+                            <option value="product" @selected(old('product_scope', $productScope)==='product')>محصول خاص</option>
+                        </select>
+                        <div id="product-box" class="mt-2" style="display:{{ $productScope==='product' ? 'block':'none' }};">
+                            <select name="product_id" class="form-select">
+                                <option value="">— انتخاب محصول —</option>
+                                @foreach($products as $p)
+                                    <option value="{{ $p->id }}" @selected(old('product_id', $voucher->product_id)==$p->id)>{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="end_date" class="">تاریخ پایان تخفیف</x-form.label>
-                        <x-form.input type="end_date" id="input_date" name="end_date" value="{{ old('end_date', $voucher->end_date) }}" data-jdp/>
-                        <span id="calendar"></span>
-                        <x-form.input-error :messages="$errors->get('end_date')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="shipping_discount" class="required">تخفیف پستی </x-form.label>
-                        <x-form.input type="shipping_discount" name="shipping_discount" value="{{ old('shipping_discount', $voucher->shipping_discount) }}"/>
-                        <x-form.input-error :messages="$errors->get('shipping_discount')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="mininum_purchase_total" class="">حداقل مبلغ خرید</x-form.label>
-                        <x-form.input type="mininum_purchase_total" name="mininum_purchase_total" value="{{ old('mininum_purchase_total', $voucher->mininum_purchase_total) }}"/>
-                        <x-form.input-error :messages="$errors->get('mininum_purchase_total')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="maximum_discount" class="">حداکثر مبلغ تخفیف</x-form.label>
-                        <x-form.input type="maximum_discount" name="maximum_discount" value="{{ old('maximum_discount', $voucher->maximum_discount) }}"/>
-                        <x-form.input-error :messages="$errors->get('maximum_discount')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="maximum_shipping_discount" class="">حداکثر تخفیف پست</x-form.label>
-                        <x-form.input type="maximum_shipping_discount" name="maximum_shipping_discount" value="{{ old('maximum_shipping_discount', $voucher->maximum_shipping_discount) }}"/>
-                        <x-form.input-error :messages="$errors->get('maximum_shipping_discount')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="remaining" class="">باقیمانده</x-form.label>
-                        <x-form.input type="remaining" name="remaining" value="{{ old('remaining', $voucher->remaining) }}"/>
-                        <x-form.input-error :messages="$errors->get('remaining')" class="mt-2" />
-                    </x-panel.div-section>
-
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="comment" class="">توضیحات</x-form.label>
-                        <x-form.input type="comment" name="comment" value="{{ old('comment', $voucher->comment) }}"/>
-                        <x-form.input-error :messages="$errors->get('comment')" class="mt-2" />
-                    </x-panel.div-section>
-                </x-panel.row>
+                    <div class="col-md-3">
+                        <label class="form-label">تاریخ شروع</label>
+                        <input type="text" name="start_date" class="form-control" value="{{ old('start_date', $voucher->start_date) }}" data-jdp>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">تاریخ پایان</label>
+                        <input type="text" name="end_date" class="form-control" value="{{ old('end_date', $voucher->end_date) }}" data-jdp>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label required">تعداد قابل استفاده</label>
+                        <input type="number" name="remaining" class="form-control" value="{{ old('remaining', $voucher->remaining) }}" min="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">توضیحات</label>
+                        <input type="text" name="comment" class="form-control" value="{{ old('comment', $voucher->comment) }}">
+                    </div>
+                </div>
             </x-panel.card-body>
 
             <x-panel.card-footer>
-                <x-panel.div-section class="d-flex justify-content-end">
-
-                    <x-form.btn-a :href="route('admin.vouchers.index')" class="btn-light me-3" title="لغو">
-                        لغو
-                    </x-form.btn-a>
-
-                    <x-form.btn type="submit" class="btn-primary" title="ثبت">
-                        ثبت
-                    </x-form.btn>
-
-                </x-panel.div-section>
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ route('admin.vouchers.index') }}" class="btn btn-light">لغو</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
             </x-panel.card-footer>
-
         </x-panel.card>
     </form>
 @endsection
 
-
 @section('custom-scripts')
     <script>
-        jalaliDatepicker.startWatch();
+        if (typeof jalaliDatepicker !== 'undefined') { jalaliDatepicker.startWatch(); }
     </script>
 @endsection

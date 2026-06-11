@@ -17,7 +17,9 @@ trait HasSingleImage
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => Storage::disk('public')->url($this->image->path),
+            get: fn() => $this->image
+                ? Storage::disk('public')->url($this->image->path)
+                : asset('site/assets/img/product/2/prodcut-1.jpg'),
         );
     }
 

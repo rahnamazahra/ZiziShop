@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
 {
-    protected $fillable = ['path', 'imageable_type','imageable_id'];
+    protected $fillable = ['path', 'type', 'sort_order', 'imageable_type', 'imageable_id'];
 
     public $timestamps = false;
 
@@ -24,4 +24,13 @@ class Image extends Model
         return $this->morphTo();
     }
 
+    public function isVideo(): bool
+    {
+        return $this->type === 'video';
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return asset('storage/' . $this->path);
+    }
 }

@@ -120,18 +120,25 @@
                             <x-panel.card class="card-flush py-4">
                                 <x-panel.card-header>
                                     <x-panel.card-title>
-                                        <x-panel.heading level="2">تصاویر</x-panel.heading>
+                                        <x-panel.heading level="2">عکس و فیلم محصول</x-panel.heading>
                                     </x-panel.card-title>
                                 </x-panel.card-header>
 
-                                {{--  <x-panel.card-body>
+                                <x-panel.card-body>
                                     <div class="fv-row mb-2">
-                                        <input type="file" name="images"  class="form-control" multiple>
+                                        <input type="file" name="media[]" id="product-media" class="form-control" multiple accept="image/*,video/mp4,video/webm,video/quicktime">
                                     </div>
 
-                                    <div class="text-muted fs-7">عکس‌های بیشتری برای محصول انتخاب نمایید.</div>
+                                    <div class="text-muted fs-7">
+                                        حداکثر <strong>۵</strong> فایل (عکس یا فیلم) می‌توانید آپلود کنید. اولین فایل به‌عنوان مدیای شاخص محصول نمایش داده می‌شود.
+                                        فرمت‌های مجاز: JPG, PNG, WEBP, MP4, WEBM — حداکثر حجم هر فایل ۲۰ مگابایت.
+                                    </div>
 
-                                </x-panel.card-body>  --}}
+                                    <x-form.input-error :messages="$errors->get('media')" class="mt-2" />
+                                    <x-form.input-error :messages="$errors->get('media.0')" class="mt-2" />
+
+                                    <div id="media-preview" class="d-flex flex-wrap gap-3 mt-4"></div>
+                                </x-panel.card-body>
                             </x-panel.card>
 
                             <div class="card card-flush py-4">
@@ -145,10 +152,16 @@
                                 <div class="card-body pt-0">
 
                                     <div class="mb-10 fv-row">
-                                        <label for="price" class="required form-label">قیمت</label>
-                                        <input type="text" name="price" id="price" class="form-control mb-2" placeholder="قیمت (ریال)" value="{{ old('price') }}" />
-                                        <div class="text-muted fs-7">قیمت محصول را وارد نمایید</div>
+                                        <label for="price" class="required form-label">قیمت پایه (تومان)</label>
+                                        <input type="number" name="price" id="price" class="form-control mb-2" placeholder="قیمت پایه به تومان" value="{{ old('price') }}" />
+                                        <div class="text-muted fs-7">اگر محصول تنوع قیمت‌دار دارد، این مبلغ به‌عنوان «شروع قیمت از» استفاده می‌شود.</div>
                                         <x-form.input-error :messages="$errors->get('price')" class="mt-2" />
+                                    </div>
+
+                                    <div class="mb-10 fv-row">
+                                        <label for="cost_price" class="form-label">قیمت تمام‌شده (محرمانه)</label>
+                                        <input type="number" name="cost_price" id="cost_price" class="form-control mb-2" placeholder="فقط برای محاسبه‌ی سود" value="{{ old('cost_price') }}" />
+                                        <div class="text-muted fs-7">🔒 این مبلغ هرگز به مشتری نمایش داده نمی‌شود و فقط برای محاسبه‌ی سود در داشبورد است.</div>
                                     </div>
 
                                     <div class="fv-row mb-10">
@@ -258,16 +271,47 @@
                                     <div class="text-muted fs-7">بارکد مربوط به محصول را وارد نمایید.</div>
                                 </div>
 
-								<div class="mb-10 fv-row fv-plugins-icon-container">
-                                    <x-form.label id="inventory" class="form-label">موجودی</x-form.label>
+                                <div class="text-muted fs-7">موجودی کل از روی جمعِ تعداد تنوع‌ها (بخش «تنوع محصول») محاسبه می‌شود.</div>
 
-                                    <div class="d-flex gap-3">
-                                        <x-form.input type="number" name="inventory" class="form-control mb-2" value="{{ old('inventory', 0) }}" />
+                            </x-panel.card-body>
+                        </x-panel.card>
+
+                        {{-- ریز متریال و قیمت تمام‌شده (فقط ادمین) --}}
+                        <x-panel.card class="card-flush py-4">
+                            <x-panel.card-header>
+                                <x-panel.card-title>
+                                    <x-panel.heading level="2">مواد مصرفی و قیمت تمام‌شده (محرمانه)</x-panel.heading>
+                                </x-panel.card-title>
+                            </x-panel.card-header>
+                            <x-panel.card-body>
+                                <div class="text-muted fs-7 mb-4">نام، رنگ، وزن، تعداد و قیمت هر متریال را وارد کنید؛ «قیمت تمام‌شده» به‌صورت خودکار از جمع آن‌ها محاسبه می‌شود. این بخش فقط برای شما (ادمین) و محاسبه‌ی سود است.</div>
+                                <div id="materials">
+                                    <div class="form-group">
+                                        <div data-repeater-list="materials">
+                                            @foreach(old('materials', [[]]) as $m)
+                                            <div data-repeater-item>
+                                                <div class="form-group row gr-material-row align-items-end">
+                                                    <div class="col-md-3"><label class="form-label">نام متریال</label>
+                                                        <input type="text" name="name" class="form-control mb-2" placeholder="مثلاً زنجیر طلا" value="{{ $m['name'] ?? '' }}"/></div>
+                                                    <div class="col-md-2"><label class="form-label">رنگ</label>
+                                                        <input type="text" name="color" class="form-control mb-2" placeholder="طلایی" value="{{ $m['color'] ?? '' }}"/></div>
+                                                    <div class="col-md-2"><label class="form-label">وزن (گرم)</label>
+                                                        <input type="number" name="weight" class="form-control mb-2" placeholder="0" value="{{ $m['weight'] ?? '' }}"/></div>
+                                                    <div class="col-md-2"><label class="form-label">تعداد</label>
+                                                        <input type="number" name="quantity" class="form-control mb-2 gr-mat-qty" placeholder="1" value="{{ $m['quantity'] ?? 1 }}"/></div>
+                                                    <div class="col-md-2"><label class="form-label">قیمت واحد (ت)</label>
+                                                        <input type="number" name="unit_price" class="form-control mb-2 gr-mat-price" placeholder="0" value="{{ $m['unit_price'] ?? '' }}"/></div>
+                                                    <div class="col-md-1"><a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8"><i class="la la-trash-o"></i></a></div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
-
-                                    <div class="text-muted fs-7">تعداد کل محصول را وارد نمایید</div>
+                                    <div class="d-flex justify-content-between align-items-center form-group mt-5">
+                                        <div class="fs-5 fw-bold">قیمت تمام‌شده‌ی کل: <span id="gr-materials-total" class="text-primary">۰</span> تومان</div>
+                                        <a href="javascript:;" data-repeater-create class="btn btn-light-primary"><i class="la la-plus"></i>افزودن متریال</a>
+                                    </div>
                                 </div>
-
                             </x-panel.card-body>
                         </x-panel.card>
 
@@ -339,29 +383,24 @@
                                             <div data-repeater-item>
                                                 <div class="form-group row">
 
-                                                    <div class="fv-row fv-plugins-icon-container col-md-4">
-                                                        <label for="size" class="form-label">سایز</label>
-                                                        <select class="form-select form-select-solid" name="size" data-control="select2" data-placeholder="لطفا انتخاب کنید">
-                                                            <option></option>
-                                                            @foreach($sizes as $size)
-                                                                <option value="{{ $size->id }}">{{ $size->name }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                    <div class="fv-row fv-plugins-icon-container col-md-3">
+                                                        <label class="form-label">سایز</label>
+                                                        <input type="text" name="size" class="form-control mb-2" list="sizes-datalist" placeholder="مثلاً ۱۵ سانتی‌متر" autocomplete="off"/>
                                                     </div>
 
-                                                    <div class="mb-10 fv-row fv-plugins-icon-container col-md-4">
-                                                        <label for="color" class="form-label">رنگ</label>
-                                                        <select class="form-select form-select-solid" name="color" data-control="select2" data-placeholder="لطفا انتخاب کنید">
-                                                            <option></option>
-                                                            @foreach($colors as $color)
-                                                                <option value="{{ $color->id }}">{{ $color->name }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                    <div class="fv-row fv-plugins-icon-container col-md-3">
+                                                        <label class="form-label">رنگ</label>
+                                                        <input type="text" name="color" class="form-control mb-2" list="colors-datalist" placeholder="مثلاً طلایی" autocomplete="off"/>
                                                     </div>
 
-                                                    <div class="mb-10 fv-row fv-plugins-icon-container col-md-3">
-                                                        <label for="inventory"  class="form-label">تعداد</label>
-                                                        <x-form.input type="number"  name="product_inventory" class="form-control mb-2" placeholder="تعداد" value="" />
+                                                    <div class="fv-row fv-plugins-icon-container col-md-3">
+                                                        <label class="form-label">قیمت این تنوع (تومان)</label>
+                                                        <input type="number" name="price" class="form-control mb-2" placeholder="خالی = قیمت پایه"/>
+                                                    </div>
+
+                                                    <div class="fv-row fv-plugins-icon-container col-md-2">
+                                                        <label class="form-label">تعداد</label>
+                                                        <input type="number" name="product_inventory" class="form-control mb-2" placeholder="تعداد"/>
                                                     </div>
                                                     <div class="col-md-1">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -391,7 +430,17 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end">
+            {{-- فهرست سایز/رنگ‌های موجود برای تکمیل خودکار؛ مقدار جدید هم می‌توان تایپ کرد --}}
+            <datalist id="sizes-datalist">
+                @foreach($sizes as $size)<option value="{{ $size->name }}">@endforeach
+            </datalist>
+            <datalist id="colors-datalist">
+                @foreach($colors as $color)<option value="{{ $color->name }}">@endforeach
+            </datalist>
+
+            <x-demo-checkbox :checked="old('is_demo')" />
+
+            <div class="d-flex justify-content-end mt-4">
                 <a href="{{ route('admin.products.index') }}" class="btn btn-light me-5">لفو</a>
                 <x-form.btn type="submit" class="btn btn-primary" title="ثبت">
                     <x-panel.span>ثبت</x-panel.span>
@@ -437,6 +486,37 @@
     </script>
 
     <script>
+        // پیش‌نمایش زنده‌ی عکس/فیلم انتخاب‌شده + کنترل سقف ۵ مورد
+        (function () {
+            const input   = document.getElementById('product-media');
+            const preview = document.getElementById('media-preview');
+            if (!input || !preview) return;
+
+            const MAX = 5;
+            input.addEventListener('change', function () {
+                preview.innerHTML = '';
+                let files = Array.from(this.files);
+                if (files.length > MAX) {
+                    alert('حداکثر ۵ عکس یا فیلم مجاز است.');
+                    this.value = '';
+                    return;
+                }
+                files.forEach(function (file) {
+                    const url = URL.createObjectURL(file);
+                    const box = document.createElement('div');
+                    box.style.cssText = 'width:110px;height:90px;border:1px solid #eee;border-radius:6px;overflow:hidden;';
+                    if (file.type.startsWith('video')) {
+                        box.innerHTML = '<video src="' + url + '" muted style="width:100%;height:100%;object-fit:cover;"></video>';
+                    } else {
+                        box.innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;">';
+                    }
+                    preview.appendChild(box);
+                });
+            });
+        })();
+    </script>
+
+    <script>
         $('#features').repeater({
             initEmpty: false,
 
@@ -468,6 +548,30 @@
                 $(this).slideUp(deleteElement);
             }
         });
+
+        // محاسبه‌ی زنده‌ی قیمت تمام‌شده از روی متریال‌ها + پرکردن فیلد cost_price
+        (function () {
+            function faNum(n){ try{ return new Intl.NumberFormat('fa-IR').format(n); }catch(e){ return n; } }
+            function recalc() {
+                var total = 0;
+                document.querySelectorAll('#materials .gr-material-row').forEach(function (row) {
+                    var q = parseInt(row.querySelector('.gr-mat-qty')?.value || 0) || 0;
+                    var p = parseInt(row.querySelector('.gr-mat-price')?.value || 0) || 0;
+                    total += q * p;
+                });
+                var el = document.getElementById('gr-materials-total');
+                if (el) el.textContent = faNum(total);
+                var cost = document.getElementById('cost_price');
+                if (cost && total > 0) cost.value = total;
+            }
+            document.addEventListener('input', function (e) {
+                if (e.target.closest && e.target.closest('#materials')) recalc();
+            });
+            document.addEventListener('click', function (e) {
+                if (e.target.closest && e.target.closest('#materials')) setTimeout(recalc, 50);
+            });
+            recalc();
+        })();
     </script>
 @endsection
 

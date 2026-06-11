@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Address extends Model
 {
-    protected $fillable = ['address', 'postal_code', 'city_id', 'postal_code', 'mobile', 'receiver', 'city_id', 'user_id'];
+    protected $fillable = ['body', 'postal_code', 'national_code', 'city_id', 'mobile', 'receiver', 'user_id'];
 
     public function city(): BelongsTo
     {

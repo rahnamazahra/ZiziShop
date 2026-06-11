@@ -1,91 +1,56 @@
 @extends('layouts.site.master')
 @section('content')
-    <section class="breadcrumb__area breadcrumb__style-2 include-bg pt-50 pb-20">
-    <div class="container">
-        <div class="row">
-            <div class="col-xxl-12">
-                <div class="breadcrumb__content p-relative z-index-1">
-                <div class="breadcrumb__list has-icon">
-                    <span class="breadcrumb-icon">
-                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.42393 16H15.5759C15.6884 16 15.7962 15.9584 15.8758 15.8844C15.9553 15.8104 16 15.71 16 15.6054V6.29143C16 6.22989 15.9846 6.1692 15.9549 6.11422C15.9252 6.05923 15.8821 6.01147 15.829 5.97475L8.75305 1.07803C8.67992 1.02736 8.59118 1 8.5 1C8.40882 1 8.32008 1.02736 8.24695 1.07803L1.17098 5.97587C1.11791 6.01259 1.0748 6.06035 1.04511 6.11534C1.01543 6.17033 0.999976 6.23101 1 6.29255V15.6063C1.00027 15.7108 1.04504 15.8109 1.12451 15.8847C1.20398 15.9585 1.31165 16 1.42393 16ZM10.1464 15.2107H6.85241V10.6202H10.1464V15.2107ZM1.84866 6.48977L8.4999 1.88561L15.1517 6.48977V15.2107H10.9946V10.2256C10.9946 10.1209 10.95 10.0206 10.8704 9.94654C10.7909 9.87254 10.683 9.83096 10.5705 9.83096H6.42848C6.316 9.83096 6.20812 9.87254 6.12858 9.94654C6.04904 10.0206 6.00435 10.1209 6.00435 10.2256V15.2107H1.84806L1.84866 6.48977Z" fill="#55585B" stroke="#55585B" stroke-width="0.5"/>
-                        </svg>
-                    </span>
-                    <span><a href="#">صفحه اصلی</a></span>
-                    <span><a href="#">{{ $product->category->name }}</a></span>
-                    <span><a href="#">{{ $product->name }}</a></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-    <!-- breadcrumb area end -->
-
     <!-- product details area start -->
-    <section class="tp-product-details-area">
+    <section class="tp-product-details-area pt-50">
         <div class="tp-product-details-top pb-115">
             <div class="container">
                 <div class="row">
                     <div class="col-xl-7 col-lg-6">
-                    <div class="tp-product-details-thumb-wrapper tp-tab d-sm-flex">
+                    @php $media = $product->images; @endphp
+                    @if($media->isNotEmpty())
+                    <div class="tp-product-details-thumb-wrapper tp-tab d-sm-flex gr-pd-gallery">
+                        @if($media->count() > 1)
                         <nav>
                             <div class="nav nav-tabs flex-sm-column" id="productDetailsNavThumb" role="tablist">
-                                <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-1" aria-selected="true">
-                                <img src="assets/img/product/details/nav/product-details-nav-1.jpg" alt="">
-                                <span class="nav-video-btn">
-                                    <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.36851 12.784H3.946C1.73475 12.784 1 11.3145 1 9.83801V3.946C1 1.73475 1.73475 1 3.946 1H8.36851C10.5798 1 11.3145 1.73475 11.3145 3.946V9.83801C11.3145 12.0493 10.5728 12.784 8.36851 12.784Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M13.2598 10.4609L11.3145 9.09634V4.68083L13.2598 3.31629C14.2115 2.65152 14.9952 3.05738 14.9952 4.22599V9.55818C14.9952 10.7268 14.2115 11.1327 13.2598 10.4609Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M7.64779 6.19231C8.22749 6.19231 8.69743 5.72237 8.69743 5.14266C8.69743 4.56296 8.22749 4.09302 7.64779 4.09302C7.06809 4.09302 6.59814 4.56296 6.59814 5.14266C6.59814 5.72237 7.06809 6.19231 7.64779 6.19231Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </span>
+                                @foreach($media as $i => $m)
+                                <button class="nav-link {{ $i === 0 ? 'active' : '' }}" id="nav-{{ $i }}-tab" data-bs-toggle="tab" data-bs-target="#nav-{{ $i }}" type="button" role="tab" aria-controls="nav-{{ $i }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}">
+                                    @if($m->isVideo())
+                                        <video src="{{ $m->url }}" muted preload="metadata"></video>
+                                        <span class="nav-video-btn">
+                                            <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.36851 12.784H3.946C1.73475 12.784 1 11.3145 1 9.83801V3.946C1 1.73475 1.73475 1 3.946 1H8.36851C10.5798 1 11.3145 1.73475 11.3145 3.946V9.83801C11.3145 12.0493 10.5728 12.784 8.36851 12.784Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M13.2598 10.4609L11.3145 9.09634V4.68083L13.2598 3.31629C14.2115 2.65152 14.9952 3.05738 14.9952 4.22599V9.55818C14.9952 10.7268 14.2115 11.1327 13.2598 10.4609Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                    @else
+                                        <img src="{{ $m->url }}" alt="{{ $product->name }}">
+                                    @endif
                                 </button>
-                                <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-2" aria-selected="false">
-                                <img src="assets/img/product/details/nav/product-details-nav-2.jpg" alt="">
-                                </button>
-                                <button class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-3" aria-selected="false">
-                                <img src="assets/img/product/details/nav/product-details-nav-3.jpg" alt="">
-                                </button>
-                                <button class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="nav-4" aria-selected="false">
-                                <img src="assets/img/product/details/nav/product-details-nav-4.jpg" alt="">
-                                </button>
-                                <button class="nav-link" id="nav-5-tab" data-bs-toggle="tab" data-bs-target="#nav-5" type="button" role="tab" aria-controls="nav-5" aria-selected="false">
-                                <img src="assets/img/product/details/nav/product-details-nav-5.jpg" alt="">
-                                </button>
+                                @endforeach
                             </div>
                         </nav>
+                        @endif
                         <div class="tab-content m-img" id="productDetailsNavContent">
-                            <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab" tabindex="0">
+                            @foreach($media as $i => $m)
+                            <div class="tab-pane fade {{ $i === 0 ? 'show active' : '' }}" id="nav-{{ $i }}" role="tabpanel" aria-labelledby="nav-{{ $i }}-tab" tabindex="0">
                                 <div class="tp-product-details-nav-main-thumb">
-                                <img src="assets/img/product/details/main/product-details-main-1.jpg" alt="">
-                                <div class="tp-product-details-thumb-video">
-                                    <a href="https://youtu.be/-WRZI63emjs" class="tp-product-details-thumb-video-btn popup-video"><i class="fas fa-play"></i></a>
-                                </div>
+                                    @if($m->isVideo())
+                                        <video class="gr-pd-video" src="{{ $m->url }}" controls playsinline preload="metadata"></video>
+                                    @else
+                                        <img src="{{ $m->url }}" alt="{{ $product->name }}">
+                                    @endif
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab" tabindex="0">
-                                <div class="tp-product-details-nav-main-thumb">
-                                <img src="assets/img/product/details/main/product-details-main-2.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab" tabindex="0">
-                                <div class="tp-product-details-nav-main-thumb">
-                                <img src="assets/img/product/details/main/product-details-main-3.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab" tabindex="0">
-                                <div class="tp-product-details-nav-main-thumb">
-                                <img src="assets/img/product/details/main/product-details-main-4.jpg" alt="">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nav-5" role="tabpanel" aria-labelledby="nav-5-tab" tabindex="0">
-                                <div class="tp-product-details-nav-main-thumb">
-                                <img src="assets/img/product/details/main/product-details-main-5.jpg" alt="">
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
+                    @else
+                    <div class="tp-product-details-thumb-wrapper gr-pd-gallery gr-pd-gallery--single">
+                        <div class="tp-product-details-nav-main-thumb">
+                            <img src="{{ $product->poster_url }}" alt="{{ $product->name }}">
+                        </div>
+                    </div>
+                    @endif
                     </div>
 
                     <div class="col-xl-5 col-lg-6">
@@ -130,8 +95,19 @@
 
                             <p>{{ $product->description }}</p>
 
+                            @php
+                                $hasVariantPrices = $product->hasPricedVariants();
+                                $productVoucher = $product->activeProductVoucher();
+                            @endphp
                             <div class="tp-product-details-price-wrapper mb-20">
-                                @if($product->discount)
+                                @if($hasVariantPrices)
+                                    <span class="tp-product-price-2 new-price" id="gr-pd-price">از {{ number_format($product->starting_price) }} تومان</span>
+                                @elseif($productVoucher)
+                                    @php $discounted = max(0, (int) $product->price - $productVoucher->discountFor($product)); @endphp
+                                    <span class="tp-product-price-2 new-price">{{ number_format($discounted) }} تومان</span>
+                                    <span class="tp-product-price-2 old-price">{{ number_format($product->price) }} تومان</span>
+                                    <span class="gr-coupon-badge">با کد «{{ $productVoucher->code }}»</span>
+                                @elseif($product->discount)
                                     <span class="tp-product-price-2 new-price">{{ $product->new_price }}</span>
                                     <span class="tp-product-price-2 old-price">{{ $product->old_price }}</span>
                                 @else
@@ -139,56 +115,124 @@
                                 @endif
                             </div>
 
-                            <div class="tp-product-details-variation">
-                                <div class="tp-product-details-variation">
-                                    <div class="tp-product-details-variation-item">
-                                        <h4 class="tp-product-details-variation-title">رنگ :</h4>
-                                        <div class="tp-product-details-variation-list">
-                                            @foreach($product->colors as $color)
-                                                <button type="button" class="color tp-color-variation-btn" >
-                                                    <span data-bg-color="{{ $color->code }}"></span>
-                                                    <span class="tp-color-variation-tootltip">{{ $color->name }}</span>
-                                                </button>
-                                            @endforeach
-                                        </div>
-                                    </div>
+                            @if($product->isInStock())
+                            @php
+                                $variantData = $product->stocks->map(fn($s) => [
+                                    'stock_id' => $s->id,
+                                    'color_id' => (int) $s->color_id,
+                                    'size_id'  => (int) $s->size_id,
+                                    'price'    => (int) ($s->price ?: $product->price),
+                                    'count'    => (int) $s->count,
+                                ])->values();
+                                $colorsU = $product->colors->unique('id');
+                                $sizesU  = $product->sizes->unique('id');
+                            @endphp
 
-                                    <div class="tp-product-details-variation-item">
-                                        <h4 class="tp-product-details-variation-title">سایز :</h4>
-                                        <div class="tp-product-details-variation-list">
-                                            @foreach($product->sizes as $size)
-                                                <button type="button" class="">
-                                                    <span class="">{{ $size->name }}</span>
-                                                </button>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                            </div>
-
-                            <!-- actions -->
-                            <div class="tp-product-details-action-wrapper">
-                                <div class="tp-product-details-action-item-wrapper d-flex align-items-center">
-                                    <div class="tp-product-details-quantity">
-                                    <div class="tp-product-quantity mb-15 ml-15">
-                                        <span class="tp-cart-minus">
-                                            <svg width="11" height="2" viewBox="0 0 11 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 1H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        </span>
-                                        <input class="tp-cart-input" type="text" value="1">
-                                        <span class="tp-cart-plus">
-                                            <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M5.5 10.5V1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    </div>
-                                    <div class="tp-product-details-add-to-cart mb-15 w-100">
-                                    <button class="tp-product-details-add-to-cart-btn w-100">افزودن به سبد خرید</button>
+                            <div class="gr-variants" data-variants='@json($variantData)' data-base-price="{{ (int) $product->price }}">
+                                @if($colorsU->isNotEmpty())
+                                <div class="gr-variant-group">
+                                    <span class="gr-variant-label">رنگ:</span>
+                                    <div class="gr-variant-opts">
+                                        @foreach($colorsU as $color)
+                                            <button type="button" class="gr-color-btn" data-color-id="{{ $color->id }}" title="{{ $color->name }}" style="background-color: {{ $color->code ?: '#cccccc' }};"></button>
+                                        @endforeach
                                     </div>
                                 </div>
-                                <button class="tp-product-details-buy-now-btn w-100">اکنون بخرید</button>
+                                @endif
+
+                                @if($sizesU->isNotEmpty())
+                                <div class="gr-variant-group">
+                                    <span class="gr-variant-label">سایز:</span>
+                                    <div class="gr-variant-opts">
+                                        @foreach($sizesU as $size)
+                                            <button type="button" class="gr-size-opt" data-size-id="{{ $size->id }}">{{ $size->name }}</button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+
+                                <div class="gr-variant-status" id="gr-variant-status"></div>
+                            </div>
+
+                            <div class="gr-buy-row">
+                                <div class="gr-qty">
+                                    <button type="button" class="gr-qty-btn" id="gr-qty-minus">−</button>
+                                    <input type="text" id="gr-qty-input" value="1" readonly>
+                                    <button type="button" class="gr-qty-btn" id="gr-qty-plus">+</button>
+                                </div>
+                                <a href="{{ route('add.to.cart', $product) }}" id="gr-add-to-cart" data-base-url="{{ route('add.to.cart', $product) }}" class="gr-add-btn">افزودن به سبد خرید</a>
+                            </div>
+                            @else
+                            {{-- محصول ناموجود: امکان ثبت سفارش ویژه (پیش‌سفارش) --}}
+                            <div class="gr-preorder">
+                                <h4>این محصول فعلاً موجود نیست — می‌توانید سفارش بدهید</h4>
+                                <p class="gr-preorder-hint">
+                                    تعداد و توضیحات دلخواه (رنگ، سایز و …) را وارد کنید. پس از بررسی و تأیید کارشناسان ما و اعلام قیمت، می‌توانید پرداخت را انجام دهید تا این محصول دوباره برای شما تولید شود.
+                                </p>
+
+                                <form method="POST" action="{{ route('custom.order.store', $product) }}">
+                                    @csrf
+                                    @guest('web')
+                                        <label for="contact_name">نام و نام خانوادگی</label>
+                                        <input type="text" name="contact_name" id="contact_name" maxlength="100" value="{{ old('contact_name') }}" placeholder="نام شما" required>
+                                        @error('contact_name') <div class="text-danger fs-8 mb-2">{{ $message }}</div> @enderror
+                                    @endguest
+
+                                    <div class="gr-preorder-row">
+                                        <div>
+                                            <label for="quantity">تعداد</label>
+                                            <input type="number" name="quantity" id="quantity" min="1" max="1000" value="{{ old('quantity', 1) }}" required>
+                                        </div>
+                                        <div>
+                                            <label for="contact_mobile">شماره تماس</label>
+                                            <input type="text" name="contact_mobile" id="contact_mobile" maxlength="11" value="{{ old('contact_mobile', auth('web')->user()->mobile ?? '') }}" placeholder="09xxxxxxxxx" required>
+                                        </div>
+                                    </div>
+                                    <label for="description">توضیحات سفارش</label>
+                                    <textarea name="description" id="description" maxlength="1000" placeholder="رنگ، سایز، یا هر توضیح دیگری برای سفارش این محصول…" required>{{ old('description') }}</textarea>
+
+                                    @error('quantity') <div class="text-danger fs-8 mb-2">{{ $message }}</div> @enderror
+                                    @error('contact_mobile') <div class="text-danger fs-8 mb-2">{{ $message }}</div> @enderror
+                                    @error('description') <div class="text-danger fs-8 mb-2">{{ $message }}</div> @enderror
+
+                                    <button type="submit" class="gr-preorder-btn">ثبت سفارش ویژه</button>
+
+                                    @guest('web')
+                                        <p class="gr-preorder-hint mt-2" style="margin-bottom:0;">
+                                            حساب کاربری دارید؟ <a href="{{ route('auth.login.form') }}" style="color:#343265;font-weight:700;">وارد شوید</a> تا سفارش‌هایتان را پیگیری کنید.
+                                        </p>
+                                    @endguest
+                                </form>
+                            </div>
+                            @endif
+
+                            <div class="gr-pd-extra">
+                                <div class="gr-wallet-reward">
+                                    🎁 با خرید این محصول، کیف پول شما
+                                    <strong>{{ number_format(auth('web')->check() ? auth('web')->user()->wallet->nextReward() : \App\Models\Wallet::FIRST_CHARGE) }} تومان</strong>
+                                    شارژ می‌شود — اعتبار ۳ ماهه و قابل استفاده در خرید بعدی. (هر خرید {{ number_format(\App\Models\Wallet::STEP) }} تومان بیشتر از قبل!)
+                                </div>
+
+                                @if($product->weight || (is_array($product->features) && count($product->features)))
+                                <table class="gr-pd-table">
+                                    <tbody>
+                                        @if($product->weight)
+                                            <tr><th>وزن کلی</th><td>{{ $product->weight }} گرم</td></tr>
+                                        @endif
+                                        @if(is_array($product->features))
+                                            @foreach($product->features as $feature)
+                                                @if(!empty($feature['feature_key']))
+                                                    <tr><th>{{ $feature['feature_key'] }}</th><td>{{ $feature['feature_value'] ?? '' }}</td></tr>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                @endif
+
+                                <div class="gr-shipping-note">
+                                    آماده‌سازی و ارسال مرسوله‌ی شما در بازه‌ی زمانی <strong>۳ تا ۱۰ روز کاری</strong> انجام می‌شود. برای ارسال سریع‌تر یا اطلاع دقیق از زمان ارسال، قبل از خرید با پشتیبانی تماس بگیرید.
+                                </div>
                             </div>
 
                             <div class="tp-product-details-action-sm">
@@ -231,6 +275,7 @@
             </div>
         </div>
 
+        {{-- بخش شرح / اطلاعات اضافی / نظرات کاربران موقتاً غیرفعال شده است
         <div class="tp-product-details-bottom pb-120">
             <div class="container">
                 <div class="row">
@@ -453,7 +498,7 @@
 
                                                                     <h3 class="tp-product-details-review-avater-title">{{ $comment->user->name }}</h3>
 
-                                                                    <span class="tp-product-details-review-avater-meta">{{ $comment->created_at }}</span>
+                                                                    <span class="tp-product-details-review-avater-meta">{{ gdate($comment->created_at) }}</span>
 
                                                                     <div class="tp-product-details-review-avater-comment">
                                                                         <p>{{ $comment->comment }}</p>
@@ -518,101 +563,11 @@
                 </div>
             </div>
         </div>
+        --}}
 
     </section>
     <!-- product details area end -->
 
-    <!-- related product area start -->
-    <section class="tp-related-product pb-120">
-        <div class="container">
-
-            <div class="row">
-                <div class="tp-section-title-wrapper-6 text-center mb-40">
-                    <h3 class="tp-section-title-6">محصولات مرتبط</h3>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="tp-product-related-slider">
-                    <div class="tp-product-related-slider-active swiper-container mb-10">
-                        <div class="swiper-wrapper">
-                            @foreach($relatedProducts as $product)
-                                <div class="swiper-slide">
-
-                                    <div class="tp-product-item-3 tp-product-style-primary mb-50">
-                                        <div class="tp-product-thumb-3 mb-15 fix p-relative z-index-1">
-                                            <a href="product-details.html">
-                                                <img src="assets/img/product/related/product-related-1.jpg" alt="">
-                                            </a>
-
-                                            <!-- product badge -->
-                                            <div class="tp-product-badge" dir="ltr">
-                                                <span class="product-offer">-25%</span>
-                                            </div>
-
-                                            <!-- product action -->
-                                            <div class="tp-product-action-3 tp-product-action-4 has-shadow tp-product-action-primaryStyle">
-                                                <div class="tp-product-action-item-3 d-flex flex-column">
-                                                    <button type="button" class="tp-product-action-btn-3 tp-product-add-cart-btn">
-                                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M3.34706 4.53799L3.85961 10.6239C3.89701 11.0923 4.28036 11.4436 4.74871 11.4436H4.75212H14.0265H14.0282C14.4711 11.4436 14.8493 11.1144 14.9122 10.6774L15.7197 5.11162C15.7384 4.97924 15.7053 4.84687 15.6245 4.73995C15.5446 4.63218 15.4273 4.5626 15.2947 4.54393C15.1171 4.55072 7.74498 4.54054 3.34706 4.53799ZM4.74722 12.7162C3.62777 12.7162 2.68001 11.8438 2.58906 10.728L1.81046 1.4837L0.529505 1.26308C0.181854 1.20198 -0.0501969 0.873587 0.00930333 0.526523C0.0705036 0.17946 0.406255 -0.0462578 0.746256 0.00805037L2.51426 0.313534C2.79901 0.363599 3.01576 0.5995 3.04042 0.888012L3.24017 3.26484C15.3748 3.26993 15.4139 3.27587 15.4726 3.28266C15.946 3.3514 16.3625 3.59833 16.6464 3.97849C16.9303 4.35779 17.0493 4.82535 16.9813 5.29376L16.1747 10.8586C16.0225 11.9177 15.1011 12.7162 14.0301 12.7162H14.0259H4.75402H4.74722Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.6629 7.67446H10.3067C9.95394 7.67446 9.66919 7.38934 9.66919 7.03804C9.66919 6.68673 9.95394 6.40161 10.3067 6.40161H12.6629C13.0148 6.40161 13.3004 6.68673 13.3004 7.03804C13.3004 7.38934 13.0148 7.67446 12.6629 7.67446Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.38171 15.0212C4.63756 15.0212 4.84411 15.2278 4.84411 15.4836C4.84411 15.7395 4.63756 15.9469 4.38171 15.9469C4.12501 15.9469 3.91846 15.7395 3.91846 15.4836C3.91846 15.2278 4.12501 15.0212 4.38171 15.0212Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.38082 15.3091C4.28477 15.3091 4.20657 15.3873 4.20657 15.4833C4.20657 15.6763 4.55592 15.6763 4.55592 15.4833C4.55592 15.3873 4.47687 15.3091 4.38082 15.3091ZM4.38067 16.5815C3.77376 16.5815 3.28076 16.0884 3.28076 15.4826C3.28076 14.8767 3.77376 14.3845 4.38067 14.3845C4.98757 14.3845 5.48142 14.8767 5.48142 15.4826C5.48142 16.0884 4.98757 16.5815 4.38067 16.5815Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9701 15.0212C14.2259 15.0212 14.4333 15.2278 14.4333 15.4836C14.4333 15.7395 14.2259 15.9469 13.9701 15.9469C13.7134 15.9469 13.5068 15.7395 13.5068 15.4836C13.5068 15.2278 13.7134 15.0212 13.9701 15.0212Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9692 15.3092C13.874 15.3092 13.7958 15.3874 13.7958 15.4835C13.7966 15.6781 14.1451 15.6764 14.1443 15.4835C14.1443 15.3874 14.0652 15.3092 13.9692 15.3092ZM13.969 16.5815C13.3621 16.5815 12.8691 16.0884 12.8691 15.4826C12.8691 14.8767 13.3621 14.3845 13.969 14.3845C14.5768 14.3845 15.0706 14.8767 15.0706 15.4826C15.0706 16.0884 14.5768 16.5815 13.969 16.5815Z" fill="currentColor"/>
-                                                        </svg>
-                                                        <span class="tp-product-tooltip">به سبد خرید اضافه کنید</span>
-                                                    </button>
-                                                    <button type="button" class="tp-product-action-btn-3 tp-product-quick-view-btn" data-bs-toggle="modal" data-bs-target="#producQuickViewModal">
-                                                        <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.99948 5.06828C7.80247 5.06828 6.82956 6.04044 6.82956 7.23542C6.82956 8.42951 7.80247 9.40077 8.99948 9.40077C10.1965 9.40077 11.1703 8.42951 11.1703 7.23542C11.1703 6.04044 10.1965 5.06828 8.99948 5.06828ZM8.99942 10.7482C7.0581 10.7482 5.47949 9.17221 5.47949 7.23508C5.47949 5.29705 7.0581 3.72021 8.99942 3.72021C10.9407 3.72021 12.5202 5.29705 12.5202 7.23508C12.5202 9.17221 10.9407 10.7482 8.99942 10.7482Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.41273 7.2346C3.08674 10.9265 5.90646 13.1215 8.99978 13.1224C12.0931 13.1215 14.9128 10.9265 16.5868 7.2346C14.9128 3.54363 12.0931 1.34863 8.99978 1.34773C5.90736 1.34863 3.08674 3.54363 1.41273 7.2346ZM9.00164 14.4703H8.99804H8.99714C5.27471 14.4676 1.93209 11.8629 0.0546754 7.50073C-0.0182251 7.33091 -0.0182251 7.13864 0.0546754 6.96883C1.93209 2.60759 5.27561 0.00288103 8.99714 0.000185582C8.99894 -0.000712902 8.99894 -0.000712902 8.99984 0.000185582C9.00164 -0.000712902 9.00164 -0.000712902 9.00254 0.000185582C12.725 0.00288103 16.0676 2.60759 17.945 6.96883C18.0188 7.13864 18.0188 7.33091 17.945 7.50073C16.0685 11.8629 12.725 14.4676 9.00254 14.4703H9.00164Z" fill="currentColor"/>
-                                                        </svg>
-                                                        <span class="tp-product-tooltip">مشاهده سریع</span>
-                                                    </button>
-                                                    <button type="button" class="tp-product-action-btn-3 tp-product-add-to-wishlist-btn">
-                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.60355 7.98635C2.83622 11.8048 7.7062 14.8923 9.0004 15.6565C10.299 14.8844 15.2042 11.7628 16.3973 7.98985C17.1806 5.55102 16.4535 2.46177 13.5644 1.53473C12.1647 1.08741 10.532 1.35966 9.40484 2.22804C9.16921 2.40837 8.84214 2.41187 8.60476 2.23329C7.41078 1.33952 5.85105 1.07778 4.42936 1.53473C1.54465 2.4609 0.820172 5.55014 1.60355 7.98635ZM9.00138 17.0711C8.89236 17.0711 8.78421 17.0448 8.68574 16.9914C8.41055 16.8417 1.92808 13.2841 0.348132 8.3872C0.347252 8.3872 0.347252 8.38633 0.347252 8.38633C-0.644504 5.30321 0.459792 1.42874 4.02502 0.284605C5.69904 -0.254635 7.52342 -0.0174044 8.99874 0.909632C10.4283 0.00973263 12.3275 -0.238878 13.9681 0.284605C17.5368 1.43049 18.6446 5.30408 17.6538 8.38633C16.1248 13.2272 9.59485 16.8382 9.3179 16.9896C9.21943 17.0439 9.1104 17.0711 9.00138 17.0711Z" fill="currentColor"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.203 6.67473C13.8627 6.67473 13.5743 6.41474 13.5462 6.07159C13.4882 5.35202 13.0046 4.7445 12.3162 4.52302C11.9689 4.41097 11.779 4.04068 11.8906 3.69666C12.0041 3.35175 12.3724 3.16442 12.7206 3.27297C13.919 3.65901 14.7586 4.71561 14.8615 5.96479C14.8905 6.32632 14.6206 6.64322 14.2575 6.6721C14.239 6.67385 14.2214 6.67473 14.203 6.67473Z" fill="currentColor"/>
-                                                        </svg>
-                                                        <span class="tp-product-tooltip">افزودن به لیست علاقه مندی ها</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div class="tp-product-add-cart-btn-large-wrapper">
-                                                <button type="button" class="tp-product-add-cart-btn-large">
-                                                        به سبد خرید اضافه کنید
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="tp-product-content-3">
-                                            <div class="tp-product-tag-3">
-                                                <span>تبلت</span>
-                                                </div>
-                                                <h3 class="tp-product-title-3">
-                                                <a href="product-details.html">{{ $product->name }}</a>
-                                                </h3>
-                                                <div class="tp-product-price-wrapper-3">
-                                                <span class="tp-product-price-3 new-price">102 تومان</span>
-                                                <span class="tp-product-price-3 old-price">226 تومان</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="tp-related-swiper-scrollbar tp-swiper-scrollbar"></div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-    <!-- related product area end -->
 
     <div class="modal fade tp-product-modal" id="producQuickViewModal" tabindex="-1" aria-labelledby="producQuickViewModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -738,7 +693,7 @@
                                 </div>
                             </div>
                             <div class="tp-product-details-add-to-cart mb-15 w-100">
-                                <button class="tp-product-details-add-to-cart-btn w-100">به سبد خرید اضافه کنید</button>
+                                <a href="{{ route('add.to.cart', $product) }}" class="tp-product-details-add-to-cart-btn w-100 d-inline-flex align-items-center justify-content-center">به سبد خرید اضافه کنید</a>
                             </div>
                         </div>
                         <button class="tp-product-details-buy-now-btn w-100">خرید</button>
@@ -775,4 +730,111 @@
         </div>
     </div>
 
+    <script>
+        // هنگام تعویض تب گالری، فیلم‌های مخفی متوقف شوند
+        document.querySelectorAll('#productDetailsNavThumb [data-bs-toggle="tab"]').forEach(function (btn) {
+            btn.addEventListener('shown.bs.tab', function () {
+                document.querySelectorAll('#productDetailsNavContent video').forEach(function (v) {
+                    const pane = v.closest('.tab-pane');
+                    if (!pane || !pane.classList.contains('active')) {
+                        v.pause();
+                    }
+                });
+            });
+        });
+
+        // انتخاب تنوع (رنگ/سایز) + بررسی موجودی + تعداد + ساخت لینک افزودن به سبد
+        (function () {
+            const box = document.querySelector('.gr-variants');
+            const addBtn = document.getElementById('gr-add-to-cart');
+            const qtyInput = document.getElementById('gr-qty-input');
+            if (!addBtn) return;
+
+            const variants = box ? JSON.parse(box.dataset.variants || '[]') : [];
+            const basePrice = box ? parseInt(box.dataset.basePrice || '0', 10) : 0;
+            const priceEl = document.getElementById('gr-pd-price');
+            const statusEl = document.getElementById('gr-variant-status');
+            const baseUrl = addBtn.dataset.baseUrl;
+            const fmt = v => new Intl.NumberFormat('fa-IR').format(v);
+
+            let selColor = null, selSize = null, qty = 1;
+            const hasColors = box && box.querySelector('.gr-color-btn');
+            const hasSizes  = box && box.querySelector('.gr-size-opt');
+
+            function findStock() {
+                return variants.find(v =>
+                    (!hasColors || v.color_id === selColor) &&
+                    (!hasSizes  || v.size_id === selSize)
+                );
+            }
+
+            function refresh() {
+                // اگر تنوع دارد ولی انتخاب کامل نشده
+                if ((hasColors && !selColor) || (hasSizes && !selSize)) {
+                    statusEl.textContent = 'لطفاً رنگ و سایز را انتخاب کنید.';
+                    statusEl.className = 'gr-variant-status is-hint';
+                    addBtn.classList.add('is-disabled');
+                    addBtn.href = 'javascript:void(0)';
+                    return;
+                }
+                const stock = variants.length ? findStock() : null;
+                if (variants.length && (!stock || stock.count < qty)) {
+                    statusEl.textContent = 'این ترکیب موجود نیست.';
+                    statusEl.className = 'gr-variant-status is-out';
+                    addBtn.classList.add('is-disabled');
+                    addBtn.href = 'javascript:void(0)';
+                    return;
+                }
+                // موجود
+                statusEl.textContent = stock ? ('موجود (' + fmt(stock.count) + ' عدد)') : '';
+                statusEl.className = 'gr-variant-status is-in';
+                addBtn.classList.remove('is-disabled');
+                let url = baseUrl + '?qty=' + qty;
+                if (stock) url += '&stock=' + stock.stock_id;
+                addBtn.href = url;
+                if (priceEl && stock) priceEl.textContent = fmt(stock.price) + ' تومان';
+                else if (priceEl) priceEl.textContent = fmt(basePrice) + ' تومان';
+            }
+
+            document.querySelectorAll('.gr-color-btn').forEach(b => b.addEventListener('click', function () {
+                document.querySelectorAll('.gr-color-btn').forEach(x => x.classList.remove('is-active'));
+                this.classList.add('is-active');
+                selColor = parseInt(this.dataset.colorId, 10);
+                refresh();
+            }));
+            document.querySelectorAll('.gr-size-opt').forEach(b => b.addEventListener('click', function () {
+                document.querySelectorAll('.gr-size-opt').forEach(x => x.classList.remove('is-active'));
+                this.classList.add('is-active');
+                selSize = parseInt(this.dataset.sizeId, 10);
+                refresh();
+            }));
+
+            document.getElementById('gr-qty-plus').addEventListener('click', () => { qty++; qtyInput.value = fmt(qty); refresh(); });
+            document.getElementById('gr-qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; qtyInput.value = fmt(qty); refresh(); } });
+
+            addBtn.addEventListener('click', function (e) {
+                if (this.classList.contains('is-disabled')) { e.preventDefault(); }
+            });
+
+            qtyInput.value = fmt(qty);
+            refresh();
+        })();
+
+        // زوم روی عکس اصلی محصول (در همه حالت‌ها: چندعکسی و تک‌عکسی)
+        document.querySelectorAll('.gr-pd-gallery .tp-product-details-nav-main-thumb').forEach(function (box) {
+            const img = box.querySelector('img');
+            if (!img) return; // فیلم‌ها زوم نمی‌شوند
+            box.classList.add('gr-zoomable');
+            box.addEventListener('mousemove', function (e) {
+                const r = box.getBoundingClientRect();
+                const x = ((e.clientX - r.left) / r.width) * 100;
+                const y = ((e.clientY - r.top) / r.height) * 100;
+                img.style.transformOrigin = x + '% ' + y + '%';
+                img.style.transform = 'scale(2.2)';
+            });
+            box.addEventListener('mouseleave', function () {
+                img.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 @endsection

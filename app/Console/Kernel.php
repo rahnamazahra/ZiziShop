@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // هر روز ساعت ۹ صبح: تبریک تولد + کوپن هدیه برای متولدین امروز
+        $schedule->command('birthdays:greet')->dailyAt('09:00');
     }
 
     /**

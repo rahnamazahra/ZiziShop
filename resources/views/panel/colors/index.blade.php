@@ -50,6 +50,8 @@
                                     <x-delete-button />
                                 </x-form>
 
+                                <x-detail-button :href="route('admin.colors.show', $color)"/>
+
                                 <x-edit-button :href="route('admin.colors.edit', $color)"/>
 
 

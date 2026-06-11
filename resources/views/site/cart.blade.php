@@ -36,11 +36,11 @@
                             @foreach($cart->products as $product)
                               <tr>
                                  <!-- img -->
-                                 <td class="tp-cart-img"><a href="product-details.html"> <img src="assets/img/product/cart/product-cart-1.jpg" alt=""></a></td>
+                                 <td class="tp-cart-img"><a href="{{ route('products.show', $product->slug) }}"> <img src="{{ $product->poster_url }}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;" alt="{{ $product->name }}"></a></td>
                                  <!-- title -->
-                                 <td class="tp-cart-title"><a href="product-details.html">{{ $product->title }}</a></td>
+                                 <td class="tp-cart-title"><a href="{{ route('products.show', $product->slug) }}">{{ $product->name }}</a></td>
                                  <!-- price -->
-                                 <td class="tp-cart-price"><span>{{ $product->old_price }}</span></td>
+                                 <td class="tp-cart-price"><span>{{ number_format($cart->lineUnitPrice($product)) }} تومان</span></td>
                                  <!-- quantity -->
                                  <td class="tp-cart-quantity">
                                     <div class="tp-product-quantity mt-10 mb-10">
@@ -138,6 +138,57 @@
                             <span>مجموع</span>
                             <span>{{ $cart->total }}</span>
                          </div>
+                         <div class="gr-checkout-address mt-20">
+                            <h4 class="tp-cart-checkout-shipping-title">اطلاعات ارسال</h4>
+
+                            @auth('web')
+                                @if($cart->address)
+                                    <div class="gr-addr-current">آدرس انتخاب‌شده: {{ $cart->address->receiver }} — {{ optional($cart->address->city)->name }}</div>
+                                @endif
+
+                                @if($addresses->count())
+                                    <form method="post" id="grSelectAddrForm" class="mb-15">
+                                        @csrf
+                                        <select class="form-control mb-10" onchange="document.getElementById('grSelectAddrForm').action='{{ url('address') }}/'+this.value+'/select';">
+                                            <option value="">انتخاب آدرس قبلی...</option>
+                                            @foreach($addresses as $a)
+                                                <option value="{{ $a->id }}" {{ $cart->address_id == $a->id ? 'selected' : '' }}>{{ $a->receiver }} — {{ \Illuminate\Support\Str::limit($a->body, 30) }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="gr-card-add-btn" style="width:100%;">انتخاب این آدرس</button>
+                                    </form>
+                                @endif
+
+                                <details class="gr-addr-new" {{ $addresses->count() ? '' : 'open' }}>
+                                    <summary>افزودن آدرس جدید</summary>
+                                    <form method="post" action="{{ route('address.store') }}" class="mt-10">
+                                        @csrf
+                                        <input name="receiver" class="form-control mb-10" placeholder="نام گیرنده" value="{{ auth('web')->user()->name }}" required>
+                                        <input name="mobile" class="form-control mb-10" placeholder="موبایل" value="{{ auth('web')->user()->mobile }}" required>
+                                        <input name="national_code" class="form-control mb-10" placeholder="کد ملی (۱۰ رقم)" required>
+                                        <input name="postal_code" class="form-control mb-10" placeholder="کد پستی" required>
+                                        <select name="city_id" class="form-control mb-10" required>
+                                            <option value="">انتخاب شهر</option>
+                                            @foreach($provinces as $p)
+                                                <optgroup label="{{ $p->name }}">
+                                                    @foreach($p->cities as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        </select>
+                                        <label style="font-size:13px;color:#343265;font-weight:600;display:block;margin-bottom:4px;">تاریخ تولد</label>
+                                        <input type="date" name="birthday" class="form-control mb-2">
+                                        <div style="font-size:12px;color:#1f9d55;background:#eaf7ef;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.9;">
+                                            🎁 با ثبت تاریخ تولد، روز تولدتان یک کوپن تخفیف ۲۰۰٬۰۰۰ تومانی (اعتبار ۱۰ روزه) برایتان پیامک می‌شود.
+                                        </div>
+                                        <textarea name="body" class="form-control mb-10" rows="2" placeholder="آدرس کامل" required></textarea>
+                                        <button type="submit" class="gr-card-add-btn" style="width:100%;">ذخیره و انتخاب</button>
+                                    </form>
+                                </details>
+                            @else
+                                <p>برای تکمیل خرید ابتدا <a href="{{ route('auth.login.form') }}">وارد شوید</a>.</p>
+                            @endauth
+                         </div>
+
                          <div class="tp-cart-checkout-proceed">
                             <form method="post" action="{{ route('checkout')}}" class="mt-16 flex justify-center">
                             @csrf

@@ -30,11 +30,14 @@ class RegisteredUserController extends Controller
     public function store(RegisterRequest $request): RedirectResponse
     {
 
-        $user = User::firstOrCreate([
-            'name' => $request->name,
-            'mobile' => $request->mobile,
-            'password' => Hash::make($request->password),
-        ]);
+        $user = User::firstOrCreate(
+            ['mobile' => $request->mobile],
+            [
+                'first_name' => $request->first_name,
+                'last_name'  => $request->last_name,
+                'password'   => Hash::make($request->password),
+            ]
+        );
 
         session()->put('mobile', $request->mobile);
 

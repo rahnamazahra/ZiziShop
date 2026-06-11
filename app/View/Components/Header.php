@@ -20,8 +20,8 @@ class Header extends Component
         return view('components.site.header', [
             'categories' => $categories, //how using method in model => Category::getAllCategories
             'vouchers'  => Voucher::all(),
-            'total_count_cart' => auth()->user()?->cart->count ?? 0,
-            'total_count_favorite' => auth()->user()?->favorites->count() ?? 0,
+            'total_count_cart' => \App\Models\Cart::existing()?->count ?? 0,
+            'total_count_favorite' => auth('web')->user()?->favorites->count() ?? 0,
         ]);
     }
 }

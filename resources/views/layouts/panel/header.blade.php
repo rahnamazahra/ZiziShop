@@ -1,3 +1,74 @@
+<style>
+    /* یکدست‌سازی اندازه‌ی آیکن زنگوله و آواتار پروفایل در هدر پنل */
+    #kt_header_user_menu_toggle .btn.btn-icon,
+    #kt_header_user_menu_toggle .symbol { width: 40px !important; height: 40px !important; }
+    #kt_header_user_menu_toggle .symbol > img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    #kt_header_user_menu_toggle { gap: 6px; }
+    /* نمایش جزئیات با هاور روی دکمه‌ی چشم */
+    .btn[title="مشاهده جزئیات"]:hover { background: #eef2ff !important; }
+
+    /* یکدست‌سازی نوار دکمه‌های بالای لیست‌ها (ایجاد/اکسل/سطل‌زباله) */
+    .card-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card-toolbar .btn,
+    .card-toolbar form > .btn {
+        display: inline-flex !important; align-items: center; justify-content: center; gap: 6px;
+        height: 40px; padding: 0 16px; white-space: nowrap; line-height: 1;
+    }
+    .card-toolbar .btn .svg-icon,
+    .card-toolbar .btn .svg-icon-svg { margin: 0 !important; display: inline-flex; }
+    .card-toolbar form { margin: 0; }
+    /* دکمه‌های اقدامِ ردیف (ویرایش/حذف/جزئیات) هم‌اندازه و وسط‌چین */
+    td .btn-group .btn { display: inline-flex !important; align-items: center; justify-content: center; }
+
+    /* ====== پالت رنگ سازمانی پنل (ایندیگو) ====== */
+    :root { --bs-primary: #343265; --bs-primary-rgb: 52,50,101; --bs-link-color: #343265; }
+    .btn-primary { background-color: #343265 !important; border-color: #343265 !important; color: #fff !important; }
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active { background-color: #222143 !important; border-color: #222143 !important; }
+    .btn-light-primary { background-color: #e8e8f3 !important; color: #343265 !important; }
+    .btn-light-primary:hover { background-color: #343265 !important; color: #fff !important; }
+    .text-primary { color: #343265 !important; }
+    .bg-primary { background-color: #343265 !important; }
+    .badge-light-primary { background-color: #e8e8f3 !important; color: #343265 !important; }
+    .text-hover-primary:hover, a.text-hover-primary:hover { color: #343265 !important; }
+    .text-active-primary.active, .nav-line-tabs .nav-link.active { color: #343265 !important; border-color: #343265 !important; }
+    /* تب‌های نوتیفیکیشن روی هدر تیره → سفید */
+    .menu-sub .nav-line-tabs .nav-link { color: rgba(255,255,255,.75) !important; border-color: transparent !important; }
+    .menu-sub .nav-line-tabs .nav-link.active { color: #fff !important; border-color: #fff !important; }
+    .menu-sub .menu-item .menu-link.active { background: #ecedf7 !important; color: #343265 !important; }
+    a { color: #343265; }
+    .form-control:focus, .form-select:focus { border-color: #7796c9; box-shadow: 0 0 0 .2rem rgba(52,50,101,.12); }
+    .page-item.active .page-link { background-color: #343265 !important; border-color: #343265 !important; }
+    .page-link { color: #343265; }
+
+    /* سایدبار تیره → ایندیگو */
+    .aside.aside-dark { background-color: #222143 !important; }
+    .aside-dark .menu .menu-item .menu-link.active,
+    .aside-dark .menu .menu-item.here > .menu-link { background-color: #343265 !important; }
+    .aside-dark .menu .menu-item .menu-link:hover { background-color: rgba(255,255,255,.06) !important; }
+
+    /* کارت‌های رنگیِ داشبورد با پالت */
+    .card.bg-primary { background: linear-gradient(135deg,#343265,#222143) !important; }
+    .card.bg-info    { background: linear-gradient(135deg,#527aba,#343265) !important; }
+    .card.bg-success { background: linear-gradient(135deg,#7796c9,#527aba) !important; }
+    .card.bg-dark    { background: linear-gradient(135deg,#222143,#0f0e1f) !important; }
+    .card.bg-danger  { background: linear-gradient(135deg,#464387,#343265) !important; }
+    .card.bg-warning { background: linear-gradient(135deg,#9bb2d7,#7796c9) !important; }
+
+    /* هدر بالای پنل */
+    .header { border-bottom: 2px solid #343265; }
+
+    /* اینپوت‌های پنل: بورد ایندیگوی تمیز + رادیوس یکدست */
+    .form-control, .form-select, .form-control-solid, textarea.form-control,
+    .input-group-text, select.form-select {
+        border: 1px solid #cdd3e6 !important; border-radius: 8px !important;
+        background-color: #fff !important;
+    }
+    .form-control:focus, .form-select:focus, .form-control-solid:focus {
+        border-color: #343265 !important; box-shadow: 0 0 0 .2rem rgba(52,50,101,.12) !important;
+    }
+    .btn { border-radius: 8px !important; }
+    .card { border-radius: 12px !important; }
+</style>
 <!--begin::Header-->
 <div id="kt_header" class="header align-items-stretch">
     <!--begin::Container-->
@@ -19,9 +90,7 @@
 
         <!--begin::Mobile logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
-            <a href="" class="d-lg-none">
-                <img alt="Logo" src="{{ asset('panel/assets/media/logos/fav.png') }}" class="h-30px"/>
-            </a>
+            <a href="{{ route('admin.dashboard') }}" class="d-lg-none fw-bold text-dark fs-5">گالری رهنما</a>
         </div>
         <!--end::Mobile logo-->
 
@@ -37,423 +106,147 @@
                 <div class="d-flex align-items-center ms-1 ms-lg-3" id="kt_header_user_menu_toggle">
 
                     <!--begin::Menu- wrapper-->
+                    @php
+                        $newOrderNotifications = auth()->user()->unreadNotifications;
+                        $outOfStockProducts = \App\Models\Product::where('inventory', 0)->latest('id')->take(15)->get();
+                        $notifCount = $newOrderNotifications->count() + $outOfStockProducts->count();
+                    @endphp
 
-                    <div class="btn btn-icon btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px position-relative show menu-dropdown" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-                        <!--begin::Svg Icon | path: icons/duotune/general/gen022.svg-->
+                    <div class="btn btn-icon btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px position-relative" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+                        <!--begin::Bell Icon-->
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path opacity="0.3" d="M12 22C13.6569 22 15 20.6569 15 19C15 17.3431 13.6569 16 12 16C10.3431 16 9 17.3431 9 19C9 20.6569 10.3431 22 12 22Z" fill="currentColor"/>
                                 <path d="M19 15V18C19 18.6 18.6 19 18 19H6C5.4 19 5 18.6 5 18V15C6.1 15 7 14.1 7 13V10C7 7.6 8.7 5.6 11 5.1V3C11 2.4 11.4 2 12 2C12.6 2 13 2.4 13 3V5.1C15.3 5.6 17 7.6 17 10V13C17 14.1 17.9 15 19 15ZM11 10C11 9.4 11.4 9 12 9C12.6 9 13 8.6 13 8C13 7.4 12.6 7 12 7C10.3 7 9 8.3 9 10C9 10.6 9.4 11 10 11C10.6 11 11 10.6 11 10Z" fill="currentColor"/>
                             </svg>
                         </span>
-                        @if(auth()->user()->unreadNotifications)
-                            <span class="bullet bullet-dot bg-success h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink"></span>
+                        @if($notifCount > 0)
+                            <span class="bullet bullet-dot bg-danger h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink"></span>
                         @endif
-                        <!--end::Svg Icon-->
-                    </div>
 
-                    <div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px show" data-kt-menu="true" style="z-index: 105; position: fixed; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(-229px, 65px, 0px);" data-popper-placement="bottom-end">
+                        <div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px" data-kt-menu="true">
                         <!--begin::Heading-->
-                        <div class="d-flex flex-column bgi-no-repeat rounded-top" style="background-image:url('{{ asset('panel/assets/media/misc/pattern-1.jpg') }}')">
-                            <!--begin::Title-->
-                            <h3 class="text-white fw-bold px-9 mt-10 mb-6">
-                                اعلان سفارشات
-                                <span class="fs-8 opacity-75 ps-3">
-
-                                </span>
+                        <div class="d-flex flex-column rounded-top" style="background:linear-gradient(135deg,#343265 0%,#222143 100%);">
+                            <h3 class="text-white fw-bold px-7 mt-7 mb-5">
+                                اعلان‌ها <span class="fs-8 opacity-75 ps-3">{{ $notifCount }} مورد</span>
                             </h3>
-                            <!--end::Title-->
 
-                            <!--begin::Tabs-->
-                            <ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-bold px-9">
+                            <ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-bold px-7">
                                 <li class="nav-item">
-                                    <a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab" href="#kt_topbar_notifications_1">جدید({{ auth()->user()->unreadNotifications()->count() }})</a>
+                                    <a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab" href="#kt_topbar_notifications_orders" onclick="event.stopPropagation();">سفارش‌های جدید ({{ $newOrderNotifications->count() }})</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_2"> آماده سازی({{ auth()->user()->unreadNotifications()->count() }})</a>
+                                    <a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_stock" onclick="event.stopPropagation();">اتمام موجودی ({{ $outOfStockProducts->count() }})</a>
                                 </li>
-                                 <li class="nav-item">
-                                    <a class="nav-link text-white opacity-75 opacity-state-100 pb-4" data-bs-toggle="tab" href="#kt_topbar_notifications_3"> ارسالی({{ auth()->user()->unreadNotifications()->count() }})</a>
-                                </li>
-
                             </ul>
-                            <!--end::Tabs-->
                         </div>
                         <!--end::Heading-->
 
-                        <!--begin::Tab content-->
                         <div class="tab-content">
-
-                            <!--begin::Tab panel-->
-                            <div class="tab-pane fade active show" id="kt_topbar_notifications_1" role="tabpanel">
-                                <!--begin::Items-->
+                            <!--begin::Orders tab-->
+                            <div class="tab-pane fade active show" id="kt_topbar_notifications_orders" role="tabpanel">
                                 <div class="scroll-y mh-325px my-5 px-8">
-                                    @foreach (auth()->user()->unreadNotifications as $notification)
+                                    @forelse ($newOrderNotifications as $notification)
                                         <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center">
-                                            <!--begin::Symbol-->
-                                            <div class="symbol symbol-35px me-4">
-                                                <span class="symbol-label bg-light-primary">
-                                                    <!--begin::Svg Icon | path: icons/duotune/technology/teh008.svg-->
-                                                    <span class="svg-icon svg-icon-2 svg-icon-primary">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                            <path opacity="0.3" d="M11 6.5C11 9 9 11 6.5 11C4 11 2 9 2 6.5C2 4 4 2 6.5 2C9 2 11 4 11 6.5ZM17.5 2C15 2 13 4 13 6.5C13 9 15 11 17.5 11C20 11 22 9 22 6.5C22 4 20 2 17.5 2ZM6.5 13C4 13 2 15 2 17.5C2 20 4 22 6.5 22C9 22 11 20 11 17.5C11 15 9 13 6.5 13ZM17.5 13C15 13 13 15 13 17.5C13 20 15 22 17.5 22C20 22 22 20 22 17.5C22 15 20 13 17.5 13Z" fill="currentColor"></path>
-                                                            <path d="M17.5 16C17.5 16 17.4 16 17.5 16L16.7 15.3C16.1 14.7 15.7 13.9 15.6 13.1C15.5 12.4 15.5 11.6 15.6 10.8C15.7 9.99999 16.1 9.19998 16.7 8.59998L17.4 7.90002H17.5C18.3 7.90002 19 7.20002 19 6.40002C19 5.60002 18.3 4.90002 17.5 4.90002C16.7 4.90002 16 5.60002 16 6.40002V6.5L15.3 7.20001C14.7 7.80001 13.9 8.19999 13.1 8.29999C12.4 8.39999 11.6 8.39999 10.8 8.29999C9.99999 8.19999 9.20001 7.80001 8.60001 7.20001L7.89999 6.5V6.40002C7.89999 5.60002 7.19999 4.90002 6.39999 4.90002C5.59999 4.90002 4.89999 5.60002 4.89999 6.40002C4.89999 7.20002 5.59999 7.90002 6.39999 7.90002H6.5L7.20001 8.59998C7.80001 9.19998 8.19999 9.99999 8.29999 10.8C8.39999 11.5 8.39999 12.3 8.29999 13.1C8.19999 13.9 7.80001 14.7 7.20001 15.3L6.5 16H6.39999C5.59999 16 4.89999 16.7 4.89999 17.5C4.89999 18.3 5.59999 19 6.39999 19C7.19999 19 7.89999 18.3 7.89999 17.5V17.4L8.60001 16.7C9.20001 16.1 9.99999 15.7 10.8 15.6C11.5 15.5 12.3 15.5 13.1 15.6C13.9 15.7 14.7 16.1 15.3 16.7L16 17.4V17.5C16 18.3 16.7 19 17.5 19C18.3 19 19 18.3 19 17.5C19 16.7 18.3 16 17.5 16Z" fill="currentColor"></path>
-                                                        </svg>
+                                            <div class="d-flex align-items-center">
+                                                <div class="symbol symbol-35px me-4">
+                                                    <span class="symbol-label bg-light-primary">
+                                                        <span class="svg-icon svg-icon-2 svg-icon-primary">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                                <path opacity="0.3" d="M18.041 22.041C18.5932 22.041 19.041 21.5932 19.041 21.041C19.041 20.4887 18.5932 20.041 18.041 20.041C17.4887 20.041 17.041 20.4887 17.041 21.041C17.041 21.5932 17.4887 22.041 18.041 22.041Z" fill="currentColor"/>
+                                                                <path opacity="0.3" d="M6.04095 22.041C6.59324 22.041 7.04095 21.5932 7.04095 21.041C7.04095 20.4887 6.59324 20.041 6.04095 20.041C5.48867 20.041 5.04095 20.4887 5.04095 21.041C5.04095 21.5932 5.48867 22.041 6.04095 22.041Z" fill="currentColor"/>
+                                                                <path d="M7.04 16V4H5.04L4.04 2H1.04C0.44 2 0 2.44 0 3.04C0 3.64 0.44 4.08 1.04 4.08H2.74L5.04 16H19.04L21.34 8H8.04" fill="currentColor"/>
+                                                            </svg>
+                                                        </span>
                                                     </span>
-                                                    <!--end::Svg Icon-->
-                                                </span>
+                                                </div>
+                                                <div class="mb-0 me-2">
+                                                    <a onclick="event.stopPropagation()" href="{{ route('admin.orders.show', ['order' => $notification->data['order_id']]) }}" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
+                                                        سفارش جدید #{{ $notification->data['order_id'] }}
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <!--end::Symbol-->
-
-                                            <!--begin::Title-->
-                                            <div class="mb-0 me-2">
-                                                <a href="{{ route('admin.orders.show', ['order' => $notification->data['order_id']]) }}" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
-                                                    شماره سفارش: {{ $notification->data['order_id'] }}
-                                                </a>
-                                            </div>
-                                            <!--end::Title-->
+                                            <span class="badge badge-light fs-8">
+                                                {{ gdatetime($notification->data['order_careated_at']) }}
+                                            </span>
                                         </div>
-                                        <!--end::Section-->
-
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">
-                                            {{ \Carbon\Carbon::createFromTimeStamp(strtotime($notification->data['order_careated_at']))->diffForHumans() }}
-                                        </span>
-                                        <!--end::Label-->
-                                    </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="text-center text-gray-500 py-10">سفارش جدیدی نیست.</div>
+                                    @endforelse
                                 </div>
-                                <!--end::Items-->
-
-                                <!--begin::View more-->
                                 <div class="py-3 text-center border-top">
-                                    <a href="{{ route('admin.orders.index') }}" class="btn btn-color-gray-600 btn-active-color-primary">View All
-                                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                                    <span class="svg-icon svg-icon-5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-                                            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-                                        </svg>
-                                    </span>
-                                    <!--end::Svg Icon--></a>
+                                    <a onclick="event.stopPropagation();" href="{{ route('admin.orders.index') }}" class="btn btn-color-gray-600 btn-active-color-primary">مشاهده همه سفارش‌ها</a>
                                 </div>
-                                <!--end::View more-->
                             </div>
-                            <!--end::Tab panel-->
+                            <!--end::Orders tab-->
 
-                            <!--begin::Tab panel-->
-                            <div class="tab-pane fade" id="kt_topbar_notifications_2" role="tabpanel">
-                                <!--begin::Wrapper-->
-                                <div class="d-flex flex-column px-9">
-                                    <!--begin::Section-->
-                                    <div class="pt-10 pb-0">
-                                        <!--begin::Title-->
-                                        <h3 class="text-dark text-center fw-bolder">Get Pro Access</h3>
-                                        <!--end::Title-->
-                                        <!--begin::Text-->
-                                        <div class="text-center text-gray-600 fw-bold pt-1">Outlines keep you honest. They stoping you from amazing poorly about drive</div>
-                                        <!--end::Text-->
-                                        <!--begin::Action-->
-                                        <div class="text-center mt-5 mb-9">
-                                            <a href="#" class="btn btn-sm btn-primary px-6" data-bs-toggle="modal" data-bs-target="#kt_modal_upgrade_plan">Upgrade</a>
-                                        </div>
-                                        <!--end::Action-->
-                                    </div>
-                                    <!--end::Section-->
-                                    <!--begin::Illustration-->
-                                    <div class="text-center px-4">
-                                        <img class="mw-100 mh-200px" alt="image" src="assets/media/illustrations/sketchy-1/1.png">
-                                    </div>
-                                    <!--end::Illustration-->
-                                </div>
-                                <!--end::Wrapper-->
-                            </div>
-                            <!--end::Tab panel-->
-
-                            <!--begin::Tab panel-->
-                            <div class="tab-pane fade" id="kt_topbar_notifications_3" role="tabpanel">
-                                <!--begin::Items-->
+                            <!--begin::Out-of-stock tab-->
+                            <div class="tab-pane fade" id="kt_topbar_notifications_stock" role="tabpanel">
                                 <div class="scroll-y mh-325px my-5 px-8">
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-success me-4">200 OK</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">New order</a>
-                                            <!--end::Title-->
+                                    @forelse ($outOfStockProducts as $product)
+                                        <div class="d-flex flex-stack py-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="symbol symbol-35px me-4">
+                                                    <span class="symbol-label bg-light-danger">
+                                                        <span class="svg-icon svg-icon-2 svg-icon-danger">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                                <path opacity="0.3" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" fill="currentColor"/>
+                                                                <path d="M12 13C11.4 13 11 12.6 11 12V8C11 7.4 11.4 7 12 7C12.6 7 13 7.4 13 8V12C13 12.6 12.6 13 12 13ZM12 17C12.6 17 13 16.6 13 16C13 15.4 12.6 15 12 15C11.4 15 11 15.4 11 16C11 16.6 11.4 17 12 17Z" fill="currentColor"/>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-0 me-2">
+                                                    <a onclick="event.stopPropagation();" href="{{ route('admin.products.show', $product) }}" class="fs-6 text-gray-800 text-hover-primary fw-bolder">{{ $product->name }}</a>
+                                                    <div class="text-gray-500 fs-8">موجودی به صفر رسید — کد: {{ $product->sku ?: '—' }}</div>
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-light-danger fs-8">ناموجود</span>
                                         </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Just now</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">New customer</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">2 hrs</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-success me-4">200 OK</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Payment process</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">5 hrs</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Search query</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">2 days</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-success me-4">200 OK</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">API connection</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">1 week</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-success me-4">200 OK</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Database restore</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Mar 5</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">System update</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">May 15</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Server OS update</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Apr 3</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-warning me-4">300 WRN</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">API rollback</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Jun 30</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Refund process</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Jul 10</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Withdrawal process</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Sep 10</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
-                                    <!--begin::Item-->
-                                    <div class="d-flex flex-stack py-4">
-                                        <!--begin::Section-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <!--begin::Code-->
-                                            <span class="w-70px badge badge-light-danger me-4">500 ERR</span>
-                                            <!--end::Code-->
-                                            <!--begin::Title-->
-                                            <a href="#" class="text-gray-800 text-hover-primary fw-bold">Mail tasks</a>
-                                            <!--end::Title-->
-                                        </div>
-                                        <!--end::Section-->
-                                        <!--begin::Label-->
-                                        <span class="badge badge-light fs-8">Dec 10</span>
-                                        <!--end::Label-->
-                                    </div>
-                                    <!--end::Item-->
+                                    @empty
+                                        <div class="text-center text-gray-500 py-10">محصول ناموجودی نیست.</div>
+                                    @endforelse
                                 </div>
-                                <!--end::Items-->
-                                <!--begin::View more-->
                                 <div class="py-3 text-center border-top">
-                                    <a href="" class="btn btn-color-gray-600 btn-active-color-primary">View All
-                                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                                    <span class="svg-icon svg-icon-5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-                                            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-                                        </svg>
-                                    </span>
-                                    <!--end::Svg Icon--></a>
+                                    <a onclick="event.stopPropagation();" href="{{ route('admin.products.index') }}" class="btn btn-color-gray-600 btn-active-color-primary">مشاهده محصولات</a>
                                 </div>
-                                <!--end::View more-->
                             </div>
-                            <!--end::Tab panel-->
-
+                            <!--end::Out-of-stock tab-->
                         </div>
-                        <!--end::Tab content-->
-                    </div>
+                        </div>{{-- /notification menu --}}
+                    </div>{{-- /bell trigger --}}
 
-                    <div class="btn btn-icon btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px position-relative" id="kt_drawer_chat_toggle">
-                        <!--begin::Svg Icon | path: icons/duotune/communication/com012.svg-->
+                    <div class="cursor-pointer btn btn-icon btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="currentColor"></path>
-                                <rect x="6" y="12" width="7" height="2" rx="1" fill="currentColor"></rect>
-                                <rect x="6" y="7" width="12" height="2" rx="1" fill="currentColor"></rect>
+                                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
                             </svg>
                         </span>
-                        <!--end::Svg Icon-->
-                        <span class="bullet bullet-dot bg-success h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink"></span>
-                    </div>
 
-                    <div class="cursor-pointer symbol symbol-30px symbol-md-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-                        <img alt="Logo" src="{{ asset('panel/assets/media/avatars/man.png') }}"/>
-                    </div>
-
-                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px" data-kt-menu="true">
+                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px" data-kt-menu="true">
                         <!--begin::Menu item-->
                         <div class="menu-item px-3">
                             <div class="menu-content d-flex align-items-center px-3">
-
-                                <!--begin::Avatar-->
-                                <div class="symbol symbol-50px me-5">
-
-                                </div>
-                                <!--end::Avatar-->
-
-                                <!--begin::Username-->
+                                <div class="symbol symbol-50px me-5"></div>
                                 <div class="d-flex flex-column">
                                     <div class="fw-bolder d-flex align-items-center fs-5">
+                                        {{ \Auth::user()->name }}
                                         <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">فعال</span>
                                     </div>
-                                    <a href="#" class="fw-bold text-muted text-hover-primary fs-7">{{ \Auth::user()->first_name }} {{ \Auth::user()->last_name}}</a>
-                                    <span> {{ Auth::user()->mobile }} </span>
+                                    <span class="fw-bold text-muted fs-7"> {{ \Auth::user()->mobile }} </span>
                                 </div>
-                                <!--end::Username-->
-
                             </div>
                         </div>
                         <!--end::Menu item-->
 
-                        <!--begin::Menu separator-->
                         <div class="separator my-2"></div>
-                        <!--end::Menu separator-->
 
-                        <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="{{ route('auth.logout') }}" class="menu-link px-5">خروج</a>
+                            <a href="{{ route('auth.logout') }}" class="menu-link px-5" onclick="event.stopPropagation(); window.location.href=this.getAttribute('href'); return false;">خروج</a>
                         </div>
-                        <!--end::Menu item-->
-                    </div>
+                        </div>{{-- /profile menu --}}
+                    </div>{{-- /avatar trigger --}}
                     <!--end::User account menu-->
 
                     <!--end::Menu wrapper-->

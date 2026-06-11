@@ -58,8 +58,8 @@ class NewProductOrderNotification extends Notification
 
     public function toSms($notifiable)
     {
-        return 'کابر گرامی سفارش شما به شماره ' . $this->order->id . ' ثبت شد.';
-
+        // این نوتیفیکیشن برای ادمین‌هاست
+        return 'سفارش جدید به شماره ' . $this->order->id . ' در گالری رهنما ثبت شد.';
     }
 
 

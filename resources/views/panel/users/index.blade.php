@@ -13,10 +13,6 @@
 
                 <x-panel.search :action="route('admin.users.index', ['search'])" />
 
-                <x-form.btn type="button" class="btn-outline btn-outline-light btn-active-light" title="فیلتر" data-bs-toggle="collapse" data-bs-target="#filter_search">
-                    <x-svg.icon-svg icon='filter' />
-                </x-form.btn>
-
                 @if (count(request()->query()) > 0)
                     <x-form.btn-a :href="route('admin.users.index')" class="btn-light-primary" title="حذف فیلتر">
                         حذف فیلتر
@@ -52,53 +48,15 @@
 
         <x-panel.card-body>
 
-            <x-panel.div-section id="filter_search" class="flex collapse">
-                <x-form method="GET" :action="route('admin.users.index')">
-                    <x-panel.div-section class="row mb-8">
-
-                        <x-panel.div-section class="col-md-2 fv-row">
-                            <x-panel.div-section class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
-                                <x-panel.div-section class="text-gray-400 fs-7 me-2">شهر</x-panel.div-section>
-
-                                <select name="city" id="city" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="لطفا انتخاب کنید" tabindex="-1" aria-hidden="true">
-                                    <option value="all" @selected(! request()->filled('city')) value=" ">همه</option>
-                                    @foreach ($cities as $city)
-                                        <option value="{{ $city->id }}" @selected (request()->query('city') == $city->id)> {{ $city->name }} </option>
-                                    @endforeach
-                                </select>
-
-                            </x-panel.div-section>
-                        </x-panel.div-section>
-
-                        <x-panel.div-section class="col-md-2 fv-row">
-                            <x-panel.div-section class="d-flex align-items-center fw-bolder" data-select2-id="select2-data-122-u471">
-                                <x-panel.div-section class="text-gray-400 fs-7 me-2">استان</x-panel.div-section>
-
-                                <select name="province" id="province" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bolder py-0 ps-3 w-auto select2-hidden-accessible" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="همه" tabindex="-1" aria-hidden="true">
-                                    <option value="all" @selected (! request()->filled('province')) value=" ">همه</option>
-                                    @foreach ($provinces as $province)
-                                        <option value="{{ $province->id }}" @selected (request()->query('province') == $province->id)> {{ $province->name }} </option>
-                                    @endforeach
-                                </select>
-
-                            </x-panel.div-section>
-                        </x-panel.div-section>
-
-                        <x-panel.div-section class="col-md-1">
-                            <x-form.btn type="submit" class="btn btn-sm btn-primary" title="جست‌وجو">جست‌و‌جو</x-form.btn>
-                        </x-panel.div-section>
-
-                    </x-panel.div-section>
-                </x-form>
-            </x-panel.div-section>
-
             <x-table>
                 <x-tr>
                     <x-th>ردیف</x-th>
                     <x-th>نام</x-th>
-                    <x-th>شماره‌تلفن</x-th>
-                    <x-th>استان</x-th>
-                    <x-th>شهر</x-th>
+                    <x-th>موبایل</x-th>
+                    <x-th>تاریخ تولد</x-th>
+                    <x-th>تاریخ عضویت</x-th>
+                    <x-th>تعداد سفارش</x-th>
+                    <x-th>مجموع خرید</x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
 
@@ -107,10 +65,12 @@
 
                     <x-tr>
                         <x-td>{{ $user->id ?? '-' }}</x-td>
-                        <x-td>{{ $user->name ?? '-' }}</x-td>
-                        <x-td>{{ $user->mobile ?? '-' }}</x-td>
-                        <x-td>{{ $user->province->name ?? '-' }}</x-td>
-                        <x-td>{{ $user->city->name ?? '-' }}</x-td>
+                        <x-td class="fw-bold">{{ $user->name ?? '-' }}</x-td>
+                        <x-td dir="ltr">{{ $user->mobile ?? '-' }}</x-td>
+                        <x-td>{{ $user->birthday ? gdate($user->birthday) : '—' }}</x-td>
+                        <x-td>{{ gdate($user->created_at) }}</x-td>
+                        <x-td>{{ number_format($user->orders_count ?? 0) }}</x-td>
+                        <x-td>{{ toman($user->purchases_total ?? 0) }}</x-td>
 
                         <x-td>
 
@@ -130,6 +90,8 @@
                                     <x-delete-button />
                                 </x-form>
 
+                                <x-detail-button :href="route('admin.users.show', $user)"/>
+
                                 <x-edit-button :href="route('admin.users.edit', $user)"/>
 
                             @endif
@@ -141,7 +103,7 @@
                 @empty
 
                     <x-tr>
-                        <x-td colspan="6">آیتمی برای نمایش وجود ندارد.</x-td>
+                        <x-td colspan="8">آیتمی برای نمایش وجود ندارد.</x-td>
                     </x-tr>
 
                 @endforelse

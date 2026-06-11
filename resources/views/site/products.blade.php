@@ -21,31 +21,8 @@
          <section class="tp-shop-area pb-120">
             <div class="container">
                <div class="row">
-                  <div class="col-xl-3 col-lg-4">
-                     <div class="tp-shop-sidebar">
-                        <!-- filter -->
-                        <div class="tp-shop-widget mb-35 border border-solid p-10">
-                           <h3 class="tp-shop-widget-title no-border">فیلتر قیمت</h3>
-
-                           <div class="tp-shop-widget-content">
-                              <div class="tp-shop-widget-filter">
-                                 <div id="slider-range" class="mb-10"></div>
-                                 <form action="{{ route('category.products', $category) }}" method="GET">
-                                    <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                                        <span class="input-range">
-                                            <input type="text" id="amount" name="amount" readonly>
-                                        </span>
-
-                                        <button class="tp-shop-widget-filter-btn" type="submit">فیلتر</button>
-                                    </div>
-                                 </form>
-                              </div>
-                           </div>
-                        </div>
-
-                     </div>
-                  </div>
-                  <div class="col-xl-9 col-lg-8">
+                  {{-- فیلتر قیمت موقتاً حذف شده است --}}
+                  <div class="col-xl-12">
                      <div class="tp-shop-main-wrapper">
 
                         <div class="tp-shop-top mb-45">
@@ -103,6 +80,8 @@
                                  <div class="row infinite-container">
                                     @forelse($products as $product)
                                         <div class="col-xl-4 col-md-6 col-sm-6 infinite-item">
+                                        <x-product-card :product="$product" />
+                                        @if(false)
                                         <div class="tp-product-item-2 mb-40">
                                             <div class="tp-product-thumb-2 p-relative z-index-1 fix w-img">
                                                 <a href="product-details.html">
@@ -178,6 +157,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @endif
                                         </div>
                                     @empty
                                         <div> هیچ آیتمی ثبت نشده است</div>

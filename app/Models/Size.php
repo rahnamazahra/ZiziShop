@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Size extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = ['name'];
 
     public function products(): BelongsToMany

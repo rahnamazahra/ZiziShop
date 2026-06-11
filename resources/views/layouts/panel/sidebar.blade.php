@@ -1,11 +1,10 @@
 <x-panel.div-section id="kt_aside" class="aside aside-dark aside-hoverable" data-kt-drawer="true" data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_mobile_toggle">
     <x-panel.div-section class="aside-logo flex-column-auto" id="kt_aside_logo">
 
-        <x-panel.link href="#">
+        <x-panel.link href="{{ route('admin.dashboard') }}">
             <x-panel.div-section class="flex justify-start">
-                <x-panel.image src="/images/logo/logo.png" class="h-25px logo" />
-                <x-panel.span class="text-white">
-                    مدیریت زی زی شـــاپ
+                <x-panel.span class="text-white fw-bold fs-5">
+                    گالری رهنما
                 </x-panel.span>
             </x-panel.div-section>
         </x-panel.link>
@@ -26,10 +25,6 @@
 
                 <x-panel.menu-item href="{{ route('admin.users.index') }}" route="admin.users.index" icon="user" title="مدیریت کاربران"/>
 
-                <x-panel.menu-item href="{{ route('admin.colors.index') }}" route="admin.colors.index" icon="color" title="مدیریت رنگ"/>
-
-                <x-panel.menu-item href="{{ route('admin.sizes.index') }}" route="admin.sizes.index" icon="size" title="مدیریت سایز"/>
-
                 <x-panel.menu-item href="{{ route('admin.categories.index') }}" route="admin.categories.index" icon="category" title="مدیریت دسته‌بندی"/>
 
                 <x-panel.menu-item href="{{ route('admin.products.index') }}" route="admin.products.index" icon="product" title="مدیریت محصولات"/>
@@ -37,6 +32,21 @@
                 <x-panel.menu-item href="{{ route('admin.vouchers.index') }}" route="admin.vouchers.index" icon="voucher" title="مدیریت کوپن"/>
 
                 <x-panel.menu-item href="{{ route('admin.orders.index') }}" route="admin.orders.index" icon="truck" title="مدیریت سفارشات"/>
+
+                <x-panel.menu-item href="{{ route('admin.custom-orders.index') }}" route="admin.custom-orders.index" icon="basket" title="سفارش‌های ویژه"/>
+
+                <x-panel.menu-item href="{{ route('admin.expenses.index') }}" route="admin.expenses.index" icon="voucher" title="حسابداری و هزینه‌ها"/>
+
+                {{-- سوییچ نمایش موارد تستی (فقط ادمین) --}}
+                <div class="menu-item px-4 mt-6">
+                    <form method="POST" action="{{ route('admin.toggle-demo') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-sm w-100 fw-bold"
+                                style="color:#fff;border:0;{{ session('gr_show_demo') ? 'background:#464387;' : 'background:#527aba;' }}">
+                            {{ session('gr_show_demo') ? '🔸 مخفی‌کردن موارد تستی' : '🔹 نمایش موارد تستی' }}
+                        </button>
+                    </form>
+                </div>
 
 
             </x-panel.div-section>

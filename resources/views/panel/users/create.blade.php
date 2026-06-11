@@ -18,10 +18,15 @@
 
             <x-panel.card-body>
                 <x-panel.row>
-                    <x-panel.div-section class="col-md-6">
-                        <x-form.label id="name" class="required">نام</x-form.label>
-                        <x-form.input type="text" name="name" value="{{ old('name') }}"/>
-                        <x-form.input-error :messages="$errors->get('name')" class="mt-2" />
+                    <x-panel.div-section class="col-md-3">
+                        <x-form.label id="first_name" class="required">نام</x-form.label>
+                        <x-form.input type="text" name="first_name" value="{{ old('first_name') }}"/>
+                        <x-form.input-error :messages="$errors->get('first_name')" class="mt-2" />
+                    </x-panel.div-section>
+                    <x-panel.div-section class="col-md-3">
+                        <x-form.label id="last_name" class="required">نام خانوادگی</x-form.label>
+                        <x-form.input type="text" name="last_name" value="{{ old('last_name') }}"/>
+                        <x-form.input-error :messages="$errors->get('last_name')" class="mt-2" />
                     </x-panel.div-section>
 
                     <x-panel.div-section class="col-md-6">

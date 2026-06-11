@@ -21,7 +21,7 @@ class HomeController extends Controller
 
         return view('site.home', [
             'categories' => $categories,
-            'products'  => Product::where('is_published', 1)->take(8)->get(),
+            'products'  => Product::where('is_published', 1)->latest()->get(),
             'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
         ]);
     }

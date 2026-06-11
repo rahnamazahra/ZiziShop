@@ -1,0 +1,837 @@
+/* ===================================================================
+   گالری رهنما — اصلاحات ظاهری (override روی قالب)
+   =================================================================== */
+
+/* ---- پالت سازمانی ایندیگو: ورودی‌ها، بوردرها، متن‌ها، انتخاب ---- */
+:root {
+    --gr-primary: #343265;
+    --gr-primary-dark: #222143;
+    --gr-accent: #464387;
+    --gr-mid: #527aba;
+    --gr-light: #7796c9;
+    --gr-lightest: #9bb2d7;
+}
+body { color: #2b303a; }
+h1, h2, h3, h4, h5, h6 { color: #222143; }
+a { color: #343265; }
+a:hover { color: #527aba; }
+/* فوکوس ورودی‌ها در کل سایت */
+.tp-account-input input:focus,
+.gr-acc-content input:focus, .gr-acc-content textarea:focus, .gr-acc-content select:focus,
+.gr-preorder input:focus, .gr-preorder textarea:focus,
+.form-control:focus, input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #7796c9 !important;
+    box-shadow: 0 0 0 3px rgba(82,122,186,.14) !important;
+}
+input, textarea, select, .form-control { border-color: #dfe3ee; }
+/* رنگ انتخاب متن */
+::selection { background: #343265; color: #fff; }
+
+/* ---- رادیوس یکدست و کم (۸px) برای دکمه‌ها، اینپوت‌ها، آیکن‌ها و کارت‌ها ---- */
+.gr-add-btn, .gr-card-preorder-btn, .gr-acc-btn, .gr-card-add-btn, .gr-preorder-btn,
+.gr-qty, .gr-qty-btn, .gr-size-opt, .gr-add-btn, .gr-acc-link,
+input, textarea, select, .form-control,
+.gr-acc-content, .gr-acc-sidebar, .gr-card, .gr-card-thumb, .gr-card-thumb img,
+.gr-coupon-badge, .gr-variant-status, .gr-pagination button,
+.gr-acc-table, .gr-wallet-card { border-radius: 8px !important; }
+.gr-qty { overflow: hidden; }
+/* گوشه‌های گردِ معنادار حفظ شوند */
+.gr-color-btn, .gr-acc-avatar, .tp-header-action-badge, .gr-mobile-badge,
+.gr-stock-on-img { border-radius: 50% !important; }
+.gr-stock-on-img { border-radius: 6px !important; }
+.gr-wallet-btn { border-radius: 8px !important; }
+/* اسکرول‌بار باریک با رنگ پالت */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: #9bb2d7; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #527aba; }
+
+/* ---- مخفی‌کردن «افزودن به علاقه‌مندی» و «دیدگاه/کامنت» (فعلاً) ---- */
+.tp-product-add-to-wishlist-btn,
+.tp-product-details-action-sm,
+.tp-product-details-reviews,
+.tp-product-details-review-wrapper {
+    display: none !important;
+}
+
+/* ---- حذف خط/اسکریبل زیر زیرعنوان سکشن‌ها ---- */
+.tp-section-title-pre-2 svg,
+.tp-section-title-pre svg {
+    display: none !important;
+}
+
+/* ---- وسط‌چین کردن آیکن داخل دکمه‌های اکشن کارت ---- */
+.tp-product-action-btn-2,
+.tp-product-action-btn-3 {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+}
+
+.tp-product-action-item-2 {
+    align-items: center !important;
+}
+
+/* ---- مارجین/پدینگ مرتب در کارت‌های محصول ---- */
+.tp-product-item-2 {
+    padding: 12px;
+    border-radius: 10px;
+    transition: box-shadow .25s ease;
+}
+.tp-product-item-2:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .08);
+}
+.tp-product-content-2 {
+    padding: 14px 8px 6px;
+}
+.tp-product-content-2 .tp-product-title-2 {
+    margin-bottom: 8px;
+    line-height: 1.7;
+}
+
+/* ---- اسلایدرها دقیقاً وسط و راست‌چین ---- */
+.tp-featured-slider-active,
+.tp-product-week-slider-active,
+.tp-product-related-slider-active {
+    direction: rtl;
+}
+.tp-featured-slider-active .swiper-wrapper,
+.tp-product-week-slider-active .swiper-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* مرکز‌چین کردن کانتینرِ سکشن‌های اسلایدر */
+.tp-featured-area .container,
+.tp-product-offer-area .container,
+.tp-product-week-area .container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---- آیکن «مشاهده سریع»: حالت عادی دارک، هاور سفید ---- */
+.tp-product-quick-view-btn {
+    background-color: #222143 !important;
+    color: #ffffff !important;
+}
+.tp-product-quick-view-btn:hover {
+    background-color: #ffffff !important;
+    color: #222143 !important;
+}
+
+/* ---- حذف فیلتر قیمت و مرتب‌سازی در صفحه‌ی محصولات ---- */
+.tp-shop-top-right,
+.tp-shop-sidebar {
+    display: none !important;
+}
+
+/* ---- مرتب‌سازی و تراز پیجینیشن ---- */
+.tp-pagination ul {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.tp-pagination ul li {
+    display: inline-flex;
+    margin: 0;
+}
+.tp-pagination ul li a,
+.tp-pagination ul li span {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    line-height: 1;
+}
+
+/* ---- پدینگ بالای کارت‌های سکشن پرفروش‌ترین‌ها ---- */
+.tp-product-week-area .tp-product-item-2,
+.tp-product-offer-area .tp-product-item-2 {
+    padding-top: 24px;
+}
+
+/* اسلایدر از راست‌ترین نقطه شروع شود */
+.tp-featured-slider-active,
+.tp-featured-slider-active .swiper-wrapper {
+    direction: rtl !important;
+}
+
+/* ---- بازخورد «افزوده شد» روی آیکن سبدِ کارت‌ها ---- */
+.tp-product-action-btn-2.in-cart {
+    background-color: #1f9d55 !important;
+    color: #ffffff !important;
+}
+
+/* ---- دراپ‌داون حساب کاربری (آدمک) کنار سبد ---- */
+.gr-account-wrap { position: relative; }
+.gr-account-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 175px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+    border-radius: 8px;
+    padding: 8px 0;
+    margin: 6px 0 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all .2s ease;
+    z-index: 999;
+    text-align: right;
+}
+.gr-account-wrap:hover .gr-account-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.gr-account-menu li a {
+    display: block;
+    padding: 8px 18px;
+    color: #222143;
+    white-space: nowrap;
+    font-size: 14px;
+}
+.gr-account-menu li a:hover { background: #f5f5f5; }
+
+/* ---- فوتر: شبکه‌های اجتماعی بدون بک‌گراند سفید، فقط آیکن، بدون رنگ هاور ---- */
+.tp-footer-social a {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important;
+    line-height: 1 !important;
+    padding: 0 6px !important;
+}
+.tp-footer-social a:hover {
+    background: transparent !important;
+    color: inherit !important;
+}
+
+/* ---- دکمه‌ی «نمایش بیشتر» (صفحه‌بندی سمت کلاینت) ---- */
+.gr-load-more {
+    background: #222143; color: #fff; border: none; border-radius: 30px;
+    padding: 12px 44px; font-size: 14px; font-weight: 600; transition: background .2s ease;
+}
+.gr-load-more:hover { background: #343265; }
+
+/* ---- بَج موجود/ناموجود ثابت روی عکس محصول (بالای آیکن سبد، لبه‌ی راست) ---- */
+.tp-product-thumb-2 { position: relative; }
+.gr-stock-on-img {
+    position: absolute; top: 12px; right: 12px; z-index: 4;
+    background: #fff; color: #111; font-size: 12px; font-weight: 700;
+    padding: 4px 12px; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, .12);
+    line-height: 1.6; pointer-events: none;
+}
+.gr-stock-on-img.is-in { background: #fff; color: #343265; }
+.gr-stock-on-img.is-out { background: #7b1f3a; color: #fff; }
+
+/* ---- کامپوننت کارت محصول (gr-card) ---- */
+.gr-card { padding: 12px; border-radius: 10px; transition: box-shadow .25s ease; background: #fff; }
+.gr-card:hover { box-shadow: 0 6px 24px rgba(0, 0, 0, .08); }
+.gr-card-thumb { display: block; overflow: hidden; border-radius: 8px; }
+.gr-card-thumb img { width: 100%; height: 320px; object-fit: cover; border-radius: 8px; transition: transform .3s ease; }
+.gr-card:hover .gr-card-thumb img { transform: scale(1.04); }
+.gr-card .tp-product-title-2 { line-height: 1.7; margin-bottom: 6px; }
+.gr-badge { display: inline-block; padding: 3px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.gr-badge-instock { background: #1f9d55; color: #fff; }
+.gr-badge-outstock { background: #fff; color: #464387; border: 1px solid #464387; }
+.gr-card-add-btn {
+    display: block; width: 100%; text-align: center; padding: 10px;
+    background: #222143; color: #fff !important; border-radius: 8px;
+    font-size: 14px; transition: background .2s ease;
+}
+.gr-card-add-btn:hover { background: #343265; color: #fff !important; }
+.gr-card-add-btn--disabled { background: #eee; color: #999 !important; cursor: not-allowed; }
+
+/* دو دکمه‌ی متنی داخل کارت (جزئیات | افزودن به سبد / سفارش بده) */
+.gr-card-btns { display: flex; gap: 8px; margin-top: 14px; }
+.gr-btn {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center;
+    height: 42px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    transition: all .2s ease; text-decoration: none; padding: 0 8px; white-space: nowrap;
+}
+.gr-btn-outline { border: 1.5px solid #c9d0e2; color: #343265; background: #fff; flex: 0 0 86px; }
+.gr-btn-outline:hover { border-color: #343265; background: #f3f4fb; color: #343265 !important; }
+.gr-btn-fill { background: #343265; color: #fff !important; }
+.gr-btn-fill:hover { background: #222143; color: #fff !important; }
+/* دکمه‌ی ثبت سفارش (محصول ناموجود) — زرشکی برای تمایز */
+.gr-btn-order { background: #7b1f3a; color: #fff !important; }
+.gr-btn-order:hover { background: #611630; color: #fff !important; }
+
+/* ---- ردیف قیمت + آیکن سبد کنار قیمت (سمت چپ) ---- */
+.gr-card-price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
+.gr-card-cart-icon {
+    width: 42px; height: 42px; min-width: 42px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; color: #222143 !important; border: 1px solid #ededed;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.gr-card-cart-icon:hover {
+    background: #343265; color: #fff !important; border-color: #343265; transform: translateY(-2px);
+}
+.gr-card-cart-icon--disabled {
+    background: #464387 !important; color: #fff !important;
+    width: auto; min-width: auto; height: auto; border-radius: 6px;
+    padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: not-allowed;
+}
+/* ---- منوی پایین موبایل (زیبا و حرفه‌ای، تم زرشکی) ---- */
+.gr-mobile-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+    display: flex; justify-content: space-around; align-items: stretch;
+    background: linear-gradient(135deg, #343265 0%, #222143 100%);
+    box-shadow: 0 -4px 20px rgba(0,0,0,.18); padding: 6px 4px;
+    border-top-left-radius: 18px; border-top-right-radius: 18px;
+}
+.gr-mobile-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    background: transparent; border: 0; color: rgba(255,255,255,.85); cursor: pointer;
+    padding: 7px 2px; text-decoration: none; position: relative; transition: color .2s ease;
+}
+.gr-mobile-item svg { width: 23px; height: 23px; }
+.gr-mobile-item span { font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.gr-mobile-item:hover, .gr-mobile-item:active { color: #fff; }
+.gr-mobile-wallet { color: #c9d4ec; }
+.gr-mobile-wallet span { font-weight: 800; }
+.gr-mobile-badge {
+    position: absolute; top: 2px; right: 50%; transform: translateX(28px);
+    min-width: 17px; height: 17px; padding: 0 4px; background: #fff; color: #343265;
+    border-radius: 9px; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+/* فضای پایین صفحه تا منوی موبایل محتوا را نپوشاند */
+@media (max-width: 991px) {
+    body { padding-bottom: 64px; }
+}
+
+/* ---- صفحه حساب کاربری (سبک داشبورد، منوی راست + محتوای چپ) ---- */
+.gr-account { background: #f6f8fb; min-height: 70vh; }
+.gr-acc-sidebar { background: #fff; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.05); overflow: hidden; position: sticky; top: 20px; }
+.gr-acc-user { display: flex; align-items: center; gap: 12px; padding: 20px; background: linear-gradient(135deg,#343265,#222143); color: #fff; }
+.gr-acc-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
+.gr-acc-name { font-weight: 700; font-size: 15px; }
+.gr-acc-mobile { font-size: 12px; opacity: .85; }
+.gr-acc-nav { padding: 10px; }
+.gr-acc-link {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: right;
+    background: transparent; border: 0; border-radius: 10px; padding: 12px 14px;
+    font-size: 14px; color: #3a3f48; cursor: pointer; transition: all .2s ease; text-decoration: none; margin-bottom: 2px;
+}
+.gr-acc-link:hover { background: #eef1f8; color: #343265; }
+.gr-acc-link.active { background: #343265; color: #fff; }
+.gr-acc-ico { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; }
+.gr-acc-ico svg { width: 20px; height: 20px; }
+.gr-acc-logout { color: #464387; }
+.gr-acc-logout:hover { background: #eef1f9; color: #464387; }
+
+.gr-acc-content { background: #fff; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.05); padding: 26px; min-height: 360px; }
+.gr-acc-title { font-size: 18px; font-weight: 700; color: #2b303a; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #eef0f3; }
+.gr-acc-subtitle { font-size: 15px; font-weight: 700; color: #2b303a; margin: 6px 0 14px; }
+.gr-acc-table { width: 100%; border-collapse: collapse; }
+.gr-acc-table th, .gr-acc-table td { padding: 13px 10px; border-bottom: 1px dashed #eef0f3; font-size: 14px; text-align: right; }
+.gr-acc-table thead th { color: #8a8f98; font-weight: 600; font-size: 13px; }
+.gr-acc-table tbody th { color: #8a8f98; font-weight: 600; width: 160px; }
+.gr-acc-table td { color: #2b303a; }
+.gr-acc-hint { color: #8a8f98; font-size: 13px; line-height: 2; margin-top: 16px; }
+.gr-acc-btn { background: #343265; color: #fff; border: 0; border-radius: 10px; padding: 11px 32px; font-weight: 700; cursor: pointer; }
+.gr-acc-btn:hover { background: #222143; }
+
+.gr-wallet-card { background: linear-gradient(135deg,#527aba,#343265); color: #fff; padding: 24px; max-width: 420px; }
+.gr-wallet-card-label { font-size: 13px; opacity: .85; }
+.gr-wallet-card-amount { font-size: 30px; font-weight: 800; margin: 6px 0; }
+.gr-wallet-card-amount span { font-size: 15px; font-weight: 600; }
+.gr-wallet-card-exp { font-size: 13px; opacity: .9; }
+
+@media (max-width: 991px) {
+    .gr-acc-sidebar { position: static; margin-bottom: 16px; }
+}
+
+/* ---- منوی تب دسته‌بندی صفحه اصلی (رنگ و سایز) ---- */
+#nav-tab .nav-link {
+    color: #5a6172 !important; font-size: 15px !important; font-weight: 600 !important;
+    transition: color .2s ease;
+}
+#nav-tab .nav-link:hover { color: #527aba !important; }
+#nav-tab .nav-link.active { color: #343265 !important; font-weight: 800 !important; }
+/* بَج تعداد فقط روی دسته‌ی انتخاب‌شده و بالای متن نمایش داده شود */
+#nav-tab { padding-top: 22px; }
+#nav-tab .nav-link { position: relative; }
+#nav-tab .tp-product-tab-tooltip { display: none !important; }
+#nav-tab .tp-product-tab-tooltip::after,
+#nav-tab .tp-product-tab-tooltip::before { display: none !important; }
+#nav-tab .nav-link.active .tp-product-tab-tooltip {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    position: absolute !important; top: -18px; left: 50%; transform: translateX(-50%) !important;
+    min-width: 22px; height: 22px; padding: 0 7px;
+    background: #343265 !important; color: #fff !important;
+    border-radius: 11px; font-size: 11px; font-weight: 800;
+    box-shadow: 0 3px 8px rgba(52,50,101,.3);
+}
+/* فلشِ کوچک زیر بَج (مثل پین) */
+#nav-tab .nav-link.active .tp-product-tab-tooltip::before {
+    content: "" !important; display: block !important; position: absolute;
+    bottom: -4px; left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: #343265; border-bottom: 0;
+}
+
+/* فلش/کارتِ کنار «محصولات» در منو سفید */
+.tp-header-bottom-2 .has-dropdown > a::after,
+.tp-header-bottom-2 .main-menu > nav > ul > li.has-dropdown > a::after { color: #fff !important; border-color: #fff !important; }
+
+/* متن نماد اعتماد در فوتر خوانا */
+footer .gr-enamad, footer .gr-enamad a, footer .tp-footer-widget-title + * { color: #e6ebf5 !important; }
+footer .gr-enamad img { background: #fff; border-radius: 6px; padding: 4px; }
+
+/* صفحه‌بندی محصولات (سمت‌کلاینت) */
+.gr-pagination {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin: 20px 0 40px;
+}
+.gr-pagination button {
+    min-width: 42px; height: 42px; padding: 0 12px;
+    border: 1px solid #e6e6e6; background: #fff; border-radius: 8px;
+    font-weight: 700; color: #444; cursor: pointer; transition: all .2s ease;
+}
+.gr-pagination button:hover { border-color: #343265; color: #343265; }
+.gr-pagination button.is-active { background: #343265; border-color: #343265; color: #fff; }
+
+/* پیام سفارش محصول ناموجود روی کارت (قرمز) */
+.gr-card-preorder-msg {
+    display: block; margin-top: 10px; text-align: center;
+    background: #eef1f9; color: #464387 !important; border: 1px solid #c9d4ec;
+    border-radius: 8px; padding: 8px 10px; font-size: 12.5px; font-weight: 700;
+    line-height: 1.7; transition: background .2s ease;
+}
+/* دکمه‌ی سفارشِ محصول ناموجود */
+.gr-card-preorder-btn {
+    display: block; margin-top: 8px; text-align: center;
+    background: #464387; color: #fff !important; border-radius: 24px;
+    padding: 9px 10px; font-size: 13px; font-weight: 700; transition: background .2s ease;
+}
+.gr-card-preorder-btn:hover { background: #222143; color: #fff !important; }
+
+/* آیکن‌های اکشن روی عکس (سبد/مشاهده) — هر دو دایره‌ی سفید با آیکن تیره */
+.tp-product-action-2 .tp-product-action-btn-2,
+.tp-product-action-blackStyle .tp-product-action-btn-2 {
+    background: #fff !important; color: #222143 !important;
+    width: 42px; height: 42px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,.12); border: 1px solid #f0f0f0;
+}
+.tp-product-action-2 .tp-product-action-btn-2:hover,
+.tp-product-action-blackStyle .tp-product-action-btn-2:hover {
+    background: #343265 !important; color: #fff !important; border-color: #343265;
+}
+
+/* ---- موبایل: حذف آدمک و همبرگر از بالای هدر (چون پایین منو و پروفایل داریم) ---- */
+@media (max-width: 991px) {
+    .gr-account-wrap,
+    .tp-header-hamburger { display: none !important; }
+}
+
+/* ---- فوتر: یکدست‌کردن اندازه‌ی آیکن‌های شبکه‌های اجتماعی ---- */
+.tp-footer-social {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+.tp-footer-social a {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 26px !important;
+    height: 26px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.tp-footer-social a i { font-size: 22px; line-height: 1; color: #222143; }
+.tp-footer-social a img { width: 24px !important; height: 24px !important; object-fit: contain; }
+
+/* ---- فوتر: کاهش فضای خالی و مرتب‌تر شدن ---- */
+.tp-footer-top { padding-top: 60px !important; padding-bottom: 20px !important; }
+
+/* ---- مخفی‌سازی قطعی علاقه‌مندی (specificity بالاتر از قانون وسط‌چینی آیکن) ---- */
+a.tp-product-add-to-wishlist-btn,
+button.tp-product-add-to-wishlist-btn,
+.tp-product-action-item-2 .tp-product-add-to-wishlist-btn,
+.tp-product-details-action-sm-btn[href*="favorites"] {
+    display: none !important;
+}
+
+/* ---- موبایل: مخفی‌کردن منوی اصلی تکراری (فقط «همه دسته‌بندی‌ها» بماند) ---- */
+@media (max-width: 991px) {
+    .tp-main-menu-mobile { display: none !important; }
+}
+
+/* ---- offcanvas: وسط‌چین کردن دکمه‌ی بستن ---- */
+.offcanvas__close-btn,
+.cartmini__close-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ---- بخش اضافه‌ی صفحه‌ی محصول: بَج کیف پول، جدول، توصیه ارسال ---- */
+.gr-pd-extra { margin: 22px 0; }
+.gr-wallet-reward {
+    background: #fff7e6; border: 1px solid #ffe0a3; border-radius: 10px;
+    padding: 14px 16px; font-size: 14px; line-height: 2; color: #8a5a00; margin-bottom: 16px;
+}
+.gr-pd-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.gr-pd-table th, .gr-pd-table td { border: 1px solid #eee; padding: 10px 14px; text-align: right; font-size: 14px; }
+.gr-pd-table th { background: #fafafa; width: 140px; color: #333; font-weight: 600; }
+.gr-shipping-note {
+    background: #f2f5fc; border: 1px solid #e2e8f5; border-radius: 10px; padding: 14px 16px;
+    font-size: 13px; line-height: 2.1; color: #5a6172;
+}
+.gr-shipping-note strong { color: #343265; }
+
+/* ---- پاپ‌آپ کیف پول (هاور) ---- */
+.gr-wallet-menu { min-width: 240px; padding: 14px 16px; }
+.gr-wallet-pop-balance { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.gr-wallet-pop-balance strong { color: #464387; font-size: 15px; }
+.gr-wallet-pop-note { font-size: 12px; color: #666; margin-bottom: 6px; }
+.gr-wallet-pop-hint { font-size: 11px; color: #999; line-height: 1.9; }
+
+/* ---- فوتر: بک‌گراند سفید ---- */
+.tp-footer-area.grey-bg-8,
+footer .tp-footer-area { background: #ffffff !important; }
+
+/* ---- گالری صفحه‌ی جزئیات محصول (عکس/فیلم داینامیک) ---- */
+.gr-pd-gallery { gap: 16px; align-items: flex-start; }
+.gr-pd-gallery nav { flex: 0 0 90px; }
+.gr-pd-gallery .nav-tabs { gap: 10px; border: 0; }
+.gr-pd-gallery .nav-link {
+    padding: 0; border: 1px solid #eee; border-radius: 10px; overflow: hidden;
+    width: 84px; height: 84px; position: relative; background: #fafafa;
+}
+.gr-pd-gallery .nav-link.active { border-color: #343265; }
+.gr-pd-gallery .nav-link img,
+.gr-pd-gallery .nav-link video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gr-pd-gallery .nav-video-btn {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.35); color: #fff;
+}
+.gr-pd-gallery .tab-content.m-img {
+    flex: 1 1 auto; min-width: 0; background: #fafafa; border-radius: 14px; overflow: hidden;
+}
+.gr-pd-gallery .tp-product-details-nav-main-thumb {
+    width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;
+}
+.gr-pd-gallery .tp-product-details-nav-main-thumb img,
+.gr-pd-gallery .tp-product-details-nav-main-thumb video {
+    width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 14px;
+}
+.gr-pd-gallery--single .tp-product-details-nav-main-thumb { max-width: 520px; }
+
+/* زوم روی عکس اصلی */
+.gr-pd-gallery .tp-product-details-nav-main-thumb.gr-zoomable { cursor: zoom-in; }
+.gr-pd-gallery .tp-product-details-nav-main-thumb.gr-zoomable img { transition: transform .15s ease; will-change: transform; }
+
+/* بَج کد تخفیف محصول */
+.gr-coupon-badge {
+    display: inline-block; margin-right: 8px; background: #eef1f9; color: #464387;
+    border: 1px solid #c9d4ec; border-radius: 16px; padding: 3px 12px; font-size: 12px; font-weight: 700;
+    vertical-align: middle;
+}
+
+/* ---- انتخاب تنوع (رنگ/سایز) در صفحه جزئیات ---- */
+.gr-variants { margin: 14px 0 18px; }
+.gr-variant-group { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.gr-variant-label { font-weight: 700; color: #2b303a; min-width: 42px; }
+.gr-variant-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.gr-color-btn {
+    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #e3e3e3; cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease; padding: 0;
+}
+.gr-color-btn:hover { transform: scale(1.1); }
+.gr-color-btn.is-active { border-color: #2b303a; box-shadow: 0 0 0 2px #fff inset; }
+.gr-size-opt {
+    min-width: 46px; border: 1px solid #e3e3e3; background: #fff; border-radius: 8px;
+    padding: 8px 14px; font-size: 14px; cursor: pointer; transition: all .2s ease; color: #333;
+}
+.gr-size-opt:hover { border-color: #343265; }
+.gr-size-opt.is-active { border-color: #343265; background: #343265; color: #fff; }
+.gr-variant-status { font-size: 13px; font-weight: 600; margin-top: 4px; }
+.gr-variant-status.is-in { color: #1f9d55; }
+.gr-variant-status.is-out { color: #464387; }
+.gr-variant-status.is-hint { color: #8a6d3b; }
+
+/* ردیف خرید: تعداد + افزودن به سبد */
+.gr-buy-row { display: flex; align-items: stretch; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.gr-qty { display: inline-flex; align-items: stretch; border: 1px solid #dfe3ee; border-radius: 8px; overflow: hidden; height: 48px; }
+.gr-qty-btn {
+    width: 44px; border: 0; background: #f3f4fb; font-size: 20px; cursor: pointer; color: #343265;
+    display: inline-flex; align-items: center; justify-content: center; line-height: 1; padding: 0;
+}
+.gr-qty-btn:hover { background: #e7e9f6; }
+.gr-qty input {
+    width: 64px; height: 100%; border: 0 !important; border-left: 1px solid #eef0f5 !important; border-right: 1px solid #eef0f5 !important;
+    text-align: center; font-size: 17px; font-weight: 700;
+    color: #343265; background: #fff; padding: 0 !important; margin: 0; line-height: 46px; border-radius: 0 !important;
+    -moz-appearance: textfield; box-shadow: none !important;
+}
+.gr-qty input:focus { outline: none; box-shadow: none !important; }
+.gr-add-btn {
+    flex: 1; min-width: 200px; display: inline-flex; align-items: center; justify-content: center;
+    background: #343265; color: #fff !important; border-radius: 10px; font-weight: 700; font-size: 15px;
+    padding: 0 24px; height: 48px; transition: background .2s ease;
+}
+.gr-add-btn:hover { background: #222143; }
+.gr-add-btn.is-disabled { background: #cbb3ba; cursor: not-allowed; pointer-events: auto; }
+
+/* اصلاح ترازِ دکمه‌های + و − تعداد در صفحه‌ی جزئیات */
+.tp-product-quantity { display: inline-flex; align-items: center; }
+.tp-product-quantity .tp-cart-minus,
+.tp-product-quantity .tp-cart-plus {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    width: 40px; height: 44px; cursor: pointer; color: #222143;
+}
+.tp-product-quantity .tp-cart-input {
+    height: 44px; width: 50px; text-align: center; border: 0; vertical-align: middle;
+}
+@media (max-width: 575px) {
+    .gr-pd-gallery { flex-direction: column-reverse; }
+    .gr-pd-gallery nav { flex: none; width: 100%; }
+    .gr-pd-gallery .nav-tabs { flex-direction: row !important; flex-wrap: wrap; }
+}
+
+/* ---- فرم سفارش ویژه‌ی محصول ناموجود (طراحی شیک با پالت) ---- */
+.gr-preorder {
+    position: relative; border: 0; border-radius: 14px; padding: 26px 24px 24px; margin-bottom: 22px;
+    background: linear-gradient(180deg, #f4f5fb 0%, #fbfbfe 100%);
+    box-shadow: 0 8px 30px rgba(52,50,101,.08); overflow: hidden;
+}
+.gr-preorder::before {
+    content: ""; position: absolute; top: 0; right: 0; left: 0; height: 4px;
+    background: linear-gradient(90deg, #343265, #527aba, #7796c9);
+}
+.gr-preorder h4 {
+    font-size: 16px; font-weight: 800; color: #343265; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+}
+.gr-preorder h4::before { content: "🛎️"; font-size: 18px; }
+.gr-preorder p.gr-preorder-hint { font-size: 13px; color: #5a6172; line-height: 2; margin-bottom: 18px; }
+.gr-preorder label { font-size: 13px; font-weight: 700; color: #343265; margin-bottom: 6px; display: block; }
+.gr-preorder .form-control,
+.gr-preorder textarea,
+.gr-preorder input[type="number"],
+.gr-preorder input[type="text"] {
+    width: 100%; border: 1.5px solid #dde2f0; border-radius: 10px; padding: 11px 13px;
+    font-size: 14px; background: #fff; margin-bottom: 14px; transition: border-color .2s, box-shadow .2s;
+}
+.gr-preorder .form-control:focus,
+.gr-preorder textarea:focus,
+.gr-preorder input:focus {
+    border-color: #7796c9; box-shadow: 0 0 0 3px rgba(82,122,186,.14); outline: none;
+}
+.gr-preorder textarea { resize: vertical; min-height: 96px; }
+.gr-preorder .gr-preorder-btn {
+    width: 100%; background: linear-gradient(135deg,#343265,#222143); color: #fff; border: 0; border-radius: 10px;
+    padding: 14px; font-weight: 800; font-size: 15px; cursor: pointer; transition: all .2s;
+    box-shadow: 0 6px 16px rgba(52,50,101,.25);
+}
+.gr-preorder .gr-preorder-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(52,50,101,.3); }
+.gr-preorder-row { display: flex; gap: 14px; }
+.gr-preorder-row > div { flex: 1; }
+
+/* ---- فوتر: چیدمان تمیز و ریسپانسیو ---- */
+.tp-footer-top.pt-95 { padding-top: 70px !important; }
+.tp-footer-top.pb-40 { padding-bottom: 30px !important; }
+.tp-footer-widget-title {
+    font-size: 18px; font-weight: 700; color: #222143;
+    margin-bottom: 22px; position: relative; padding-bottom: 10px;
+}
+.tp-footer-widget-title::after {
+    content: ""; position: absolute; bottom: 0; right: 0;
+    width: 36px; height: 2px; background: #343265; border-radius: 2px;
+}
+.tp-footer-desc { font-size: 14px; line-height: 2; color: #55585b; margin: 14px 0 22px; }
+
+/* لینک‌های دسترسی سریع */
+.gr-footer-links { list-style: none; padding: 0; margin: 0; }
+.gr-footer-links li { margin-bottom: 12px; }
+.gr-footer-links li a {
+    font-size: 14px; color: #55585b; transition: color .2s ease, padding .2s ease;
+    display: inline-block;
+}
+.gr-footer-links li a:hover { color: #343265; padding-right: 6px; }
+
+/* تماس و سفارش */
+.tp-footer-talk span { font-size: 14px; color: #55585b; display: block; margin-bottom: 4px; }
+.tp-footer-talk h4 { margin: 0; }
+.tp-footer-talk h4 a { font-size: 22px; font-weight: 700; color: #222143; direction: ltr; display: inline-block; }
+.tp-footer-talk h4 a:hover { color: #343265; }
+.tp-footer-contact-item { gap: 10px; margin-bottom: 10px; }
+.tp-footer-contact-icon span { color: #343265; }
+.tp-footer-contact-content p { margin: 0; font-size: 14px; color: #55585b; line-height: 1.7; }
+.tp-footer-contact-content p a { color: #55585b; }
+.tp-footer-contact-content p a:hover { color: #343265; }
+
+/* شبکه‌های اجتماعی داخل فوتر — بدون بک‌گراند */
+.gr-footer-social { margin-top: 4px; }
+.gr-footer-social-title {
+    display: block; font-size: 14px; font-weight: 600; color: #222143; margin-bottom: 12px;
+}
+.gr-footer-social-icons { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.gr-footer-social-icons a {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid #e7e7e7; background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .25s ease;
+}
+.gr-footer-social-icons a:hover {
+    background: #343265; border-color: #343265; transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(123, 31, 58, .25);
+}
+.gr-footer-social-icons a i { font-size: 18px; color: #444; transition: color .25s ease; }
+.gr-footer-social-icons a:hover i { color: #fff; }
+.gr-footer-social-icons a img { width: 22px; height: 22px; object-fit: contain; transition: filter .25s ease; }
+.gr-footer-social-icons a:hover img { filter: brightness(0) invert(1); }
+
+/* نوار پایین فوتر */
+.tp-footer-bottom { border-top: 0 !important; padding: 18px 0; }
+.tp-footer-bottom .tp-footer-bottom-wrapper { border-top: 0 !important; }
+.tp-footer-bottom .tp-footer-copyright p { margin: 0; font-size: 13px; color: #55585b; }
+.tp-footer-bottom .tp-footer-copyright p a { color: #55585b; }
+.tp-footer-bottom .tp-footer-copyright p a:hover { color: #343265; }
+
+@media (max-width: 767px) {
+    .tp-footer-top.pt-95 { padding-top: 45px !important; }
+    .tp-footer-widget { margin-bottom: 30px !important; }
+    .tp-footer-bottom .row { row-gap: 12px; text-align: center; }
+    .tp-footer-bottom .tp-footer-payment { text-align: center !important; }
+}
+
+/* ---- هدر + نوار دسته‌بندی به‌صورت یک سکشن با قابلیت بک‌گراند تصویر ---- */
+.tp-header-bottom-2.tp-header-sticky,
+.tp-header-bottom-2 {
+    /* برای تصویر دلخواه این خط را جایگزین کنید:
+       background: url('/site/assets/img/header-bg.jpg') center/cover no-repeat; */
+    background: linear-gradient(135deg, #343265 0%, #222143 100%);
+    padding-top: 10px;
+    padding-bottom: 14px;
+}
+header, .tp-header-area { margin-bottom: 26px; }
+
+/* ---- تم زرشکی هدر و فوتر ---- */
+body { color: #3a3f48; }
+/* لوگو و متن‌های هدر سفید */
+.tp-header-bottom-2 .logo a,
+.tp-header-bottom-2 .gr-brand { color: #fff !important; }
+/* فقط آیتم‌های سطح‌اولِ منو سفید (روی هدر بنفش) */
+.tp-header-bottom-2 .main-menu > nav > ul > li > a { color: #fff !important; }
+.tp-header-bottom-2 .main-menu > nav > ul > li > a:hover { color: #c9d4ea !important; }
+/* زیرمنوها (دراپ‌داون) متن تیره روی پس‌زمینه‌ی روشن */
+.tp-header-bottom-2 .tp-submenu a,
+.tp-header-bottom-2 .mega-menu a { color: #2b303a !important; }
+.tp-header-bottom-2 .tp-submenu a:hover,
+.tp-header-bottom-2 .mega-menu a:hover { color: #343265 !important; }
+.tp-submenu, .mega-menu { border-radius: 8px; }
+/* آیکن‌های اکشن هدر سفید (به‌جز پیل کیف پول) */
+.tp-header-bottom-2 .tp-header-action-btn:not(.gr-wallet-btn) { color: #fff !important; }
+.tp-header-bottom-2 .tp-header-action-btn:not(.gr-wallet-btn):hover { background: rgba(255,255,255,.15); color: #fff !important; }
+
+/* فوتر: زمینه‌ی زرشکی، متن روشن */
+.tp-footer-area.grey-bg-8,
+footer .tp-footer-area { background: linear-gradient(135deg, #2b2856 0%, #222143 100%) !important; }
+.tp-footer-bottom { background: rgba(0,0,0,.22); }
+/* خطِ تزئینیِ بالای فوتر با رنگ فرعی برای جذابیت */
+footer .tp-footer-area { border-top: 3px solid #527aba; }
+footer .tp-footer-widget-title,
+footer .tp-footer-logo a,
+footer .tp-footer-desc,
+footer .gr-footer-links li a,
+footer .tp-footer-talk h4 a,
+footer .tp-footer-talk span,
+footer .tp-footer-contact-content p,
+footer .tp-footer-contact-content p a,
+footer .tp-footer-bottom .tp-footer-copyright p,
+footer .tp-footer-bottom .tp-footer-copyright p a { color: #e6ebf5 !important; }
+footer .tp-footer-widget-title::after { background: #c9d4ea; }
+footer .gr-footer-links li a:hover,
+footer .tp-footer-talk h4 a:hover { color: #fff !important; }
+footer .gr-footer-social-icons a { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.25); }
+footer .gr-footer-social-icons a i { color: #fff; }
+footer .gr-footer-social-icons a:hover { background: #fff; }
+footer .gr-footer-social-icons a:hover i { color: #343265; }
+footer .gr-footer-social-title { color: #fff; }
+
+/* عنوان‌ها در بدنه */
+.tp-section-title, .tp-product-title-2 a, h1, h2, h3 { color: #2b303a; }
+.tp-product-title-2 a:hover { color: #343265; }
+
+/* ---- داشبورد کاربری (پروفایل) ---- */
+.gr-dashboard { border: 1px solid #eee; border-radius: 12px; overflow: hidden; }
+.gr-dash-tabs { border-bottom: 1px solid #eee; padding: 0 10px; flex-wrap: wrap; }
+.gr-dash-tabs .nav-link { border: none; color: #555; font-weight: 600; padding: 14px 18px; }
+.gr-dash-tabs .nav-link.active { color: #343265; border-bottom: 2px solid #343265; background: transparent; }
+.gr-dash-content { padding: 24px; }
+.gr-table { width: 100%; border-collapse: collapse; }
+.gr-table th, .gr-table td { border: 1px solid #eee; padding: 10px 14px; text-align: right; font-size: 14px; }
+.gr-table thead th { background: #fafafa; font-weight: 700; }
+.gr-table tbody th { background: #fafafa; width: 140px; font-weight: 600; }
+.gr-address-form .form-control { border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; }
+
+/* ---- بخش آدرس در صفحه‌ی سبد خرید ---- */
+.gr-checkout-address { border-top: 1px solid #eee; padding-top: 16px; margin-top: 18px; }
+.gr-checkout-address .form-control { border: 1px solid #ddd; border-radius: 8px; padding: 9px 12px; width: 100%; font-size: 13px; }
+.gr-addr-current { background: #f0f9f2; color: #1f7a44; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+.gr-addr-new summary { cursor: pointer; font-weight: 600; color: #343265; margin: 10px 0; }
+
+/* ---- یکدست‌سازی آیکن‌های هدر (کیف پول / سبد / حساب) در یک خط ---- */
+.tp-header-action { gap: 0; }
+.tp-header-action .tp-header-action-item { margin: 0 1px; }
+/* کیف پول کمی فاصله از بقیه بگیرد چون پیل است */
+.tp-header-action .gr-wallet-wrap { margin-left: 6px; }
+.tp-header-action-item { display: flex; align-items: center; margin: 0; }
+.tp-header-action-btn {
+    position: relative;
+    width: 44px; height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #222143; border-radius: 50%;
+    transition: background .2s ease;
+}
+.tp-header-action-btn:hover { background: #eef1f8; color: #343265; }
+.tp-header-action-btn svg { width: 22px; height: 22px; }
+
+/* بَج‌ها: پیلِ خودکار که با محتوای داخلش بزرگ/کوچک می‌شود */
+.tp-header-action-badge {
+    position: absolute; top: -4px; left: -6px;
+    min-width: 20px; height: 20px; padding: 0 7px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #343265; color: #fff !important;
+    border-radius: 11px; font-size: 11px; line-height: 1; font-weight: 700;
+    white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    border: 2px solid #fff;
+}
+/* کیف پول: آیکن + مبلغ و واحد تومان کنار آن (پیلِ بنفشِ خوانا) */
+.gr-wallet-btn {
+    position: relative; width: auto !important;
+    padding: 0 12px 0 10px; gap: 6px; background: #ecedf7;
+}
+.gr-wallet-btn:hover { background: #dfe0f2; }
+.gr-wallet-btn svg { color: #464387; flex-shrink: 0; }
+.gr-wallet-amount { color: #464387; font-weight: 800; font-size: 12.5px; white-space: nowrap; }
+
+@media (max-width: 575px) {
+    .tp-header-action { gap: 2px; }
+    .tp-header-action-btn { width: 40px; height: 40px; }
+    .tp-header-action-btn svg { width: 21px; height: 21px; }
+    .tp-header-bottom-right.pr-30 { padding-right: 0 !important; }
+    .gr-wallet-badge { font-size: 9px; }
+}

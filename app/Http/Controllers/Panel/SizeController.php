@@ -38,6 +38,17 @@ class SizeController extends Controller
         return to_route('admin.sizes.index');
     }
 
+    public function show(Size $size)
+    {
+        return view('panel.shared.show', [
+            'title'      => 'جزئیات سایز: ' . $size->name,
+            'items'      => ['نام' => $size->name],
+            'editUrl'    => route('admin.sizes.edit', $size),
+            'backUrl'    => route('admin.sizes.index'),
+            'breadcrumb' => ['داشبورد' => route('admin.dashboard'), 'سایزها' => route('admin.sizes.index')],
+        ]);
+    }
+
     public function edit(Size $size)
     {
         return view('panel.sizes.edit', [

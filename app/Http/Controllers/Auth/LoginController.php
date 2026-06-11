@@ -26,9 +26,9 @@ class LoginController extends Controller
 
         $credentials = $request->only('mobile', 'password');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('web')->attempt($credentials)) {
 
-            $user = Auth::user();
+            $user = Auth::guard('web')->user();
 
             $request->session()->regenerate();
 
@@ -52,6 +52,6 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('auth.login.form');
     }
 }

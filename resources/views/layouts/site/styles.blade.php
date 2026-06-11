@@ -9,4 +9,5 @@
 <link rel="stylesheet" href="{{ asset('site/assets/css/flaticon_shofy.css') }}">
 <link rel="stylesheet" href="{{ asset('site/assets/css/spacing.css') }}">
 <link rel="stylesheet" href="{{ asset('site/assets/css/main.css') }}">
+<link rel="stylesheet" href="{{ asset('site/assets/css/custom.css') }}?v={{ filemtime(public_path('site/assets/css/custom.css')) }}">
 @vite('resources/css/app.css')

@@ -29,7 +29,7 @@ return [
             'zaringateApiPaymentUrl' => 'https://www.zarinpal.com/pg/StartPay/:authority/ZarinGate',
             'zaringateApiVerificationUrl' => 'https://ir.zarinpal.com/pg/services/WebGate/wsdl',
 
-            'mode' => 'sandbox', // can be normal, sandbox, zaringate
+            'mode' => env('ZARINPAL_MODE', 'normal'), // can be normal, sandbox, zaringate
             'merchantId' => env('ZARINPAL_MERCHANT'),
             //'callbackUrl' => url('verify'),
             'description' => 'payment using zarinpal',

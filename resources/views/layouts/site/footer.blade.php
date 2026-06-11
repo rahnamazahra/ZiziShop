@@ -3,61 +3,59 @@
     <div class="tp-footer-top pt-95 pb-40">
         <div class="container">
             <div class="row">
-                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6">
-                <div class="tp-footer-widget footer-col-1 mb-50">
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                <div class="tp-footer-widget footer-col-1 mb-40">
                     <div class="tp-footer-widget-content">
                         <div class="tp-footer-logo">
-                            <a href="index.html">
-                            <img src="assets/img/logo/logo.svg" alt="logo">
-                            </a>
+                            <a href="{{ url('/') }}" style="font-size:28px;font-weight:700;color:#010f1c;">گالری رهنما</a>
                         </div>
-                        <p class="tp-footer-desc">ما تیمی از طراحان و توسعه دهندگان هستیم که وردپرس با کیفیت بالا ایجاد می کنیم</p>
-                        <div class="tp-footer-social">
-                            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                            <a href="#"><i class="fa-brands fa-vimeo-v"></i></a>
+                        <p class="tp-footer-desc">گالری رهنما، عرضه‌کننده‌ی انواع زیورآلات و اکسسوری با کیفیت</p>
+
+                        {{-- شبکه‌های اجتماعی --}}
+                        <div class="gr-footer-social">
+                            <span class="gr-footer-social-title">ما را دنبال کنید</span>
+                            <div class="gr-footer-social-icons">
+                                <a href="https://instagram.com/galleryrahnama" target="_blank" rel="noopener" title="اینستاگرام"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://t.me/galleryrahnama" target="_blank" rel="noopener" title="تلگرام"><i class="fa-brands fa-telegram"></i></a>
+                                <a href="https://rubika.ir/galleryrahnama" target="_blank" rel="noopener" title="روبیکا"><img src="{{ asset('images/logo/rubika.png') }}" alt="روبیکا"></a>
+                                <a href="https://eitaa.com/galleryrahnama" target="_blank" rel="noopener" title="ایتا"><img src="{{ asset('images/logo/Eitaa.png') }}" alt="ایتا"></a>
+                                <a href="https://ble.ir/galleryrahnama" target="_blank" rel="noopener" title="بله"><img src="{{ asset('images/logo/bale.png') }}" alt="بله"></a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 </div>
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="tp-footer-widget footer-col-2 mb-50">
-                    <h4 class="tp-footer-widget-title">حساب من</h4>
-                    <div class="tp-footer-widget-content">
-                        <ul>
-                            <li><a href="#">ردیابی سفارش‌ها</a></li>
-                            <li><a href="#">ارسال</a></li>
-                            <li><a href="#">علاقمندی ها</a></li>
-                            <li><a href="#">حساب من</a></li>
-                            <li><a href="#">سابقه سفارش</a></li>
-                            <li><a href="#">برمی‌گرداند</a></li>
-                        </ul>
+
+                <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                    <div class="tp-footer-widget mb-40">
+                        <h4 class="tp-footer-widget-title">نمادها</h4>
+                        <div class="gr-enamad mt-20">
+                            <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=740827&Code=W6oYZSk6exrFMThY3CoMhSOIhiiToZfB'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=740827&Code=W6oYZSk6exrFMThY3CoMhSOIhiiToZfB' alt='نماد اعتماد الکترونیکی' style='cursor:pointer' code='W6oYZSk6exrFMThY3CoMhSOIhiiToZfB'></a>
+                        </div>
                     </div>
                 </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                <div class="tp-footer-widget footer-col-3 mb-50">
-                    <h4 class="tp-footer-widget-title">اطلاعات</h4>
-                    <div class="tp-footer-widget-content">
-                        <ul>
-                            <li><a href="#">داستان ما</a></li>
-                            <li><a href="#"> مشاغل</a></li>
-                            <li><a href="#">خط مشی رازداری</a></li>
-                            <li><a href="#">شرایط و ضوابط</a></li>
-                            <li><a href="#">آخرین اخبار</a></li>
-                            <li><a href="#">با ما تماس بگیرید</a></li>
-                        </ul>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-6">
+                    <div class="tp-footer-widget mb-40">
+                        <h4 class="tp-footer-widget-title">دسترسی سریع</h4>
+                        <div class="tp-footer-widget-content">
+                            <ul class="gr-footer-links">
+                                <li><a href="{{ url('/') }}">صفحه اصلی</a></li>
+                                <li><a href="{{ route('products.index') }}">محصولات</a></li>
+                                <li><a href="{{ route('cart.index') }}">سبد خرید</a></li>
+                                <li><a href="{{ route('account.profile') }}">حساب کاربری</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                <div class="tp-footer-widget footer-col-4 mb-50">
-                    <h4 class="tp-footer-widget-title">با ما صحبت کنید</h4>
+
+                <div class="col-xl-3 col-lg-3 col-md-6">
+                <div class="tp-footer-widget footer-col-4 mb-40">
+                    <h4 class="tp-footer-widget-title">سفارش دارید؟</h4>
                     <div class="tp-footer-widget-content">
                         <div class="tp-footer-talk mb-20">
-                            <span>سوال دارید؟ با ما تماس بگیرید</span>
-                            <h4><a href="tel:670-413-90-762">+98 912 345 7692</a></h4>
+                            <span>با ما تماس بگیرید</span>
+                            <h4><a href="tel:09306756076">09306756076</a></h4>
                         </div>
                         <div class="tp-footer-contact">
                             <div class="tp-footer-contact-item d-flex align-items-start">
@@ -72,7 +70,7 @@
                                 </span>
                             </div>
                             <div class="tp-footer-contact-content">
-                                <p><a href="mailto:shofy@support.com">shofy@support.com</a></p>
+                                <p><a href="mailto:info@galleryrahnama.ir">info@galleryrahnama.ir</a></p>
                             </div>
                             </div>
                             <div class="tp-footer-contact-item d-flex align-items-start">
@@ -85,7 +83,7 @@
                                 </span>
                             </div>
                             <div class="tp-footer-contact-content">
-                                <p><a href="https://www.google.com/maps/place/Sleepy+Hollow+Rd,+Gouverneur,+NY+13642,+USA/@44.3304966,-75.4552367,17z/data=!3m1!4b1!4m6!3m5!1s0x4cccddac8972c5eb:0x56286024afff537a!8m2!3d44.3304928!4d-75.453048!16s%2Fg%2F1tdsjdj4" target="_blank">تهران <br> تهران - تهران</a></p>
+                                <p><a href="#">قم - آنلاین شاپ گالری رهنما</a></p>
                             </div>
                             </div>
                         </div>
@@ -101,7 +99,7 @@
                 <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="tp-footer-copyright">
-                        <p>© 2023 کلیه حقوق محفوظ است | قالب HTML توسط <a href="index.html">shofy</a>.</p>
+                        <p><a href="https://zrahnama.ir/">طراحی و برنامه نویسی وب سایت توسط رهنما</a>.</p>
                     </div>
                 </div>
                 <div class="col-md-6">

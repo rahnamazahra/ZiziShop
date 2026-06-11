@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Panel\{UserController, ColorController, SizeController, CategoryController, ProductController, VoucherController, OrderController, DashboardController};
+use App\Http\Controllers\Panel\{UserController, ColorController, SizeController, CategoryController, ProductController, VoucherController, OrderController, DashboardController, CustomOrderController, ExpenseController};
 
 // Admin Panel
 Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -31,13 +31,28 @@ Route::controller(ProductController::class)->name('admin.')->group(function () {
 
 Route::name('admin.')->group(function () {
     Route::resource('users', UserController::class);
-    Route::resource('colors', ColorController::class)->except(['show']);
-    Route::resource('sizes', SizeController::class)->except(['show']);
+    Route::resource('colors', ColorController::class);
+    Route::resource('sizes', SizeController::class);
     Route::resource('categories', CategoryController::class)->scoped(['category' => 'slug']);
     Route::resource('products', ProductController::class)->scoped(['product' => 'slug']);
     Route::resource('vouchers', VoucherController::class);
     Route::resource('orders', OrderController::class);
+    Route::resource('expenses', ExpenseController::class)->except(['show']);
 
+});
+
+// نمایش/پنهان‌سازی موارد تستی (فقط ادمین)
+Route::post('/toggle-demo', function () {
+    session(['gr_show_demo' => ! session('gr_show_demo', false)]);
+    return back();
+})->name('admin.toggle-demo');
+
+// Custom Orders (سفارش‌های ویژه)
+Route::controller(CustomOrderController::class)->name('admin.')->prefix('custom-orders')->group(function () {
+    Route::get('/', 'index')->name('custom-orders.index');
+    Route::get('/{customOrder}', 'show')->name('custom-orders.show');
+    Route::post('/{customOrder}/approve', 'approve')->name('custom-orders.approve');
+    Route::post('/{customOrder}/reject', 'reject')->name('custom-orders.reject');
 });
 
 

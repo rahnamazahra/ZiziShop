@@ -35,11 +35,15 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $product = Product::make($request->except(['tags', 'repeater_variety']));
+        $this->validateMedia($request);
+
+        $product = Product::make($request->except(['tags', 'repeater_variety', 'media', 'delete_media']));
 
         $product->ensureUniqueSlug($request);
 
         $product->save();
+
+        $this->handleMediaUpload($request, $product);
 
         if($request->tags) {
 
@@ -47,18 +51,9 @@ class ProductController extends Controller
         }
 
 
-        if ($request->input('repeater_variety')) {
+        $this->syncVariants($product, $request);
 
-            foreach ($request->input('repeater_variety') as $variety) {
-
-                $product->stocks()->create([
-                    'product_id' => $product->id,
-                    'color_id'   => $variety['color'],
-                    'size_id'    => $variety['size'],
-                    'count'      => $variety['product_inventory']
-                ]);
-            }
-        }
+        $this->syncMaterials($product, $request);
 
         return to_route('admin.products.index')->with('swal', [
             'title' => 'موفقیت‌آمیز!',
@@ -67,11 +62,160 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show($slug)
+    /**
+     * ساخت تنوع‌های محصول از روی فرم (سایز/رنگ به‌صورت نام، قیمت و تعداد per-variant).
+     * سایز/رنگ جدید به‌صورت خودکار ساخته می‌شود و موجودی کل محصول = جمع تعداد تنوع‌ها.
+     */
+    protected function syncVariants(Product $product, Request $request): void
     {
-        $product = Product::where('slug', $slug)->first();
+        $varieties = $request->input('repeater_variety');
 
-        return view('site.details', compact('product'));
+        if (! $varieties) {
+            return;
+        }
+
+        $product->stocks()->delete();
+
+        $total = 0;
+
+        foreach ($varieties as $variety) {
+            $sizeName  = trim($variety['size'] ?? '');
+            $colorName = trim($variety['color'] ?? '');
+            $count     = (int) ($variety['product_inventory'] ?? 0);
+            $price     = (int) ($variety['price'] ?? 0);
+
+            if ($sizeName === '' && $colorName === '' && $count === 0) {
+                continue;
+            }
+
+            // سایز/رنگ خالی → مقدار پیش‌فرض تا قید NOT NULL جدول stocks رعایت شود
+            $size  = \App\Models\Size::firstOrCreate(['name' => $sizeName !== '' ? $sizeName : 'تک‌سایز']);
+            $color = \App\Models\Color::firstOrCreate(
+                ['name' => $colorName !== '' ? $colorName : 'تک‌رنگ'],
+                ['code' => '#cccccc']
+            );
+
+            $product->stocks()->create([
+                'color_id' => $color->id,
+                'size_id'  => $size->id,
+                'price'    => $price > 0 ? $price : null,
+                'count'    => $count,
+            ]);
+
+            $total += $count;
+        }
+
+        // موجودی کل محصول بر اساس جمع تنوع‌ها به‌روزرسانی می‌شود
+        if ($total > 0) {
+            $product->update(['inventory' => $total]);
+        }
+    }
+
+    /**
+     * ذخیره‌ی ریز متریال‌های محصول و محاسبه‌ی خودکار قیمت تمام‌شده.
+     */
+    protected function syncMaterials(Product $product, Request $request): void
+    {
+        $materials = $request->input('materials');
+
+        $product->materials()->delete();
+
+        if (! $materials) {
+            return;
+        }
+
+        foreach ($materials as $m) {
+            $name = trim($m['name'] ?? '');
+
+            if ($name === '') {
+                continue;
+            }
+
+            $product->materials()->create([
+                'name'       => $name,
+                'color'      => trim($m['color'] ?? '') ?: null,
+                'weight'     => (int) ($m['weight'] ?? 0) ?: null,
+                'quantity'   => max(1, (int) ($m['quantity'] ?? 1)),
+                'unit_price' => (int) ($m['unit_price'] ?? 0),
+            ]);
+        }
+
+        // قیمت تمام‌شده = جمع هزینه‌ی متریال‌ها
+        $product->recomputeCostPrice();
+    }
+
+    public function show(Product $product)
+    {
+        $product->load(['category', 'images', 'stocks.color', 'stocks.size', 'tags', 'materials']);
+
+        $variations = $product->stocks->map(function ($stock) use ($product) {
+            return sprintf(
+                'سایز: %s | رنگ: %s | قیمت: %s | تعداد: %s',
+                optional($stock->size)->name ?? '—',
+                optional($stock->color)->name ?? '—',
+                number_format($stock->price ?: $product->price) . ' ت',
+                $stock->count
+            );
+        })->implode('<br>');
+
+        // ریز متریال‌ها
+        $materialsHtml = '—';
+        if ($product->materials->isNotEmpty()) {
+            $rows = $product->materials->map(fn ($m) => sprintf(
+                '<tr><td class="py-1">%s</td><td class="text-center">%s</td><td class="text-center">%s</td><td class="text-center">%s</td><td class="text-center">%s</td><td class="text-center fw-bold">%s</td></tr>',
+                e($m->name), e($m->color ?: '—'), $m->weight ? $m->weight . 'g' : '—',
+                $m->quantity, number_format($m->unit_price), number_format($m->line_cost)
+            ))->implode('');
+            $materialsHtml = '<table class="table table-sm table-row-bordered fs-7 mb-0"><thead><tr class="text-gray-500 fw-bold">'
+                . '<th>متریال</th><th class="text-center">رنگ</th><th class="text-center">وزن</th><th class="text-center">تعداد</th><th class="text-center">قیمت واحد</th><th class="text-center">جمع</th></tr></thead><tbody>'
+                . $rows . '</tbody></table>';
+        }
+
+        // تحلیل سود
+        $a = $product->profitAnalysis();
+        $profitColor = $a['profit'] >= 0 ? 'success' : 'danger';
+        $profitHtml = sprintf(
+            '<div class="row g-3">'
+            . '<div class="col-6 col-md-3"><div class="bg-light-primary rounded p-3"><div class="fs-8 text-gray-600">قیمت تمام‌شده (واحد)</div><div class="fs-5 fw-bold text-primary">%s ت</div></div></div>'
+            . '<div class="col-6 col-md-3"><div class="bg-light-info rounded p-3"><div class="fs-8 text-gray-600">تعداد فروخته‌شده</div><div class="fs-5 fw-bold text-info">%s عدد</div></div></div>'
+            . '<div class="col-6 col-md-3"><div class="bg-light-warning rounded p-3"><div class="fs-8 text-gray-600">درآمد کل از این کالا</div><div class="fs-5 fw-bold text-warning">%s ت</div></div></div>'
+            . '<div class="col-6 col-md-3"><div class="bg-light-%s rounded p-3"><div class="fs-8 text-gray-600">سود ناخالص (حاشیه %s%%)</div><div class="fs-5 fw-bold text-%s">%s ت</div></div></div>'
+            . '</div><div class="text-muted fs-8 mt-2">* هزینه‌ی پست در سطح سفارش محاسبه می‌شود و در سود تک‌محصول لحاظ نشده است.</div>',
+            number_format($product->cost_price), number_format($a['units']), number_format($a['revenue']),
+            $profitColor, $a['margin'], $profitColor, number_format($a['profit'])
+        );
+
+        $headerExtra = sprintf(
+            '<span style="background:linear-gradient(135deg,#527aba,#343265);color:#fff;border-radius:8px;padding:8px 16px;font-weight:800;">سود این کالا: %s ت</span>',
+            number_format($a['profit'])
+        );
+
+        return view('panel.shared.show', [
+            'title'       => 'جزئیات محصول: ' . $product->name,
+            'headerExtra' => $headerExtra,
+            'images'      => $product->images->map(fn ($m) => ['url' => $m->url, 'type' => $m->type])->all(),
+            'items'  => [
+                'نام'            => $product->name,
+                'دسته‌بندی'      => optional($product->category)->name ?? '—',
+                'قیمت فروش'      => number_format($product->price) . ' تومان',
+                'تخفیف'          => $product->discount . '%',
+                'موجودی'         => (int) $product->inventory > 0
+                    ? $product->inventory . ' عدد'
+                    : '<span class="badge badge-light-danger">ناموجود</span>',
+                'SKU'            => $product->sku ?: '—',
+                'بارکد'          => $product->barcode ?: '—',
+                'وزن'            => $product->weight ? $product->weight . ' گرم' : '—',
+                'وضعیت انتشار'    => $product->is_published ? 'منتشر شده' : 'پیش‌نویس',
+                'تگ‌ها'          => $product->tags_string ?: '—',
+                'تنوع‌ها'        => $variations ?: '—',
+                'ریز مواد مصرفی'  => $materialsHtml,
+                'تحلیل سود (محرمانه)' => $profitHtml,
+                'توضیحات'        => $product->description ?: '—',
+            ],
+            'editUrl'    => route('admin.products.edit', $product),
+            'backUrl'    => route('admin.products.index'),
+            'breadcrumb' => ['داشبورد' => route('admin.dashboard'), 'محصولات' => route('admin.products.index')],
+        ]);
     }
 
     public function edit(Product $product)
@@ -88,25 +232,21 @@ class ProductController extends Controller
 
     public function update(ProductUpdateRequest $request, Product $product)
     {
-        $product->fill($request->except(['tags', 'repeater_variety']));
+        $this->validateMedia($request, $product);
+
+        $product->fill($request->except(['tags', 'repeater_variety', 'media', 'delete_media']));
         $product->ensureUniqueSlug($request);
         $product->save();
+
+        $this->handleMediaUpload($request, $product);
 
         if($request->tags) {
             $product->tags()->sync(Tag::findOrCreateFromRequest($request->tags));
         }
 
-        if ($request->input('repeater_variety')) {
-            $product->stocks()->delete();
+        $this->syncVariants($product, $request);
 
-            foreach ($request->input('repeater_variety') as $variety) {
-                $product->stocks()->create([
-                    'color_id'   => $variety['color'],
-                    'size_id'    => $variety['size'],
-                    'count'      => $variety['product_inventory']
-                ]);
-            }
-        }
+        $this->syncMaterials($product, $request);
 
         return to_route('admin.products.index')->with('swal', [
             'title' => 'موفقیت‌آمیز!',
@@ -150,6 +290,71 @@ class ProductController extends Controller
 
         return Excel::download(new ExportProducts($products), 'products.xlsx', Type::XLSX);
 
+    }
+
+    /**
+     * اعتبارسنجی مدیای آپلودی (عکس/فیلم) و سقف ۵ مورد برای هر محصول.
+     */
+    protected function validateMedia(Request $request, ?Product $product = null): void
+    {
+        $request->validate([
+            'media'   => ['nullable', 'array', 'max:' . Product::MAX_MEDIA],
+            'media.*' => ['file', 'mimetypes:image/jpeg,image/png,image/jpg,image/webp,video/mp4,video/quicktime,video/webm', 'max:20480'],
+        ], [], [
+            'media'   => 'عکس/فیلم محصول',
+            'media.*' => 'عکس/فیلم محصول',
+        ]);
+
+        // بررسی سقف نهایی پس از احتساب مدیای موجود و حذف‌شده‌ها
+        $existing = $product ? $product->images()->count() : 0;
+        $deleting = $product ? count((array) $request->input('delete_media', [])) : 0;
+        $adding   = $request->hasFile('media') ? count($request->file('media')) : 0;
+
+        if (($existing - $deleting + $adding) > Product::MAX_MEDIA) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'media' => 'هر محصول حداکثر می‌تواند ' . Product::MAX_MEDIA . ' عکس یا فیلم داشته باشد.',
+            ]);
+        }
+    }
+
+    /**
+     * ذخیره‌ی مدیای جدید و حذف مدیای انتخاب‌شده برای حذف.
+     * نوع هر فایل (عکس/فیلم) از روی mime تشخیص داده می‌شود و ترتیب نمایش حفظ می‌شود.
+     */
+    protected function handleMediaUpload(Request $request, Product $product): void
+    {
+        // حذف مدیای انتخاب‌شده
+        if ($request->filled('delete_media')) {
+            $product->images()
+                ->whereIn('id', (array) $request->input('delete_media'))
+                ->get()
+                ->each
+                ->delete();
+        }
+
+        if (! $request->hasFile('media')) {
+            return;
+        }
+
+        $count    = $product->images()->count();
+        $nextSort = (int) $product->images()->max('sort_order');
+
+        foreach ($request->file('media') as $file) {
+            if ($count >= Product::MAX_MEDIA) {
+                break;
+            }
+
+            $isVideo = str_starts_with((string) $file->getMimeType(), 'video');
+            $path    = $file->store('images/product', 'public');
+
+            $product->images()->create([
+                'path'       => $path,
+                'type'       => $isVideo ? 'video' : 'image',
+                'sort_order' => ++$nextSort,
+            ]);
+
+            $count++;
+        }
     }
 
     protected function getProductsFromRequest($request)

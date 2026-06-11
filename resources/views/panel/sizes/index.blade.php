@@ -45,6 +45,8 @@
                                     <x-delete-button />
                                 </x-form>
 
+                                <x-detail-button :href="route('admin.sizes.show', $size)"/>
+
                                 <x-edit-button :href="route('admin.sizes.edit', $size)"/>
 
 
