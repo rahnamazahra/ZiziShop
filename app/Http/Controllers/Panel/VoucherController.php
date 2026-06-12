@@ -212,20 +212,18 @@ class VoucherController extends Controller
     protected function sendCouponSms(Voucher $voucher, string $audience): void
     {
         $valueText = $voucher->amount ? (number_format($voucher->amount) . ' تومان') : ($voucher->discount_percent . ' درصد');
-        $message   = sprintf('کد تخفیف گالری رهنما: %s (%s). همین حالا خرید کنید!', $voucher->code, $valueText);
 
         if ($audience === 'user' && $voucher->user) {
-            SendVoucherSms::dispatch($voucher->user->mobile, $message);
+            SendVoucherSms::dispatch($voucher->user->mobile, $voucher->code, $valueText);
             $voucher->update(['sms_sent' => true, 'sms_sent_at' => now()]);
             return;
         }
 
-        // همه‌ی کاربران (مشتری‌ها) — صف‌بندی برای جلوگیری از کندی
         User::customersOnly()->whereNotNull('mobile')
             ->select('mobile')
-            ->chunk(200, function ($users) use ($message) {
+            ->chunk(200, function ($users) use ($voucher, $valueText) {
                 foreach ($users as $u) {
-                    SendVoucherSms::dispatch($u->mobile, $message);
+                    SendVoucherSms::dispatch($u->mobile, $voucher->code, $valueText);
                 }
             });
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\CustomOrderStatusEnum;
 use App\Models\CustomOrder;
 use App\Models\Product;
-use Cryptommer\Smsir\Smsir;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Shetabit\Multipay\Invoice;
@@ -71,20 +71,12 @@ class CustomOrderController extends Controller
         }
 
         $name = $customOrder->contact_name ?: 'کاربر';
-        $message = sprintf(
-            'سفارش ویژه جدید — محصول: %s — تعداد: %d — از: %s — شماره: %s. پنل گالری رهنما را بررسی کنید.',
+        (new SmsService)->customOrderNewAdmin(
+            $adminMobile,
             $product->name,
             $customOrder->quantity,
-            $name,
-            $customOrder->contact_mobile
+            $name
         );
-
-        try {
-            $lineNumber = config('smsir.line-number') ?: 30007732907923;
-            Smsir::Send()->bulk($message, [$adminMobile], null, $lineNumber);
-        } catch (\Throwable $e) {
-            Log::warning('Admin CustomOrder SMS failed: ' . $e->getMessage());
-        }
     }
 
     /**
@@ -176,19 +168,9 @@ class CustomOrderController extends Controller
                 'order_id' => $order->id,
             ]);
 
-            // پیامک تأیید پرداخت به مشتری
             $mobile = $customOrder->contact_mobile ?: optional($customOrder->user)->mobile;
             if ($mobile) {
-                try {
-                    $msg = sprintf(
-                        'پرداخت سفارش ویژه‌ی شما با موفقیت انجام شد. شماره سفارش: #%d. گالری رهنما در حال آماده‌سازی سفارش شماست.',
-                        $order->id
-                    );
-                    $lineNumber = config('smsir.line-number') ?: 30007732907923;
-                    Smsir::Send()->bulk($msg, [$mobile], null, $lineNumber);
-                } catch (\Throwable $e) {
-                    Log::warning('CustomOrder paid SMS failed: ' . $e->getMessage());
-                }
+                (new SmsService)->customOrderPaid($mobile, $order->id);
             }
 
             session()->forget('paying_custom_order');

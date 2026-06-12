@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Enums\CustomOrderStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\CustomOrder;
-use Cryptommer\Smsir\Smsir;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -52,11 +52,7 @@ class CustomOrderController extends Controller
             'admin_note' => $data['admin_note'] ?? null,
         ]);
 
-        $this->sendStatusSms(
-            $customOrder,
-            'سفارش ویژه‌ی شما تأیید شد. مبلغ قابل پرداخت: '
-                . number_format($customOrder->total) . ' تومان. برای پرداخت به حساب کاربری خود مراجعه کنید. گالری رهنما'
-        );
+        $this->sendStatusSms($customOrder, 'approved', number_format($customOrder->total));
 
         return to_route('admin.custom-orders.index')->with('swal', [
             'title'   => 'تأیید شد',
@@ -81,10 +77,7 @@ class CustomOrderController extends Controller
             'admin_note' => $data['admin_note'],
         ]);
 
-        $this->sendStatusSms(
-            $customOrder,
-            'سفارش ویژه‌ی شما متأسفانه امکان‌پذیر نشد. دلیل: ' . $data['admin_note'] . ' گالری رهنما'
-        );
+        $this->sendStatusSms($customOrder, 'rejected', $data['admin_note']);
 
         return to_route('admin.custom-orders.index')->with('swal', [
             'title'   => 'رد شد',
@@ -97,19 +90,16 @@ class CustomOrderController extends Controller
      * ارسال پیامک وضعیت سفارش ویژه به شماره‌ی تماس کاربر.
      * در صورت نبود تنظیمات پیامک، خطا فقط لاگ می‌شود و جریان ادامه می‌یابد.
      */
-    protected function sendStatusSms(CustomOrder $customOrder, string $message): void
+    protected function sendStatusSms(CustomOrder $customOrder, string $type, string $value): void
     {
         $mobile = $customOrder->contact_mobile ?: optional($customOrder->user)->mobile;
+        if (! $mobile) return;
 
-        if (! $mobile) {
-            return;
-        }
-
-        try {
-            $lineNumber = config('smsir.line-number') ?: 30007732907923;
-            Smsir::Send()->bulk($message, [$mobile], null, $lineNumber);
-        } catch (\Throwable $e) {
-            Log::warning('CustomOrder SMS failed: ' . $e->getMessage());
+        $sms = new SmsService;
+        if ($type === 'approved') {
+            $sms->customOrderApproved($mobile, $value);
+        } else {
+            $sms->customOrderRejected($mobile, $value);
         }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -68,15 +69,8 @@ class OrderController extends Controller
         $order = Order::with('user')->findOrFail($id);
         $order->update(['postal_tracking' => $data['postal_tracking'] ?? null]);
 
-        // اطلاع‌رسانی پیامکی کد رهگیری به مشتری
         if (! empty($data['postal_tracking']) && optional($order->user)->mobile) {
-            try {
-                $message = 'سفارش #' . $order->id . ' ارسال شد. کد رهگیری پستی: ' . $data['postal_tracking'] . ' گالری رهنما';
-                $lineNumber = config('smsir.line-number') ?: 30007732907923;
-                \Cryptommer\Smsir\Smsir::Send()->bulk($message, [$order->user->mobile], null, $lineNumber);
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning('Order tracking SMS failed: ' . $e->getMessage());
-            }
+            (new SmsService)->orderShipped($order->user->mobile, $order->id, $data['postal_tracking']);
         }
 
         return to_route('admin.orders.show', $id)->with('swal', [

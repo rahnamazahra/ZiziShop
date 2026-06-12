@@ -14,6 +14,18 @@ return [
     'route' => 'sms-admin',
     // SMS.ir Api Key
     'api-key' => env('SMSIR_API_KEY'),
+
+    'templates' => [
+        'otp'              => env('SMSIR_TEMPLATE_OTP',              937701),
+        'order_placed'     => env('SMSIR_TEMPLATE_ORDER_PLACED'),
+        'order_shipped'    => env('SMSIR_TEMPLATE_ORDER_SHIPPED'),
+        'custom_approved'  => env('SMSIR_TEMPLATE_CUSTOM_APPROVED'),
+        'custom_rejected'  => env('SMSIR_TEMPLATE_CUSTOM_REJECTED'),
+        'custom_paid'      => env('SMSIR_TEMPLATE_CUSTOM_PAID'),
+        'custom_new_admin' => env('SMSIR_TEMPLATE_CUSTOM_NEW_ADMIN'),
+        'voucher'          => env('SMSIR_TEMPLATE_VOUCHER'),
+        'birthday'         => env('SMSIR_TEMPLATE_BIRTHDAY'),
+    ],
     // Your sms.ir line number
     'line-number' => env('SMSIR_LINE_NUMBER'),
     // ======================================================================

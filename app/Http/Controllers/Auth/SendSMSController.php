@@ -11,13 +11,18 @@ class SendSMSController extends Controller
     public function __invoke()
     {
         $mobile = session()->get('mobile');
-        $user = User::where('mobile', $mobile)->first();
-        if($user) {
-            $result = $user->checkSendingSmsCodeVerify();
+
+        if (! $mobile) {
+            return redirect()->route('auth.register.form');
         }
 
-        return view('auth.verify-mobile', ['mobile' => $mobile]);
+        $smsSent = false;
+        $user = User::where('mobile', $mobile)->first();
+        if ($user) {
+            $smsSent = $user->checkSendingSmsCodeVerify();
+        }
 
+        return view('auth.verify-mobile', ['mobile' => $mobile, 'smsSent' => $smsSent]);
     }
 
 

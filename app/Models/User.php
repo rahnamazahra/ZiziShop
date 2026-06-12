@@ -186,33 +186,34 @@ class User extends Authenticatable implements JWTSubject
         return $this->mobile;
     }
 
-    public function sendSmsCodeVerify($mobile)
+    public function sendSmsCodeVerify($mobile): bool
     {
         $verificationCode = random_int(100000, 999999);
         session()->put('verification_code', $verificationCode);
 
-        $name = "Code";
-        $value = $verificationCode;
-        $templateId = 100000;
+        $templateId = (int) config('smsir.templates.otp', 937701);
 
-        $parameter = new Parameters($name, $value);
-        $parameters = array($parameter);
-        $send = smsir::Send();
-
-        $send->Verify($mobile, $templateId, $parameters);
+        try {
+            $parameter  = new Parameters("Code", $verificationCode);
+            $send       = Smsir::Send();
+            $send->Verify($mobile, $templateId, [$parameter]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('SMS send failed: ' . $e->getMessage());
+            return false;
+        }
 
         Cache::put('last_sent_time_' . $mobile, now(), 1);
-
+        return true;
     }
 
-    public function checkSendingSmsCodeVerify()
+    public function checkSendingSmsCodeVerify(): bool
     {
         $lastSentTime = Cache::get('last_sent_time_' . $this->mobile);
         if ($lastSentTime && now()->diffInMinutes($lastSentTime) < 1) {
             return true;
         }
 
-       $this->sendSmsCodeVerify($this->mobile);
+        return $this->sendSmsCodeVerify($this->mobile);
     }
 
 

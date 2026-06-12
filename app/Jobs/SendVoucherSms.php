@@ -2,13 +2,12 @@
 
 namespace App\Jobs;
 
-use Cryptommer\Smsir\Smsir;
+use App\Services\SmsService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class SendVoucherSms implements ShouldQueue
 {
@@ -16,20 +15,13 @@ class SendVoucherSms implements ShouldQueue
 
     public function __construct(
         public string $mobile,
-        public string $message,
+        public string $code,
+        public string $value,
     ) {}
 
     public function handle(): void
     {
-        if (empty($this->mobile)) {
-            return;
-        }
-
-        try {
-            $lineNumber = config('smsir.line-number') ?: 30007732907923;
-            Smsir::Send()->bulk($this->message, [$this->mobile], null, $lineNumber);
-        } catch (\Throwable $e) {
-            Log::warning('Voucher SMS failed for ' . $this->mobile . ': ' . $e->getMessage());
-        }
+        if (empty($this->mobile)) return;
+        (new SmsService)->voucher($this->mobile, $this->code, $this->value);
     }
 }

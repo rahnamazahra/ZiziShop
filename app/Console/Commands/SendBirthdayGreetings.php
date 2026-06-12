@@ -4,9 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Models\Voucher;
-use Cryptommer\Smsir\Smsir;
+use App\Services\SmsService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Morilog\Jalali\Jalalian;
 
 class SendBirthdayGreetings extends Command
@@ -74,22 +73,12 @@ class SendBirthdayGreetings extends Command
 
     protected function sendSms(User $user, string $code): bool
     {
-        try {
-            $message = sprintf(
-                'تولدت مبارک %s عزیز! 🎉 هدیه‌ی گالری رهنما: کد تخفیف %s به ارزش %s تومان، معتبر تا %d روز.',
-                $user->name,
-                $code,
-                number_format(self::GIFT_AMOUNT),
-                self::VALID_DAYS
-            );
-            $lineNumber = config('smsir.line-number') ?: 30007732907923;
-            Smsir::Send()->bulk($message, [$user->mobile], null, $lineNumber);
-
-            return true;
-        } catch (\Throwable $e) {
-            Log::warning('Birthday SMS failed for user ' . $user->id . ': ' . $e->getMessage());
-
-            return false;
-        }
+        return (new SmsService)->birthday(
+            $user->mobile,
+            $user->name,
+            $code,
+            number_format(self::GIFT_AMOUNT),
+            self::VALID_DAYS
+        );
     }
 }
