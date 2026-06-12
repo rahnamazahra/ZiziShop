@@ -1,65 +1,78 @@
-@extends('layouts.site.master')
-@section('title', 'سفارش‌های ویژه‌ی من')
+@extends('layouts.site.lux')
+
+@section('title', 'سفارش‌های ویژه‌ی من — گالری رهنما')
+
 @section('content')
-<section class="pt-95 pb-95">
-    <div class="container">
-        <h3 class="mb-40">سفارش‌های ویژه‌ی من</h3>
+<div class="acc-page">
+    <nav class="crumb">
+        <a href="{{ url('/') }}">خانه</a>
+        <span>/</span>
+        <a href="{{ route('account.profile') }}">حساب کاربری</a>
+        <span>/</span>
+        <b>سفارش‌های ویژه</b>
+    </nav>
 
-        @forelse($orders as $order)
-            @php
-                $status = $order->status;
-                $badge = [
-                    'pending'  => ['#fff7e6', '#8a5a00', 'در انتظار بررسی'],
-                    'approved' => ['#eaf2ff', '#1b4f9c', 'تأیید شد - در انتظار پرداخت'],
-                    'rejected' => ['#fdecec', '#464387', 'رد شد'],
-                    'paid'     => ['#e8f8ef', '#1f9d55', 'پرداخت شد - در حال تولید'],
-                ][$status->value] ?? ['#f3f3f3', '#555', $status->value];
-            @endphp
+    <h2 class="acc-title goldtext">سفارش‌های ویژه‌ی من</h2>
 
-            <div style="border:1px solid #eee;border-radius:12px;padding:20px;margin-bottom:16px;">
-                <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap:10px;">
-                    <div>
-                        <strong>{{ $order->product->name ?? 'محصول حذف‌شده' }}</strong>
-                        <span style="color:#888;font-size:13px;"> — درخواست #{{ $order->id }}</span>
+    @forelse($orders as $order)
+        @php
+            $st = $order->status->value;
+            $label = [
+                'pending'  => 'در انتظار بررسی',
+                'approved' => 'تأیید شد — در انتظار پرداخت',
+                'rejected' => 'رد شد',
+                'paid'     => 'پرداخت شد — در حال آماده‌سازی',
+            ][$st] ?? $st;
+        @endphp
+        <div class="acc-card" style="max-width:760px;">
+            <div class="acc-card-head">
+                <strong>{{ $order->product->name ?? 'محصول حذف‌شده' }} <span class="muted">درخواست #{{ fa_num($order->id) }}</span></strong>
+                <span class="st-chip st-{{ $st }}">{{ $label }}</span>
+            </div>
+            <div class="acc-card-body">
+                <div>تعداد: {{ fa_num($order->quantity) }}</div>
+                <div>توضیحات: {{ $order->description }}</div>
+                <div>تاریخ ثبت: {{ fa_num(gdate($order->created_at)) }}</div>
+                @if($order->unit_price)
+                    <div class="price">قیمت واحد: {{ fa_toman($order->unit_price) }} — مبلغ کل: {{ fa_toman($order->total) }}</div>
+                @endif
+                @if($order->admin_note)
+                    <div class="acc-card-note">
+                        <span style="color:var(--ink-3);">{{ $st === 'rejected' ? 'دلیل رد شدن' : 'پیام پشتیبانی' }}:</span>
+                        {{ $order->admin_note }}
                     </div>
-                    <span style="background:{{ $badge[0] }};color:{{ $badge[1] }};padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;">
-                        {{ $badge[2] }}
-                    </span>
-                </div>
-
-                <div style="color:#666;margin-top:10px;line-height:2;">
-                    <div>تعداد: {{ $order->quantity }}</div>
-                    <div>توضیحات: {{ $order->description }}</div>
-                    <div>تاریخ ثبت: {{ gdate($order->created_at) }}</div>
-
-                    @if($order->unit_price)
-                        <div style="color:#111;font-weight:700;margin-top:6px;">
-                            قیمت واحد: {{ number_format($order->unit_price) }} تومان —
-                            مبلغ کل: {{ number_format($order->total) }} تومان
-                        </div>
-                    @endif
-
-                    @if($order->admin_note)
-                        <div style="margin-top:6px;background:#fafafa;border-radius:8px;padding:10px 12px;">
-                            <span style="color:#999;">پیام پشتیبانی:</span> {{ $order->admin_note }}
-                        </div>
-                    @endif
-                </div>
-
-                @if($order->isPayable())
-                    <a href="{{ route('custom.order.pay', $order) }}"
-                       style="display:inline-block;margin-top:14px;background:#1f9d55;color:#fff;padding:11px 30px;border-radius:30px;font-weight:700;text-decoration:none;">
-                        پرداخت {{ number_format($order->total) }} تومان
-                    </a>
+                @endif
+                @if($order->isPaid() && $order->order_id)
+                    <div class="acc-card-note" style="color:var(--gold-2);margin-top:6px;">
+                        ✓ سفارش این محصول در حال آماده‌سازی است.
+                        <a href="{{ route('account.orders.show', $order->order_id) }}" style="color:var(--gold);text-decoration:underline;">
+                            مشاهده و پیگیری سفارش ›
+                        </a>
+                    </div>
                 @endif
             </div>
-        @empty
-            <p>هنوز سفارش ویژه‌ای ثبت نکرده‌اید. در صفحه‌ی محصولات ناموجود می‌توانید سفارش ویژه ثبت کنید.</p>
-        @endforelse
-
-        <div class="mt-30">
-            {{ $orders->links() }}
+            @if($order->isPayable())
+                <a href="{{ route('custom.order.pay', $order) }}" class="buybtn">پرداخت {{ fa_toman($order->total) }}</a>
+            @endif
         </div>
-    </div>
-</section>
+    @empty
+        <p class="acc-empty">هنوز سفارش ویژه‌ای ثبت نکرده‌اید. در صفحه‌ی هر محصول (چه موجود چه ناموجود) می‌توانید سفارش ویژه ثبت کنید.</p>
+    @endforelse
+
+    @if($orders->hasPages())
+        <div class="lux-pagination">
+            @if($orders->onFirstPage())
+                <span class="disabled">قبلی</span>
+            @else
+                <a href="{{ $orders->previousPageUrl() }}">قبلی</a>
+            @endif
+            <span>صفحه {{ fa_num($orders->currentPage()) }} از {{ fa_num($orders->lastPage()) }}</span>
+            @if($orders->hasMorePages())
+                <a href="{{ $orders->nextPageUrl() }}">بعدی</a>
+            @else
+                <span class="disabled">بعدی</span>
+            @endif
+        </div>
+    @endif
+</div>
 @endsection

@@ -25,7 +25,7 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
-                    <x-th>#</x-th>
+                    <x-th>ردیف</x-th>
                     <x-th>محصول</x-th>
                     <x-th>مشتری</x-th>
                     <x-th>تماس</x-th>
@@ -38,7 +38,7 @@
 
                 @forelse ($orders as $order)
                     <x-tr>
-                        <x-td>{{ $order->id }}</x-td>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td>
                             <span class="text-gray-800 fw-bold">{{ $order->product->name ?? '—' }}</span>
                         </x-td>

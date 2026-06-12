@@ -61,8 +61,9 @@
 
             <x-table>
                 <x-tr>
-                    <x-th></x-th>
-                    <x-th></x-th>
+                    <x-th>ردیف</x-th>
+                    <x-th>محصول</x-th>
+                    <x-th>امتیاز</x-th>
                     <x-th>وضعیت</x-th>
                     <x-th>SKU</x-th>
                     <x-th>بارکد</x-th>
@@ -75,6 +76,7 @@
                 @forelse ($products as $product)
 
                     <x-tr>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td>
                             <div class="d-flex align-items-center">
 

@@ -36,9 +36,10 @@ Route::name('admin.')->group(function () {
     Route::resource('categories', CategoryController::class)->scoped(['category' => 'slug']);
     Route::resource('products', ProductController::class)->scoped(['product' => 'slug']);
     Route::resource('vouchers', VoucherController::class);
+    Route::post('vouchers/{voucher}/send-sms',    [VoucherController::class, 'sendSms'])->name('vouchers.send-sms');
+    Route::post('vouchers/{voucher}/apply-to-site', [VoucherController::class, 'applyToSite'])->name('vouchers.apply-to-site');
     Route::resource('orders', OrderController::class);
     Route::resource('expenses', ExpenseController::class)->except(['show']);
-
 });
 
 // نمایش/پنهان‌سازی موارد تستی (فقط ادمین)

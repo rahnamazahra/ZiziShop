@@ -21,9 +21,22 @@ class SendBirthdayGreetings extends Command
     public const GIFT_AMOUNT = 200000;
     public const VALID_DAYS  = 10;
 
+    /**
+     * تاریخ تولد باید حداقل این تعداد روز قبل از روز تولد ثبت شده باشد
+     * (جلوگیری از ثبت تولدِ «همین فردا» فقط برای گرفتن فوری هدیه)
+     */
+    public const MIN_REGISTRATION_DAYS = 30;
+
     public function handle(): int
     {
-        $users = User::birthdayToday()->whereNotNull('mobile')->get();
+        $users = User::birthdayToday()
+            ->whereNotNull('mobile')
+            // null = کاربران قدیمی که قبل از این قانون تولدشان را ثبت کرده‌اند
+            ->where(function ($q) {
+                $q->whereNull('birthday_set_at')
+                  ->orWhere('birthday_set_at', '<=', now()->subDays(self::MIN_REGISTRATION_DAYS));
+            })
+            ->get();
         $sent = 0;
 
         foreach ($users as $user) {

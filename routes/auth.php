@@ -16,6 +16,6 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth:web')->group(function () {
-
     Route::get('logout', [LoginController::class, 'destroy'])->name('auth.logout');
+    Route::get('choose-destination', [LoginController::class, 'showChooseDestination'])->name('auth.choose-destination');
 });

@@ -45,6 +45,7 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
+                    <x-th>ردیف</x-th>
                     <x-th>عنوان</x-th>
                     <x-th>نوع</x-th>
                     <x-th>مبلغ</x-th>
@@ -56,6 +57,7 @@
 
                 @forelse($expenses as $expense)
                     <x-tr>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td class="fw-bold">{{ $expense->title }} @if($expense->is_demo)<span class="badge badge-light-warning ms-1">تستی</span>@endif</x-td>
                         <x-td>{{ $expense->type->label() }}</x-td>
                         <x-td>{{ toman($expense->amount) }}</x-td>

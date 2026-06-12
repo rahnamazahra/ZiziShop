@@ -148,6 +148,27 @@ class ProductController extends Controller
     {
         $product->load(['category', 'images', 'stocks.color', 'stocks.size', 'tags', 'materials']);
 
+        // تحلیل سود کلی
+        $profit = $product->profitAnalysis();
+
+        // فروش ماهانه (۱۲ ماه اخیر)
+        $monthlySales = \Illuminate\Support\Facades\DB::table('order_product')
+            ->join('orders', 'orders.id', '=', 'order_product.order_id')
+            ->where('order_product.product_id', $product->id)
+            ->where('orders.is_demo', false)
+            ->where('orders.created_at', '>=', now()->subMonths(12))
+            ->selectRaw("DATE_FORMAT(orders.created_at, '%Y-%m') as month,
+                         SUM(order_product.count) as units,
+                         SUM(order_product.price * order_product.count) as revenue")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $chartMonths  = $monthlySales->pluck('month')->toArray();
+        $chartUnits   = $monthlySales->pluck('units')->map(fn ($v) => (int) $v)->toArray();
+        $chartRevenue = $monthlySales->pluck('revenue')->map(fn ($v) => (int) $v)->toArray();
+
+        // تنوع‌ها
         $variations = $product->stocks->map(function ($stock) use ($product) {
             return sprintf(
                 'سایز: %s | رنگ: %s | قیمت: %s | تعداد: %s',
@@ -171,50 +192,34 @@ class ProductController extends Controller
                 . $rows . '</tbody></table>';
         }
 
-        // تحلیل سود
-        $a = $product->profitAnalysis();
-        $profitColor = $a['profit'] >= 0 ? 'success' : 'danger';
-        $profitHtml = sprintf(
-            '<div class="row g-3">'
-            . '<div class="col-6 col-md-3"><div class="bg-light-primary rounded p-3"><div class="fs-8 text-gray-600">قیمت تمام‌شده (واحد)</div><div class="fs-5 fw-bold text-primary">%s ت</div></div></div>'
-            . '<div class="col-6 col-md-3"><div class="bg-light-info rounded p-3"><div class="fs-8 text-gray-600">تعداد فروخته‌شده</div><div class="fs-5 fw-bold text-info">%s عدد</div></div></div>'
-            . '<div class="col-6 col-md-3"><div class="bg-light-warning rounded p-3"><div class="fs-8 text-gray-600">درآمد کل از این کالا</div><div class="fs-5 fw-bold text-warning">%s ت</div></div></div>'
-            . '<div class="col-6 col-md-3"><div class="bg-light-%s rounded p-3"><div class="fs-8 text-gray-600">سود ناخالص (حاشیه %s%%)</div><div class="fs-5 fw-bold text-%s">%s ت</div></div></div>'
-            . '</div><div class="text-muted fs-8 mt-2">* هزینه‌ی پست در سطح سفارش محاسبه می‌شود و در سود تک‌محصول لحاظ نشده است.</div>',
-            number_format($product->cost_price), number_format($a['units']), number_format($a['revenue']),
-            $profitColor, $a['margin'], $profitColor, number_format($a['profit'])
-        );
+        $items = [
+            'نام'             => $product->name,
+            'دسته‌بندی'       => optional($product->category)->name ?? '—',
+            'قیمت فروش'       => number_format($product->price) . ' تومان',
+            'تخفیف'           => $product->discount . '%',
+            'موجودی'          => (int) $product->inventory > 0
+                ? $product->inventory . ' عدد'
+                : '<span class="badge badge-light-danger">ناموجود</span>',
+            'SKU'             => $product->sku ?: '—',
+            'بارکد'           => $product->barcode ?: '—',
+            'وزن'             => $product->weight ? $product->weight . ' گرم' : '—',
+            'وضعیت انتشار'     => $product->is_published ? 'منتشر شده' : 'پیش‌نویس',
+            'تگ‌ها'           => $product->tags_string ?: '—',
+            'تنوع‌ها'         => $variations ?: '—',
+            'ریز مواد مصرفی'   => $materialsHtml,
+            'توضیحات'         => $product->description ?: '—',
+        ];
 
-        $headerExtra = sprintf(
-            '<span style="background:linear-gradient(135deg,#527aba,#343265);color:#fff;border-radius:8px;padding:8px 16px;font-weight:800;">سود این کالا: %s ت</span>',
-            number_format($a['profit'])
-        );
-
-        return view('panel.shared.show', [
-            'title'       => 'جزئیات محصول: ' . $product->name,
-            'headerExtra' => $headerExtra,
-            'images'      => $product->images->map(fn ($m) => ['url' => $m->url, 'type' => $m->type])->all(),
-            'items'  => [
-                'نام'            => $product->name,
-                'دسته‌بندی'      => optional($product->category)->name ?? '—',
-                'قیمت فروش'      => number_format($product->price) . ' تومان',
-                'تخفیف'          => $product->discount . '%',
-                'موجودی'         => (int) $product->inventory > 0
-                    ? $product->inventory . ' عدد'
-                    : '<span class="badge badge-light-danger">ناموجود</span>',
-                'SKU'            => $product->sku ?: '—',
-                'بارکد'          => $product->barcode ?: '—',
-                'وزن'            => $product->weight ? $product->weight . ' گرم' : '—',
-                'وضعیت انتشار'    => $product->is_published ? 'منتشر شده' : 'پیش‌نویس',
-                'تگ‌ها'          => $product->tags_string ?: '—',
-                'تنوع‌ها'        => $variations ?: '—',
-                'ریز مواد مصرفی'  => $materialsHtml,
-                'تحلیل سود (محرمانه)' => $profitHtml,
-                'توضیحات'        => $product->description ?: '—',
-            ],
-            'editUrl'    => route('admin.products.edit', $product),
-            'backUrl'    => route('admin.products.index'),
-            'breadcrumb' => ['داشبورد' => route('admin.dashboard'), 'محصولات' => route('admin.products.index')],
+        return view('panel.products.show', [
+            'product'      => $product,
+            'profit'       => $profit,
+            'chartMonths'  => $chartMonths,
+            'chartUnits'   => $chartUnits,
+            'chartRevenue' => $chartRevenue,
+            'items'        => $items,
+            'editUrl'      => route('admin.products.edit', $product),
+            'backUrl'      => route('admin.products.index'),
+            'breadcrumb'   => ['داشبورد' => route('admin.dashboard'), 'محصولات' => route('admin.products.index')],
         ]);
     }
 

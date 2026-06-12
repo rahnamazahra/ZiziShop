@@ -146,6 +146,31 @@ class Cart extends Model
         return $this->products->sum('pivot.count');
     }
 
+    /**
+     * سبد مهمان را به سبد کاربر لاگین‌شده ادغام می‌کند.
+     * پس از ادغام، سبد مهمان حذف می‌شود.
+     */
+    public static function mergeGuestIntoUser(string $guestToken, User $user): void
+    {
+        $guestCart = static::where('session_token', $guestToken)
+            ->with('products')
+            ->first();
+
+        if (! $guestCart || $guestCart->products->isEmpty()) {
+            $guestCart?->delete();
+            return;
+        }
+
+        $userCart = $user->cart;
+
+        foreach ($guestCart->products as $product) {
+            $userCart->addVariant($product, $product->pivot->stock_id, (int) $product->pivot->count);
+        }
+
+        $guestCart->products()->detach();
+        $guestCart->delete();
+    }
+
     public function remove(Product $product)
     {
        $this->products()->detach($product);

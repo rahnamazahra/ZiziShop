@@ -23,7 +23,9 @@ require __DIR__.'/auth.php';
 Route::get('/', HomeController::class);
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/load-more', [ProductController::class, 'loadMore'])->name('products.load-more');
 Route::get('/products/{product:slug}/detail', [ProductController::class, 'show'])->name('products.show');
+Route::get('/discounts', [ProductController::class, 'discounts'])->name('discounts.index');
 Route::any('/custom-order/verify', [\App\Http\Controllers\CustomOrderController::class, 'verify'])->name('custom.order.verify');
 Route::post('/custom-order/{product}', [\App\Http\Controllers\CustomOrderController::class, 'store'])->name('custom.order.store');
 // صفحه‌ی دسته‌بندی حذف شد؛ نتایج روی تب‌های صفحه‌ی اصلی نمایش داده می‌شود

@@ -26,17 +26,19 @@ class VoucherController extends Controller
         ]);
     }
 
+    /**
+     * ساخت کوپن — بدون ارسال خودکار پیامک.
+     * ارسال پیامک یا اعمال تخفیف در سایت از طریق دکمه‌های جداگانه انجام می‌شود.
+     */
     public function store(Request $request)
     {
         $data = $this->validatedData($request);
 
-        $voucher = Voucher::create($data['attributes']);
-
-        $this->sendCouponSms($voucher, $data['audience']);
+        Voucher::create($data['attributes']);
 
         return to_route('admin.vouchers.index')->with('swal', [
             'title'   => 'ثبت شد',
-            'message' => 'کوپن ساخته شد' . ($data['audience'] === 'all' ? ' و پیامک برای همه‌ی کاربران در صف ارسال قرار گرفت.' : ' و پیامک برای کاربر ارسال شد.'),
+            'message' => 'کوپن ساخته شد. برای ارسال پیامک یا اعمال تخفیف در سایت، از دکمه‌های مربوطه در لیست استفاده کنید.',
             'icon'    => 'success',
         ]);
     }
@@ -87,6 +89,75 @@ class VoucherController extends Controller
 
         return to_route('admin.vouchers.index')->with('swal', [
             'title' => 'حذف شد', 'message' => 'کوپن حذف شد.', 'icon' => 'success',
+        ]);
+    }
+
+    /**
+     * ارسال دستی پیامک کد تخفیف (از طریق دکمه در لیست کوپن‌ها).
+     */
+    public function sendSms(Voucher $voucher)
+    {
+        $audience = $voucher->user_id ? 'user' : 'all';
+        $this->sendCouponSms($voucher, $audience);
+
+        return to_route('admin.vouchers.index')->with('swal', [
+            'title'   => 'پیامک ارسال شد',
+            'message' => $audience === 'user'
+                ? 'پیامک کد تخفیف برای کاربر ارسال شد.'
+                : 'پیامک کد تخفیف برای همه‌ی کاربران در صف ارسال قرار گرفت.',
+            'icon' => 'success',
+        ]);
+    }
+
+    /**
+     * اعمال تخفیف مستقیم روی محصول در سایت — بدون نیاز به کد کوپن.
+     * discount محصول را برابر discount_percent کوپن قرار می‌دهد
+     * و discount_until را از end_date کوپن می‌گیرد.
+     * فقط برای کوپن‌های درصدی با product_id مشخص مجاز است.
+     */
+    public function applyToSite(Voucher $voucher)
+    {
+        if (! $voucher->product_id) {
+            return to_route('admin.vouchers.index')->with('swal', [
+                'title'   => 'امکان‌پذیر نیست',
+                'message' => 'اعمال در سایت فقط برای کوپن‌های اختصاصی یک محصول مشخص قابل انجام است.',
+                'icon'    => 'warning',
+            ]);
+        }
+
+        if (! $voucher->discount_percent) {
+            return to_route('admin.vouchers.index')->with('swal', [
+                'title'   => 'امکان‌پذیر نیست',
+                'message' => 'اعمال در سایت فقط برای کوپن‌های درصدی پشتیبانی می‌شود.',
+                'icon'    => 'warning',
+            ]);
+        }
+
+        $product = $voucher->product;
+
+        // تبدیل end_date کوپن به timestamp — اگر null بود، تخفیف دائمی می‌شود
+        $discountUntil = null;
+        if ($voucher->end_date) {
+            // end_date از نوع JalaliDate کست شده؛ به Carbon تبدیل می‌کنیم
+            try {
+                $discountUntil = \Illuminate\Support\Carbon::parse((string) $voucher->end_date)->endOfDay();
+            } catch (\Throwable $e) {
+                $discountUntil = null;
+            }
+        }
+
+        $product->update([
+            'discount'       => $voucher->discount_percent,
+            'discount_until' => $discountUntil,
+        ]);
+
+        $msg = 'تخفیف ' . $voucher->discount_percent . '٪ روی محصول «' . $product->name . '» اعمال شد';
+        $msg .= $discountUntil ? ' تا ' . gdate($discountUntil) . '.' : ' (دائمی تا لغو دستی).';
+
+        return to_route('admin.vouchers.index')->with('swal', [
+            'title'   => 'اعمال شد',
+            'message' => $msg,
+            'icon'    => 'success',
         ]);
     }
 
@@ -146,7 +217,6 @@ class VoucherController extends Controller
         if ($audience === 'user' && $voucher->user) {
             SendVoucherSms::dispatch($voucher->user->mobile, $message);
             $voucher->update(['sms_sent' => true, 'sms_sent_at' => now()]);
-
             return;
         }
 

@@ -19,9 +19,15 @@ class HomeController extends Controller
             }])->get();
         });
 
+        $paginator = Product::with('category')
+            ->where('is_published', 1)
+            ->latest()
+            ->paginate(12);
+
         return view('site.home', [
-            'categories' => $categories,
-            'products'  => Product::where('is_published', 1)->latest()->get(),
+            'categories'           => $categories,
+            'products'             => $paginator->items(),
+            'hasMore'              => $paginator->hasMorePages(),
             'bestSellersOfTheWeek' => Product::getBestSellersOfTheWeek(),
         ]);
     }

@@ -1,204 +1,218 @@
-@extends('layouts.site.master')
+@extends('layouts.site.lux')
+
+@section('title', 'سبد خرید — گالری رهنما')
+
 @section('content')
+    <div class="cart-page">
 
-         <section class="breadcrumb__area include-bg pt-95 pb-50">
-            <div class="container">
-               <div class="row">
-                  <div class="col-xxl-12">
-                     <div class="breadcrumb__content p-relative z-index-1">
-                         <div class="breadcrumb__list">
-                            <span><a href="#">صفحه اصلی</a></span>
-                            <span>سبد خرید</span>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+        {{-- مسیر --}}
+        <nav class="crumb">
+            <a href="{{ url('/') }}">خانه</a>
+            <span>/</span>
+            <b>سبد خرید</b>
+        </nav>
+
+        @if($cart->products->isEmpty())
+            <div class="cart-empty">
+                <div class="ornament"><i></i><b>✦</b><i></i></div>
+                <h2 class="goldtext">سبد خرید شما خالی است</h2>
+                <p>هنوز محصولی به سبد اضافه نکرده‌اید.</p>
+                <a href="{{ url('/') }}" class="buybtn">مشاهده محصولات</a>
             </div>
-         </section>
-         <!-- breadcrumb area end -->
+        @else
+            <div class="cart-grid">
 
-         <!-- cart area start -->
-         <section class="tp-cart-area pb-120">
-            <div class="container">
-               <div class="row">
-                  <div class="col-xl-9 col-lg-8">
-                     <div class="tp-cart-list mb-25 ml-30">
-                        <table class="table">
-                           <thead>
-                             <tr>
-                               <th colspan="2" class="tp-cart-header-product">محصول</th>
-                               <th class="tp-cart-header-price">قیمت</th>
-                               <th class="tp-cart-header-quantity">کمیت</th>
-                               <th></th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                            @foreach($cart->products as $product)
-                              <tr>
-                                 <!-- img -->
-                                 <td class="tp-cart-img"><a href="{{ route('products.show', $product->slug) }}"> <img src="{{ $product->poster_url }}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;" alt="{{ $product->name }}"></a></td>
-                                 <!-- title -->
-                                 <td class="tp-cart-title"><a href="{{ route('products.show', $product->slug) }}">{{ $product->name }}</a></td>
-                                 <!-- price -->
-                                 <td class="tp-cart-price"><span>{{ number_format($cart->lineUnitPrice($product)) }} تومان</span></td>
-                                 <!-- quantity -->
-                                 <td class="tp-cart-quantity">
-                                    <div class="tp-product-quantity mt-10 mb-10">
-                                       <span class="tp-cart-minus">
-                                          <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
-                                       <input class="tp-cart-input" type="text" value="{{  $product->pivot->count }}">
-                                       <span class="tp-cart-plus">
-                                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                             <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          </svg>
-                                       </span>
+                {{-- اقلام سبد --}}
+                <div>
+                    <div class="cart-lines">
+                        @foreach($cart->products as $product)
+                            <div class="cart-line">
+                                <a href="{{ route('products.show', $product->slug) }}">
+                                    <img class="cart-line-img" src="{{ $product->poster_url }}" alt="{{ $product->name }}">
+                                </a>
+                                <div class="cart-line-name">
+                                    <a href="{{ route('products.show', $product->slug) }}">{{ $product->name }}</a>
+                                </div>
+
+                                <div class="cart-line-tools">
+                                    <span class="cart-line-price">{{ fa_toman($cart->lineUnitPrice($product)) }}</span>
+
+                                    <div class="qty">
+                                        <button type="button" class="js-line-inc" data-url="{{ route('cart.increase', $product) }}" aria-label="افزایش">+</button>
+                                        <span>{{ fa_num($product->pivot->count) }}</span>
+                                        <button type="button" class="js-line-dec" data-url="{{ route('cart.decrease', $product) }}" aria-label="کاهش">−</button>
                                     </div>
-                                 </td>
-                                 <!-- action -->
-                                 <td class="tp-cart-action">
-                                    <form action="{{ route('remove.to.cart',['product' => $product]) }}" method="post">
+
+                                    <form action="{{ route('remove.to.cart', ['product' => $product]) }}" method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="tp-cart-action-btn">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.53033 1.53033C9.82322 1.23744 9.82322 0.762563 9.53033 0.46967C9.23744 0.176777 8.76256 0.176777 8.46967 0.46967L5 3.93934L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L3.93934 5L0.46967 8.46967C0.176777 8.76256 0.176777 9.23744 0.46967 9.53033C0.762563 9.82322 1.23744 9.82322 1.53033 9.53033L5 6.06066L8.46967 9.53033C8.76256 9.82322 9.23744 9.82322 9.53033 9.53033C9.82322 9.23744 9.82322 8.76256 9.53033 8.46967L6.06066 5L9.53033 1.53033Z" fill="currentColor"/>
-                                            </svg>
-                                            <span>حذف</span>
-                                        </button>
+                                        <button type="submit" class="cart-remove">✕ حذف</button>
                                     </form>
-                                 </td>
-                              </tr>
-                            @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
 
-                           </tbody>
-                         </table>
-                     </div>
+                    {{-- کد کوپن --}}
+                    <form action="{{ route('vouch') }}" method="post" class="cart-coupon">
+                        @csrf
+                        <input type="text" name="voucher" class="f-input" placeholder="کد کوپن را وارد کنید">
+                        <button type="submit" class="buybtn">اعمال</button>
+                    </form>
+                </div>
 
-                     <div class="tp-cart-bottom">
-                        <div class="row align-items-end">
-                           <div class="col-xl-6 col-md-8">
-                              <div class="tp-cart-coupon">
+                {{-- خلاصه سفارش --}}
+                <aside class="cart-sum">
+                    <h3 class="goldtext">خلاصه سفارش</h3>
 
-                                <form action="{{ route('vouch') }}" method="post">
+                    <div class="sum-row">
+                        <span>مجموع فرعی</span>
+                        <b>{{ fa_toman($cart->raw_total) }}</b>
+                    </div>
+
+                    @if($cart->voucher)
+                        <div class="sum-voucher">
+                            کوپن «{{ $cart->voucher->code }}»
+                            @if($cart->voucher->amount)
+                                — {{ fa_toman($cart->voucher->amount) }} تخفیف
+                            @else
+                                — {{ fa_num($cart->voucher->discount_percent) }}٪ تخفیف
+                            @endif
+                        </div>
+                    @endif
+
+                    <div class="ship-opts">
+                        <span class="opt-label">ارسال</span>
+                        <label class="ship-opt"><input id="flat_rate" type="radio" name="shipping"> نرخ ثابت: <em>{{ fa_num(20) }} تومان</em></label>
+                        <label class="ship-opt"><input id="local_pickup" type="radio" name="shipping"> تحویل محلی: <em>{{ fa_num(25) }} تومان</em></label>
+                        <label class="ship-opt"><input id="free_shipping" type="radio" name="shipping"> ارسال رایگان</label>
+                    </div>
+
+                    <div class="sum-row total">
+                        <span>مجموع</span>
+                        <b>{{ fa_toman($cart->total) }}</b>
+                    </div>
+
+                    {{-- اطلاعات ارسال --}}
+                    <div class="addr-box">
+                        <span class="opt-label">اطلاعات ارسال</span>
+
+                        @auth('web')
+                            @if($cart->address)
+                                <div class="addr-current">آدرس انتخاب‌شده: {{ $cart->address->receiver }} — {{ optional($cart->address->city)->name }}</div>
+                            @endif
+
+                            @if($addresses->count())
+                                <form method="post" id="grSelectAddrForm" data-base="{{ url('address') }}" style="margin-bottom:12px;">
                                     @csrf
-                                    <div class="tp-cart-coupon-input-box">
-                                        <label>کد کوپن:</label>
-                                        <div class="tp-cart-coupon-input d-flex align-items-center">
-                                            <input type="text" name="voucher" placeholder="کد کوپن را وارد کنید">
-                                            <button type="submit">اعمال</button>
+                                    <select class="f-select" id="grAddrSelect" style="margin-bottom:10px;">
+                                        <option value="">انتخاب آدرس قبلی...</option>
+                                        @foreach($addresses as $a)
+                                            <option value="{{ $a->id }}" {{ $cart->address_id == $a->id ? 'selected' : '' }}>
+                                                {{ $a->receiver }} — {{ \Illuminate\Support\Str::limit($a->body, 30) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="buybtn" style="width:100%;padding:10px;font-size:13px;">انتخاب این آدرس</button>
+                                </form>
+                            @endif
+
+                            <details class="addr-new" {{ $addresses->count() ? '' : 'open' }}>
+                                <summary>افزودن آدرس جدید</summary>
+                                <form method="post" action="{{ route('address.store') }}">
+                                    @csrf
+                                    <label class="f-label" for="addr-receiver">نام گیرنده</label>
+                                    <input id="addr-receiver" name="receiver" class="f-input" value="{{ auth('web')->user()->name }}" required>
+
+                                    <label class="f-label" for="addr-mobile">موبایل</label>
+                                    <input id="addr-mobile" name="mobile" class="f-input input-just-number" inputmode="numeric" maxlength="11" value="{{ auth('web')->user()->mobile }}" required dir="ltr" style="text-align:right;">
+
+                                    <label class="f-label" for="addr-national">کد ملی (۱۰ رقم)</label>
+                                    <input id="addr-national" name="national_code" class="f-input input-just-number" inputmode="numeric" maxlength="10" required dir="ltr" style="text-align:right;">
+
+                                    <label class="f-label" for="addr-postal">کد پستی</label>
+                                    <input id="addr-postal" name="postal_code" class="f-input input-just-number" inputmode="numeric" maxlength="10" required dir="ltr" style="text-align:right;">
+
+                                    <label class="f-label" for="addr-city">شهر</label>
+                                    <select id="addr-city" name="city_id" class="f-select" required>
+                                        <option value="">انتخاب شهر</option>
+                                        @foreach($provinces as $p)
+                                            <optgroup label="{{ $p->name }}">
+                                                @foreach($p->cities as $c)
+                                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+
+                                    @if(is_null(auth('web')->user()->birthday))
+                                        <label class="f-label" for="addr-birthday">تاریخ تولد</label>
+                                        <input type="date" id="addr-birthday" name="birthday" class="f-input" max="{{ now()->subDay()->toDateString() }}">
+                                        <div class="addr-note">
+                                            🎁 با ثبت تاریخ تولد، در روز تولدتان از هدایا و سورپرایزهای ویژه‌ی گالری رهنما بهره‌مند می‌شوید.
                                         </div>
+                                    @else
+                                        <div class="addr-note">
+                                            🎂 تاریخ تولد شما ثبت شده است؛ روز تولدتان منتظر سورپرایز گالری رهنما باشید. (برای ویرایش با پشتیبانی تماس بگیرید)
+                                        </div>
+                                    @endif
+
+                                    <label class="f-label" for="addr-body">آدرس کامل</label>
+                                    <textarea id="addr-body" name="body" class="f-textarea" rows="2" required></textarea>
+
+                                    <div style="margin-top:14px;">
+                                        <button type="submit" class="buybtn" style="width:100%;padding:10px;font-size:13px;">ذخیره و انتخاب</button>
                                     </div>
                                 </form>
+                            </details>
+                        @else
+                            <p style="font-size:13px;color:var(--ink-2);">
+                                برای تکمیل خرید ابتدا <a href="{{ route('auth.login.form') }}" style="color:var(--gold);">وارد شوید</a>.
+                            </p>
+                        @endauth
+                    </div>
 
-                              </div>
-                           </div>
-
-                           <div class="col-xl-6 col-md-4">
-                              <div class="tp-cart-update text-md-start">
-                                 <button type="button" class="tp-cart-update-btn">به روز رسانی سبد خرید</button>
-                               </div>
-                            </div>
-
-                         </div>
-                      </div>
-                   </div>
-
-                   <div class="col-xl-3 col-lg-4 col-md-6">
-                      <div class="tp-cart-checkout-wrapper">
-                         <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
-                            <span class="tp-cart-checkout-top-title">مجموع فرعی</span>
-                            <span class="tp-cart-checkout-top-price">{{ $cart->raw_total }}</span>
-                         </div>
-                         <div class="tp-cart-checkout-shipping">
-                            <h4 class="tp-cart-checkout-shipping-title">ارسال</h4>
-
-                            <div class="tp-cart-checkout-shipping-option-wrapper">
-                               <div class="tp-cart-checkout-shipping-option">
-                                  <input id="flat_rate" type="radio" name="shipping">
-                                  <label for="flat_rate">نرخ ثابت: <span>20 تومان</span></label>
-                               </div>
-                               <div class="tp-cart-checkout-shipping-option">
-                                  <input id="local_pickup" type="radio" name="shipping">
-                                  <label for="local_pickup"> تحویل محلی: <span> 25 تومان</span></label>
-                               </div>
-                               <div class="tp-cart-checkout-shipping-option">
-                                  <input id="free_shipping" type="radio" name="shipping">
-                                  <label for="free_shipping">ارسال رایگان</label>
-                               </div>
-                            </div>
-                         </div>
-                           @if ($cart->voucher)
-                                <span>کد کوپن {{ $cart->voucher->code }} -  تخفیف {{ $cart->voucher->discount_percent }}%</span>
-                            @endif
-                         <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                            <span>مجموع</span>
-                            <span>{{ $cart->total }}</span>
-                         </div>
-                         <div class="gr-checkout-address mt-20">
-                            <h4 class="tp-cart-checkout-shipping-title">اطلاعات ارسال</h4>
-
-                            @auth('web')
-                                @if($cart->address)
-                                    <div class="gr-addr-current">آدرس انتخاب‌شده: {{ $cart->address->receiver }} — {{ optional($cart->address->city)->name }}</div>
-                                @endif
-
-                                @if($addresses->count())
-                                    <form method="post" id="grSelectAddrForm" class="mb-15">
-                                        @csrf
-                                        <select class="form-control mb-10" onchange="document.getElementById('grSelectAddrForm').action='{{ url('address') }}/'+this.value+'/select';">
-                                            <option value="">انتخاب آدرس قبلی...</option>
-                                            @foreach($addresses as $a)
-                                                <option value="{{ $a->id }}" {{ $cart->address_id == $a->id ? 'selected' : '' }}>{{ $a->receiver }} — {{ \Illuminate\Support\Str::limit($a->body, 30) }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit" class="gr-card-add-btn" style="width:100%;">انتخاب این آدرس</button>
-                                    </form>
-                                @endif
-
-                                <details class="gr-addr-new" {{ $addresses->count() ? '' : 'open' }}>
-                                    <summary>افزودن آدرس جدید</summary>
-                                    <form method="post" action="{{ route('address.store') }}" class="mt-10">
-                                        @csrf
-                                        <input name="receiver" class="form-control mb-10" placeholder="نام گیرنده" value="{{ auth('web')->user()->name }}" required>
-                                        <input name="mobile" class="form-control mb-10" placeholder="موبایل" value="{{ auth('web')->user()->mobile }}" required>
-                                        <input name="national_code" class="form-control mb-10" placeholder="کد ملی (۱۰ رقم)" required>
-                                        <input name="postal_code" class="form-control mb-10" placeholder="کد پستی" required>
-                                        <select name="city_id" class="form-control mb-10" required>
-                                            <option value="">انتخاب شهر</option>
-                                            @foreach($provinces as $p)
-                                                <optgroup label="{{ $p->name }}">
-                                                    @foreach($p->cities as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach
-                                                </optgroup>
-                                            @endforeach
-                                        </select>
-                                        <label style="font-size:13px;color:#343265;font-weight:600;display:block;margin-bottom:4px;">تاریخ تولد</label>
-                                        <input type="date" name="birthday" class="form-control mb-2">
-                                        <div style="font-size:12px;color:#1f9d55;background:#eaf7ef;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.9;">
-                                            🎁 با ثبت تاریخ تولد، روز تولدتان یک کوپن تخفیف ۲۰۰٬۰۰۰ تومانی (اعتبار ۱۰ روزه) برایتان پیامک می‌شود.
-                                        </div>
-                                        <textarea name="body" class="form-control mb-10" rows="2" placeholder="آدرس کامل" required></textarea>
-                                        <button type="submit" class="gr-card-add-btn" style="width:100%;">ذخیره و انتخاب</button>
-                                    </form>
-                                </details>
-                            @else
-                                <p>برای تکمیل خرید ابتدا <a href="{{ route('auth.login.form') }}">وارد شوید</a>.</p>
-                            @endauth
-                         </div>
-
-                         <div class="tp-cart-checkout-proceed">
-                            <form method="post" action="{{ route('checkout')}}" class="mt-16 flex justify-center">
-                            @csrf
-                                <button type="submit" href="checkout.html" class="tp-cart-checkout-btn w-100">رفتن به پرداخت</button>
-                            </form>
-                         </div>
-                     </div>
-                  </div>
-               </div>
+                    {{-- پرداخت --}}
+                    <form method="post" action="{{ route('checkout') }}" style="margin-top:18px;">
+                        @csrf
+                        <button type="submit" class="buybtn" style="width:100%;">رفتن به پرداخت</button>
+                    </form>
+                </aside>
             </div>
-         </section>
-         <!-- cart area end -->
+        @endif
+    </div>
+@endsection
+
+@section('customScript')
+<script>
+// انتخاب آدرس: آدرسِ مقصد فرم هنگام ارسال ساخته می‌شود (نه فقط هنگام تغییر سلکت)
+(function () {
+    const form = document.getElementById('grSelectAddrForm');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+        const sel = document.getElementById('grAddrSelect');
+        if (!sel.value) {
+            e.preventDefault();
+            sel.focus();
+            return;
+        }
+        form.action = form.dataset.base + '/' + sel.value + '/select';
+    });
+})();
+
+// افزایش/کاهش تعداد اقلام سبد (با حفظ منطق سرور) و بارگذاری مجدد صفحه
+document.querySelectorAll('.js-line-inc, .js-line-dec').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        btn.disabled = true;
+        fetch(btn.dataset.url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        }).then(() => window.location.reload())
+          .catch(() => { btn.disabled = false; });
+    });
+});
+</script>
 @endsection

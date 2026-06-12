@@ -88,9 +88,15 @@
             </x-panel.card-body>
 
             <x-panel.card-footer>
-                <div class="d-flex justify-content-end gap-2">
-                    <a href="{{ route('admin.vouchers.index') }}" class="btn btn-light">لغو</a>
-                    <button type="submit" class="btn btn-primary">ثبت و ارسال پیامک</button>
+                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                    <div class="text-muted fs-8 d-flex align-items-center gap-2">
+                        <span>💡</span>
+                        <span>پیامک ارسال نمی‌شود — پس از ثبت، از دکمه‌های <strong>«📨 پیامک»</strong> یا <strong>«🏷️ اعمال در سایت»</strong> در لیست کوپن‌ها استفاده کنید.</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.vouchers.index') }}" class="btn btn-light">لغو</a>
+                        <button type="submit" class="btn btn-primary">ثبت کوپن</button>
+                    </div>
                 </div>
             </x-panel.card-footer>
         </x-panel.card>

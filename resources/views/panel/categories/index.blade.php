@@ -48,7 +48,8 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
-                    <x-th></x-th>
+                    <x-th>ردیف</x-th>
+                    <x-th>دسته‌بندی</x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
 
@@ -56,6 +57,7 @@
                 @forelse ($categories as $category)
 
                     <x-tr>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td>
                             <div class="d-flex align-items-center">
 

@@ -1,19 +1,35 @@
-@extends('layouts.site.master')
-@section('title', 'آدرس‌های من')
+@extends('layouts.site.lux')
+
+@section('title', 'آدرس‌های من — گالری رهنما')
+
 @section('content')
-<section class="pt-95 pb-95">
-    <div class="container">
-        <h3 class="mb-40">آدرس‌های من</h3>
-        @forelse($addresses as $address)
-            <div style="border:1px solid #eee;border-radius:10px;padding:18px;margin-bottom:14px;">
-                <div><strong>گیرنده:</strong> {{ $address->receiver }} — {{ $address->mobile }}</div>
-                <div><strong>کد ملی:</strong> {{ $address->national_code }} | <strong>کد پستی:</strong> {{ $address->postal_code }}</div>
-                <div><strong>استان/شهر:</strong> {{ optional(optional($address->city)->province)->name }} / {{ optional($address->city)->name }}</div>
-                <div><strong>آدرس:</strong> {{ $address->body }}</div>
+<div class="acc-page">
+    <nav class="crumb">
+        <a href="{{ url('/') }}">خانه</a>
+        <span>/</span>
+        <a href="{{ route('account.profile') }}">حساب کاربری</a>
+        <span>/</span>
+        <b>آدرس‌های من</b>
+    </nav>
+
+    <h2 class="acc-title goldtext">آدرس‌های من</h2>
+
+    @forelse($addresses as $address)
+        <div class="acc-card" style="max-width:760px;">
+            <div class="acc-card-head">
+                <strong>{{ $address->receiver }}</strong>
+                <span class="muted" style="direction:ltr;">{{ fa_num($address->mobile) }}</span>
             </div>
-        @empty
-            <p>هنوز آدرسی ثبت نکرده‌اید.</p>
-        @endforelse
-    </div>
-</section>
+            <div class="acc-card-body">
+                <div>کد ملی: {{ fa_num($address->national_code) }} — کد پستی: {{ fa_num($address->postal_code) }}</div>
+                <div>{{ optional(optional($address->city)->province)->name }} / {{ optional($address->city)->name }}</div>
+                <div>{{ $address->body }}</div>
+            </div>
+        </div>
+    @empty
+        <p class="acc-empty">هنوز آدرسی ثبت نکرده‌اید.</p>
+    @endforelse
+
+    <p class="acc-hint">برای افزودن آدرس جدید به <a href="{{ route('account.profile') }}#pane-addresses" style="color:var(--gold);">حساب کاربری ← آدرس‌ها</a> بروید.</p>
+</div>
 @endsection

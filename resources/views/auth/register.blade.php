@@ -1,66 +1,53 @@
-@extends('layouts.auth.master')
+@extends('layouts.site.lux')
 
-@section('title', 'ثبت نام')
+@section('title', 'ثبت‌نام — گالری رهنما')
 
 @section('content')
-<x-panel.div-section class="d-flex flex-column flex-root">
-    <x-panel.div-section class="d-flex flex-column flex-column-fluid">
-        <x-panel.div-section class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
-            <x-panel.div-section class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="ornament"><i></i><b>✦</b><i></i></div>
+            <h1 class="auth-title goldtext">ایجاد حساب کاربری</h1>
+            <p class="auth-sub">گالری رهنما</p>
 
-                <form method="POST" action="{{ route('auth.register.store') }}" class="form w-100">
-                    @csrf
+            <form method="POST" action="{{ route('auth.register.store') }}">
+                @csrf
 
-                    <div class="text-center mb-10">
-                        <h1 class="text-dark mb-3">ایجاد حساب کاربری</h1>
-                        <div class="text-gray-400 fw-bold fs-6">گالری رهنما</div>
+                <div class="auth-row">
+                    <div>
+                        <label class="f-label" for="first_name">نام</label>
+                        <input class="f-input" type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" autocomplete="off">
+                        @error('first_name') <div class="f-err">{{ $message }}</div> @enderror
                     </div>
-
-                    <div class="row">
-                        <div class="fv-row mb-5 col-6">
-                            <x-form.label id="first_name">نام</x-form.label>
-                            <x-form.input type="text" id="first_name" name="first_name" class="form-control form-control-lg form-control-solid mb-2" value="{{ old('first_name') }}" autocomplete="off"/>
-                            <x-form.input-error :messages="$errors->get('first_name')" class="mt-2" />
-                        </div>
-                        <div class="fv-row mb-5 col-6">
-                            <x-form.label id="last_name">نام خانوادگی</x-form.label>
-                            <x-form.input type="text" id="last_name" name="last_name" class="form-control form-control-lg form-control-solid mb-2" value="{{ old('last_name') }}" autocomplete="off"/>
-                            <x-form.input-error :messages="$errors->get('last_name')" class="mt-2" />
-                        </div>
+                    <div>
+                        <label class="f-label" for="last_name">نام خانوادگی</label>
+                        <input class="f-input" type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" autocomplete="off">
+                        @error('last_name') <div class="f-err">{{ $message }}</div> @enderror
                     </div>
+                </div>
 
-                    <div class="fv-row mb-5">
-                        <x-form.label id="mobile">تلفن‌همراه</x-form.label>
-                        <x-form.input type="text" id="mobile" name="mobile" class="form-control form-control-lg form-control-solid mb-2 input-just-number" value="{{ old('mobile') }}" autocomplete="off"/>
-                    </div>
+                <label class="f-label" for="mobile">تلفن همراه</label>
+                <input class="f-input input-just-number" type="text" id="mobile" name="mobile"
+                       value="{{ old('mobile') }}" inputmode="numeric" maxlength="11"
+                       placeholder="09xxxxxxxxx" autocomplete="off" dir="ltr" style="text-align:right;">
+                @error('mobile') <div class="f-err">{{ $message }}</div> @enderror
 
-                    <div class="fv-row mb-5">
-                        <x-form.label id="password">رمزعبور</x-form.label>
-                        <x-form.input type="password" id="password" name="password" class="form-control form-control-lg form-control-solid mb-2" value="" autocomplete="off"/>
-                    </div>
+                <label class="f-label" for="password">رمز عبور</label>
+                <input class="f-input" type="password" id="password" name="password" autocomplete="off">
+                @error('password') <div class="f-err">{{ $message }}</div> @enderror
 
-                    <div class="fv-row mb-8">
-                        <x-form.label id="password_confirmation">تکرار رمزعبور</x-form.label>
-                        <x-form.input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg form-control-solid mb-2" value="" autocomplete="off"/>
-                    </div>
+                <label class="f-label" for="password_confirmation">تکرار رمز عبور</label>
+                <input class="f-input" type="password" id="password_confirmation" name="password_confirmation" autocomplete="off">
+                @error('password_confirmation') <div class="f-err">{{ $message }}</div> @enderror
 
-                    <div class="text-center">
-                        <x-form.btn type="submit" class="btn btn-lg btn-primary btn-submit w-100 mb-5" title="">
-                            <x-panel.span class="indicator-label">مرحله بعد</x-panel.span>
-                            <x-panel.span class="indicator-progress">لطفا چندلحظه صبر کنید ...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                            </x-panel.span>
-                        </x-form.btn>
+                <div style="margin-top:24px;">
+                    <button type="submit" class="buybtn" style="width:100%;">مرحله بعد</button>
+                </div>
+            </form>
 
-                        <div class="text-gray-400 fw-bold fs-6">
-                            قبلاً ثبت‌نام کرده‌اید؟
-                            <a href="{{ route('auth.login.form') }}" class="link-primary fw-bolder">ورود</a>
-                        </div>
-                    </div>
-                </form>
-
-            </x-panel.div-section>
-        </x-panel.div-section>
-    </x-panel.div-section>
-</x-panel.div-section>
+            <p class="auth-foot">
+                قبلاً ثبت‌نام کرده‌اید؟
+                <a href="{{ route('auth.login.form') }}">ورود</a>
+            </p>
+        </div>
+    </div>
 @endsection

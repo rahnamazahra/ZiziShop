@@ -64,7 +64,7 @@
                 @forelse ($users as $user)
 
                     <x-tr>
-                        <x-td>{{ $user->id ?? '-' }}</x-td>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td class="fw-bold">{{ $user->name ?? '-' }}</x-td>
                         <x-td dir="ltr">{{ $user->mobile ?? '-' }}</x-td>
                         <x-td>{{ $user->birthday ? gdate($user->birthday) : '—' }}</x-td>

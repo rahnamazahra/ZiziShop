@@ -62,3 +62,27 @@ if (!function_exists('toman')) {
         return number_format((int) $amount) . ' تومان';
     }
 }
+
+if (!function_exists('fa_num')) {
+    /**
+     * تبدیل ارقام لاتین به فارسی (برای نمایش). جداکننده‌ی هزارگان هم فارسی می‌شود.
+     */
+    function fa_num($value): string
+    {
+        return strtr((string) $value, [
+            '0' => '۰', '1' => '۱', '2' => '۲', '3' => '۳', '4' => '۴',
+            '5' => '۵', '6' => '۶', '7' => '۷', '8' => '۸', '9' => '۹',
+            ',' => '٬',
+        ]);
+    }
+}
+
+if (!function_exists('fa_toman')) {
+    /**
+     * مبلغ با ارقام فارسی و واحد تومان.
+     */
+    function fa_toman($amount): string
+    {
+        return fa_num(number_format((int) $amount)) . ' تومان';
+    }
+}

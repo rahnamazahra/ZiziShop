@@ -1,12 +1,22 @@
-@extends('layouts.site.master')
-@section('title', 'فاکتور سفارش #' . $order->id)
+@extends('layouts.site.lux')
+
+@section('title', 'فاکتور سفارش #' . $order->id . ' — گالری رهنما')
+
 @section('content')
-<section class="pt-95 pb-95">
-    <div class="container">
+<div class="acc-page">
+    <nav class="crumb">
+        <a href="{{ url('/') }}">خانه</a>
+        <span>/</span>
+        <a href="{{ route('account.orders') }}">سفارش‌های من</a>
+        <span>/</span>
+        <b>فاکتور #{{ fa_num($order->id) }}</b>
+    </nav>
+
+    <div class="invoice-wrap">
         @include('partials.order-invoice', ['order' => $order])
-        <div class="text-center mt-4">
-            <a href="{{ route('account.orders') }}" style="color:#343265;font-weight:700;">‹ بازگشت به سفارش‌ها</a>
+        <div class="invoice-back">
+            <a href="{{ route('account.orders') }}">‹ بازگشت به سفارش‌ها</a>
         </div>
     </div>
-</section>
+</div>
 @endsection

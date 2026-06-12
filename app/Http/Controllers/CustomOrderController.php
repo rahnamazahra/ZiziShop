@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\CustomOrderStatusEnum;
 use App\Models\CustomOrder;
 use App\Models\Product;
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
@@ -32,7 +34,7 @@ class CustomOrderController extends Controller
             'contact_name'   => 'نام و نام خانوادگی',
         ]);
 
-        CustomOrder::create([
+        $customOrder = CustomOrder::create([
             'user_id'        => auth('web')->id(),
             'contact_name'   => $data['contact_name'] ?? auth('web')->user()?->name,
             'product_id'     => $product->id,
@@ -41,6 +43,8 @@ class CustomOrderController extends Controller
             'contact_mobile' => $data['contact_mobile'],
             'status'         => CustomOrderStatusEnum::Pending,
         ]);
+
+        $this->notifyAdmin($product, $customOrder);
 
         $message = $isGuest
             ? 'سفارش ویژه‌ی شما ثبت شد؛ کارشناسان ما برای اعلام قیمت و هماهنگی با شماره‌ی واردشده تماس می‌گیرند.'
@@ -53,6 +57,34 @@ class CustomOrderController extends Controller
             'message' => $message,
             'icon'    => 'success',
         ]);
+    }
+
+    /**
+     * ارسال پیامک اطلاع‌رسانی سفارش ویژه‌ی جدید به ادمین.
+     * شماره از ADMIN_MOBILE در .env خوانده می‌شود؛ در نبود آن، بی‌صدا رد می‌شود.
+     */
+    private function notifyAdmin(Product $product, CustomOrder $customOrder): void
+    {
+        $adminMobile = env('ADMIN_MOBILE');
+        if (! $adminMobile) {
+            return;
+        }
+
+        $name = $customOrder->contact_name ?: 'کاربر';
+        $message = sprintf(
+            'سفارش ویژه جدید — محصول: %s — تعداد: %d — از: %s — شماره: %s. پنل گالری رهنما را بررسی کنید.',
+            $product->name,
+            $customOrder->quantity,
+            $name,
+            $customOrder->contact_mobile
+        );
+
+        try {
+            $lineNumber = config('smsir.line-number') ?: 30007732907923;
+            Smsir::Send()->bulk($message, [$adminMobile], null, $lineNumber);
+        } catch (\Throwable $e) {
+            Log::warning('Admin CustomOrder SMS failed: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -143,6 +175,21 @@ class CustomOrderController extends Controller
                 'paid_at'  => now(),
                 'order_id' => $order->id,
             ]);
+
+            // پیامک تأیید پرداخت به مشتری
+            $mobile = $customOrder->contact_mobile ?: optional($customOrder->user)->mobile;
+            if ($mobile) {
+                try {
+                    $msg = sprintf(
+                        'پرداخت سفارش ویژه‌ی شما با موفقیت انجام شد. شماره سفارش: #%d. گالری رهنما در حال آماده‌سازی سفارش شماست.',
+                        $order->id
+                    );
+                    $lineNumber = config('smsir.line-number') ?: 30007732907923;
+                    Smsir::Send()->bulk($msg, [$mobile], null, $lineNumber);
+                } catch (\Throwable $e) {
+                    Log::warning('CustomOrder paid SMS failed: ' . $e->getMessage());
+                }
+            }
 
             session()->forget('paying_custom_order');
 

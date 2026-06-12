@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment;
 
@@ -28,7 +31,29 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // $cart->verify();
+        // بررسی موجودی پیش از هدایت به درگاه — از ارسال کاربر به بانک با موجودی صفر جلوگیری می‌کند
+        foreach ($cart->products as $product) {
+            $needed = (int) $product->pivot->count;
+
+            if ((int) $product->inventory < $needed) {
+                return redirect()->route('cart.index')->with('swal', [
+                    'title'   => 'موجودی ناکافی',
+                    'message' => "متأسفانه موجودی محصول «{$product->name}» به پایان رسیده یا کافی نیست. لطفاً سبد خرید را بررسی کنید.",
+                    'icon'    => 'warning',
+                ]);
+            }
+
+            if ($product->pivot->stock_id) {
+                $stock = Stock::find($product->pivot->stock_id);
+                if ($stock && (int) $stock->count < $needed) {
+                    return redirect()->route('cart.index')->with('swal', [
+                        'title'   => 'موجودی ناکافی',
+                        'message' => "تنوع انتخابی از محصول «{$product->name}» به اتمام رسیده. لطفاً تنوع دیگری انتخاب کنید.",
+                        'icon'    => 'warning',
+                    ]);
+                }
+            }
+        }
 
         $user = $request->user();
 
@@ -39,8 +64,19 @@ class CheckoutController extends Controller
 
         // اگر کیف پول کل مبلغ را پوشش دهد، بدون درگاه نهایی می‌شود
         if ($payable <= 0) {
-            $user->wallet->spend($walletUsed);
-            $order = \App\Models\Order::createFromCart($user, $cart, $walletUsed, 'wallet', 'WALLET-' . uniqid());
+            try {
+                $order = DB::transaction(function () use ($user, $cart, $walletUsed) {
+                    $user->wallet->spend($walletUsed);
+                    return Order::createFromCart($user, $cart, $walletUsed, 'wallet', 'WALLET-' . uniqid());
+                });
+            } catch (\RuntimeException $e) {
+                return redirect()->route('cart.index')->with('swal', [
+                    'title'   => 'موجودی ناکافی',
+                    'message' => $e->getMessage(),
+                    'icon'    => 'warning',
+                ]);
+            }
+
             \App\Events\NewProductOrderNotificationEvent::dispatch($order);
 
             $reward = $user->wallet->reward();

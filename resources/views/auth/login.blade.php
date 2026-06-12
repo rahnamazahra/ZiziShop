@@ -1,50 +1,36 @@
-@extends('layouts.auth.master')
+@extends('layouts.site.lux')
 
-@section('title', 'ورود')
+@section('title', 'ورود — گالری رهنما')
 
 @section('content')
-<x-panel.div-section class="d-flex flex-column flex-root">
-	<x-panel.div-section class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-image: url(assets/media/illustrations/sketchy-1/14.png">
-		<x-panel.div-section class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
-			<x-panel.div-section class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
-				<x-form method="POST" :action="route('auth.login.verify')" class="form w-100" novalidate="novalidate" id="kt_sign_in_form" >
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="ornament"><i></i><b>✦</b><i></i></div>
+            <h1 class="auth-title goldtext">گالری رهنما</h1>
+            <p class="auth-sub">ورود | ثبت‌نام</p>
 
-					<x-panel.div-section class="text-center mb-10">
-				        <h2 class="fw-bold mb-3" style="color:#343265;">گالری رهنما</h2>
-                        <x-panel.heading level="1">
-                            ورود | ثبت‌نام
-                        </x-panel.heading>
-					</x-panel.div-section>
+            <form method="POST" action="{{ route('auth.login.verify') }}">
+                @csrf
 
-                    <x-panel.div-section class="fv-row fv-plugins-icon-container">
-                        <x-form.label id="mobile">تلفن‌همراه</x-form.label>
-                        <x-form.input type="mobile" id="name" name="mobile" class="form-control mb-2 input-just-number" value="{{ old('mobile') }}" autocomplete="off"/>
-                        <x-form.input-error :messages="$errors->get('mobile')" class="mt-2" />
-                    </x-panel.div-section>
+                <label class="f-label" for="mobile">تلفن همراه</label>
+                <input class="f-input input-just-number" type="text" id="mobile" name="mobile"
+                       value="{{ old('mobile') }}" inputmode="numeric" maxlength="11"
+                       placeholder="09xxxxxxxxx" autocomplete="off" dir="ltr" style="text-align:right;">
+                @error('mobile') <div class="f-err">{{ $message }}</div> @enderror
 
-                    <x-panel.div-section class="mb-10 fv-row fv-plugins-icon-container">
-                        <x-form.label id="password">رمزعبور</x-form.label>
-                        <x-form.input type="password" id="password" name="password" class="form-control mb-2" value="{{ old('password') }}" autocomplete="off"/>
-                        <x-form.input-error :messages="$errors->get('password')" class="mt-2" />
-                    </x-panel.div-section>
+                <label class="f-label" for="password">رمز عبور</label>
+                <input class="f-input" type="password" id="password" name="password" autocomplete="off">
+                @error('password') <div class="f-err">{{ $message }}</div> @enderror
 
+                <div style="margin-top:24px;">
+                    <button type="submit" class="buybtn" style="width:100%;">ورود</button>
+                </div>
+            </form>
 
-					<x-panel.div-section class="text-center">
-						<x-form.btn type="submit" class="btn btn-lg btn-primary btn-submit w-100 mb-5" title="">
-							<x-panel.span class="indicator-label">ورود</x-panel.span>
-							<x-panel.span class="indicator-progress">لطفا چندلحظه صبر کنید ...
-								<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-							</x-panel.span>
-						</x-form.btn>
-
-                        <x-panel.div-section class="text-gray-400">
-							<a href="{{ route('auth.register.form') }}" class="link-primary fw-bolder">ایجاد حساب کاربری</a>
-						</x-panel.div-section>
-					</x-panel.div-section>
-
-				</x-form>
-			</x-panel.div-section>
-		</x-panel.div-section>
-	</x-panel.div-section>
-</x-panel.div-section>
+            <p class="auth-foot">
+                حساب کاربری ندارید؟
+                <a href="{{ route('auth.register.form') }}">ایجاد حساب کاربری</a>
+            </p>
+        </div>
+    </div>
 @endsection

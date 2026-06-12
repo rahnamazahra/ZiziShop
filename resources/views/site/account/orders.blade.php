@@ -1,27 +1,35 @@
-@extends('layouts.site.master')
-@section('title', 'سفارش‌های من')
+@extends('layouts.site.lux')
+
+@section('title', 'سفارش‌های من — گالری رهنما')
+
 @section('content')
-<section class="pt-95 pb-95">
-    <div class="container">
-        <h3 class="mb-40">سفارش‌های من</h3>
-        @forelse($orders as $order)
-            <div style="border:1px solid #eee;border-radius:10px;padding:18px;margin-bottom:14px;">
-                <div class="d-flex justify-content-between align-items-center mb-10" style="gap:10px;flex-wrap:wrap;">
-                    <span><strong>سفارش #{{ $order->id }}</strong></span>
-                    <span>{{ number_format($order->total) }} تومان</span>
-                </div>
-                <div style="color:#666;">تاریخ ثبت: {{ gdate($order->created_at) }}</div>
-                @if($order->postal_tracking)
-                    <div style="color:#527aba;margin-top:4px;">📦 کد رهگیری پستی: <strong dir="ltr">{{ $order->postal_tracking }}</strong></div>
-                @endif
-                <a href="{{ route('account.orders.show', $order) }}"
-                   style="display:inline-block;margin-top:12px;background:#343265;color:#fff;padding:8px 22px;border-radius:24px;font-size:13px;font-weight:700;text-decoration:none;">
-                    مشاهده فاکتور
-                </a>
+<div class="acc-page">
+    <nav class="crumb">
+        <a href="{{ url('/') }}">خانه</a>
+        <span>/</span>
+        <a href="{{ route('account.profile') }}">حساب کاربری</a>
+        <span>/</span>
+        <b>سفارش‌های من</b>
+    </nav>
+
+    <h2 class="acc-title goldtext">سفارش‌های من</h2>
+
+    @forelse($orders as $order)
+        <div class="acc-card" style="max-width:760px;">
+            <div class="acc-card-head">
+                <strong>سفارش <span class="muted">#{{ fa_num($order->id) }}</span></strong>
+                <span style="color:var(--gold);font-size:14px;">{{ fa_toman($order->total) }}</span>
             </div>
-        @empty
-            <p>هنوز سفارشی ثبت نکرده‌اید.</p>
-        @endforelse
-    </div>
-</section>
+            <div class="acc-card-body">
+                <div>تاریخ ثبت: {{ fa_num(gdate($order->created_at)) }}</div>
+                @if($order->postal_tracking)
+                    <div>📦 کد رهگیری پستی: <strong style="direction:ltr;display:inline-block;">{{ $order->postal_tracking }}</strong></div>
+                @endif
+            </div>
+            <a href="{{ route('account.orders.show', $order) }}" class="buybtn">مشاهده فاکتور</a>
+        </div>
+    @empty
+        <p class="acc-empty">هنوز سفارشی ثبت نکرده‌اید.</p>
+    @endforelse
+</div>
 @endsection

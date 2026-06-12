@@ -64,55 +64,68 @@ class Order extends Model
      */
     public static function createFromCart(User $user, Cart $cart, int $walletUsed, string $gateway, string $trackingCode): self
     {
-        $address = $cart->address;
-        $addressText = $address
-            ? sprintf(
-                'گیرنده: %s | موبایل: %s | کد ملی: %s | استان/شهر: %s / %s | کد پستی: %s | آدرس: %s',
-                $address->receiver,
-                $address->mobile,
-                $address->national_code,
-                optional(optional($address->city)->province)->name,
-                optional($address->city)->name,
-                $address->postal_code,
-                $address->body
-            )
-            : '-';
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $cart, $walletUsed, $gateway, $trackingCode) {
+            $address     = $cart->address;
+            $addressText = $address
+                ? sprintf(
+                    'گیرنده: %s | موبایل: %s | کد ملی: %s | استان/شهر: %s / %s | کد پستی: %s | آدرس: %s',
+                    $address->receiver,
+                    $address->mobile,
+                    $address->national_code,
+                    optional(optional($address->city)->province)->name,
+                    optional($address->city)->name,
+                    $address->postal_code,
+                    $address->body
+                )
+                : '-';
 
-        $order = $user->orders()->create([
-            'voucher_id'   => $cart->voucher_id,
-            'shipping_fee' => 3500,
-            'total'        => $cart->total,
-            'address_text' => $addressText,
-        ]);
-
-        $cart->products->each(function ($product) use ($order, $cart) {
-            $count    = (int) $product->pivot->count;
-            $stock    = $product->pivot->stock_id ? Stock::find($product->pivot->stock_id) : null;
-            $unitPrice = $cart->lineUnitPrice($product);
-
-            $order->products()->attach($product, [
-                'count'    => $count,
-                'price'    => $unitPrice,
-                'color_id' => optional($stock)->color_id,
-                'size_id'  => optional($stock)->size_id,
+            $order = $user->orders()->create([
+                'voucher_id'   => $cart->voucher_id,
+                'shipping_fee' => 3500,
+                'total'        => $cart->total,
+                'address_text' => $addressText,
             ]);
 
-            // کاهش موجودی: تنوعِ مشخص و موجودی کل محصول
-            if ($stock) {
-                $stock->decrement('count', min($count, (int) $stock->count));
-            }
-            Product::whereKey($product->id)->update([
-                'inventory' => max(0, (int) $product->inventory - $count),
+            $cart->products->each(function ($product) use ($order, $cart) {
+                $count     = (int) $product->pivot->count;
+                $unitPrice = $cart->lineUnitPrice($product);
+
+                // قفل ردیف محصول — جلوگیری از race condition روی موجودی
+                $lockedProduct = Product::lockForUpdate()->find($product->id);
+
+                if ((int) $lockedProduct->inventory < $count) {
+                    throw new \RuntimeException("موجودی محصول «{$lockedProduct->name}» برای تعداد درخواست‌شده کافی نیست.");
+                }
+
+                $stock = null;
+                if ($product->pivot->stock_id) {
+                    $stock = Stock::lockForUpdate()->find($product->pivot->stock_id);
+                    if ($stock && (int) $stock->count < $count) {
+                        throw new \RuntimeException("موجودی تنوع انتخابی از محصول «{$lockedProduct->name}» کافی نیست.");
+                    }
+                }
+
+                $order->products()->attach($product, [
+                    'count'    => $count,
+                    'price'    => $unitPrice,
+                    'color_id' => optional($stock)->color_id,
+                    'size_id'  => optional($stock)->size_id,
+                ]);
+
+                if ($stock) {
+                    $stock->decrement('count', $count);
+                }
+                $lockedProduct->decrement('inventory', $count);
+            });
+
+            $order->payment()->create([
+                'user_id'       => $user->id,
+                'total'         => max(0, (int) $cart->total - $walletUsed),
+                'gateway'       => $gateway,
+                'tracking_code' => $trackingCode,
             ]);
+
+            return $order;
         });
-
-        $order->payment()->create([
-            'user_id'       => $user->id,
-            'total'         => max(0, (int) $cart->total - $walletUsed),
-            'gateway'       => $gateway,
-            'tracking_code' => $trackingCode,
-        ]);
-
-        return $order;
     }
 }

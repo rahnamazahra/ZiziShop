@@ -20,12 +20,13 @@ class Product extends Model
     use HasFactory;
     use HasDemoFlag;
 
-    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'cost_price', 'discount', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', 'length', 'features', 'is_demo'];
+    protected $fillable = ['name', 'slug', 'sku', 'barcode', 'price', 'cost_price', 'discount', 'discount_until', 'description', 'inventory', 'is_healthy', 'is_published', 'category_id', 'weight', 'width', 'Height', 'length', 'features', 'is_demo'];
 
     public $timestamps = false;
 
     protected $casts = [
-        'features' => 'array',
+        'features'       => 'array',
+        'discount_until' => 'datetime',
     ];
 
     public function Category(): BelongsTo
@@ -81,6 +82,50 @@ class Product extends Model
     public function isInStock(): bool
     {
         return (int) $this->inventory > 0;
+    }
+
+    /**
+     * آیا محصول در حال حاضر تخفیف فعال دارد؟
+     * discount > 0 و تاریخ پایان نرسیده (یا بدون محدودیت تاریخ).
+     */
+    public function isOnSale(): bool
+    {
+        if ((int) $this->discount <= 0) {
+            return false;
+        }
+        if ($this->discount_until === null) {
+            return true;
+        }
+        return now()->lte($this->discount_until);
+    }
+
+    /**
+     * تعداد روزهای باقیمانده از تخفیف.
+     * null = تخفیف دائمی (بدون تاریخ پایان).
+     */
+    public function discountDaysLeft(): ?int
+    {
+        if (! $this->discount_until) {
+            return null;
+        }
+        $now = now()->startOfDay();
+        $end = $this->discount_until->copy()->startOfDay();
+        if ($now->gt($end)) {
+            return 0;
+        }
+        return (int) $now->diffInDays($end);
+    }
+
+    /**
+     * محصولاتی که تخفیف فعال دارند.
+     */
+    public function scopeOnSale(Builder $query): Builder
+    {
+        return $query->where('discount', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('discount_until')
+                  ->orWhere('discount_until', '>=', now());
+            });
     }
 
     /**

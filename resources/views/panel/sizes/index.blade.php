@@ -25,6 +25,7 @@
         <x-panel.card-body>
             <x-table>
                 <x-tr>
+                    <x-th>ردیف</x-th>
                     <x-th>نام</x-th>
                     <x-th>اقدامات</x-th>
                 </x-tr>
@@ -33,6 +34,7 @@
                 @forelse ($sizes as $size)
 
                     <x-tr>
+                        <x-td>{{ $loop->iteration }}</x-td>
                         <x-td>
                             <span class="text-gray-800 fs-4 fw-bolder">{{ $size->name ?? '-' }}</span>
                         </x-td>
