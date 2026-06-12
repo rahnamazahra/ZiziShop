@@ -189,6 +189,8 @@ class User extends Authenticatable implements JWTSubject
     public function sendSmsCodeVerify($mobile): bool
     {
         $verificationCode = random_int(100000, 999999);
+        // کد ۵ دقیقه معتبر است
+        \Illuminate\Support\Facades\Cache::put('otp_' . $mobile, $verificationCode, now()->addMinutes(5));
         session()->put('verification_code', $verificationCode);
 
         $templateId = (int) config('smsir.templates.otp', 937701);

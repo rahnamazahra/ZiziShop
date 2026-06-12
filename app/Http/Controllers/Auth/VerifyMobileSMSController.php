@@ -8,9 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Validation\ValidationException;
 
 
 
@@ -19,12 +18,16 @@ class VerifyMobileSMSController extends Controller
 
     public function __invoke(Request $request)
     {
-        $enteredCode = $request->input('verification_code');
+        $enteredCode = (string) $request->input('verification_code');
+        $mobile      = (string) $request->input('mobile');
 
-        if ($enteredCode != session()->get('verification_code')) {
-            return redirect()->back()->withErrors(['error' => 'کد وارد شده صحیح نمی باشد.']);
+        $validCode = (string) (Cache::get('otp_' . $mobile) ?? session('verification_code'));
+
+        if ($enteredCode !== $validCode || $validCode === '') {
+            return redirect()->back()->withErrors(['error' => 'کد وارد شده صحیح نمی‌باشد یا منقضی شده است.']);
         }
 
+        Cache::forget('otp_' . $mobile);
         session()->forget('verification_code');
 
         $user = User::where('mobile', $request->input('mobile'))->first();
