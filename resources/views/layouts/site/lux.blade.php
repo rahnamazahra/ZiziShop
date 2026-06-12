@@ -77,7 +77,7 @@
     <div class="ftr-inner">
         <div class="ftr-brand">
             <a href="{{ url('/') }}" class="logo">گالری رهنما</a>
-            <p>گالری رهنما، عرضه‌کننده‌ی انواع زیورآلات و اکسسوری با کیفیت — ساخته‌شده با وسواس، برای لحظه‌های خاص شما.</p>
+            <p>گالری رهنما، عرضه‌کننده‌ی انواع زیورآلات و اکسسوری با کیفیت.</p>
             <p class="ftr-dim">قم — آنلاین‌شاپ گالری رهنما</p>
             <div class="ftr-social">
                 <a href="https://instagram.com/galleryrahnama" target="_blank" rel="noopener">اینستاگرام</a>
