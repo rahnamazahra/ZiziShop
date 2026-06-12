@@ -25,10 +25,54 @@
                 </div>
             </form>
 
-            <p class="auth-foot">
+            <p class="auth-foot" style="margin-top:20px;">
                 کد دریافت نکردید؟
-                <a href="{{ route('auth.mobile.sendCode') }}">ارسال دوباره کد</a>
+                <a id="resend-link" href="{{ route('auth.mobile.sendCode') }}">ارسال دوباره کد</a>
+                <span id="resend-timer" style="display:none;color:#aaa;font-size:13px;"></span>
             </p>
         </div>
     </div>
+
+<script>
+(function () {
+    var link  = document.getElementById('resend-link');
+    var timer = document.getElementById('resend-timer');
+    var WAIT  = 90; // ثانیه
+
+    function startCountdown(seconds) {
+        link.style.display  = 'none';
+        timer.style.display = 'inline';
+
+        var remaining = seconds;
+        timer.textContent = 'ارسال مجدد تا ' + remaining + ' ثانیه دیگر';
+
+        var interval = setInterval(function () {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(interval);
+                timer.style.display = 'none';
+                link.style.display  = 'inline';
+            } else {
+                timer.textContent = 'ارسال مجدد تا ' + remaining + ' ثانیه دیگر';
+            }
+        }, 1000);
+    }
+
+    // اگر تازه از send-code آمده‌ایم، تایمر شروع می‌شود
+    var arrivedFresh = {{ $smsSent ? 'true' : 'false' }};
+    if (arrivedFresh) {
+        startCountdown(WAIT);
+    }
+
+    // وقتی کلیک می‌کند روی ارسال دوباره، بعد از redirect برگشت، تایمر شروع می‌شود
+    link.addEventListener('click', function () {
+        sessionStorage.setItem('otp_sent', '1');
+    });
+
+    if (sessionStorage.getItem('otp_sent') === '1') {
+        sessionStorage.removeItem('otp_sent');
+        startCountdown(WAIT);
+    }
+})();
+</script>
 @endsection
