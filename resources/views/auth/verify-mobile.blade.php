@@ -59,7 +59,7 @@
     }
 
     // اگر تازه از send-code آمده‌ایم، تایمر شروع می‌شود
-    var arrivedFresh = {{ $smsSent ? 'true' : 'false' }};
+    var arrivedFresh = {{ ($smsSent ?? false) ? 'true' : 'false' }};
     if (arrivedFresh) {
         startCountdown(WAIT);
     }
